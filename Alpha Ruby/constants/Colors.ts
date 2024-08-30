@@ -1,26 +1,21 @@
-/**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
- */
-
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
+const tintColorLight = '#cf4b24'; // Naranjo
+const tintColorDark = '#4c4543';  // Gris
 
 export const Colors = {
   light: {
-    text: '#11181C',
-    background: '#fff',
-    tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
-    tabIconSelected: tintColorLight,
+    text: '#4c4543',          // Gris para el texto en modo claro
+    background: '#cf4b24',    // Naranjo para el fondo en modo claro
+    tint: tintColorLight,     // Naranjo para el color destacado en modo claro
+    icon: '#4c4543',          // Gris para los iconos en modo claro
+    tabIconDefault: '#4c4543',// Gris para los iconos de pestañas no seleccionados en modo claro
+    tabIconSelected: tintColorLight, // Naranjo para los iconos de pestañas seleccionados en modo claro
   },
   dark: {
-    text: '#ECEDEE',
-    background: '#151718',
-    tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
-    tabIconSelected: tintColorDark,
+    text: '#cf4b24',          // Naranjo para el texto en modo oscuro
+    background: '#4c4543',    // Gris para el fondo en modo oscuro
+    tint: tintColorDark,      // Gris para el color destacado en modo oscuro
+    icon: '#cf4b24',          // Naranjo para los iconos en modo oscuro
+    tabIconDefault: '#cf4b24',// Naranjo para los iconos de pestañas no seleccionados en modo oscuro
+    tabIconSelected: tintColorDark, // Gris para los iconos de pestañas seleccionados en modo oscuro
   },
 };

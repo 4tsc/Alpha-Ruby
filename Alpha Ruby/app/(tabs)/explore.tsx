@@ -5,9 +5,102 @@ import { useState } from 'react';
 // Obtener el ancho de la pantalla
 const screenWidth = Dimensions.get('window').width;
 
-export default function TabTwoScreen() {
-  const [searchText, setSearchText] = useState('');
-  const [showMore, setShowMore] = useState(false);
+const calculateFontSize = (baseSize: number) => {
+  const scaleFactor = screenWidth / 375;
+  return baseSize * scaleFactor;
+};
+
+// Definir tipos para las props del componente LegalidadesSection
+interface LegalidadesSectionProps {
+  showMore: boolean;
+  setShowMore: (show: boolean) => void;
+}
+
+// Componentes para cada sección de filtro
+const LegalidadesSection: React.FC<LegalidadesSectionProps> = ({ showMore, setShowMore }) => (  <View style={styles.sectionContainer}>
+    <Text style={styles.sectionText}>Legalidades</Text>
+    <View style={styles.buttonContainer}>
+      {legalidadesList.slice(0, showMore ? legalidadesList.length : 10).map((title, index) => (
+        <TouchableOpacity key={index} style={styles.button}>
+          <Text style={styles.buttonText}>{title}</Text>
+        </TouchableOpacity>
+      ))}
+      <TouchableOpacity onPress={() => setShowMore(!showMore)} style={[styles.button, styles.toggleButton]}>
+        <Text style={styles.buttonText}>{showMore ? 'Menos' : 'Más'}</Text>
+      </TouchableOpacity>
+    </View>
+  </View>
+);
+
+const LineaDeTipoSection = () => (
+  <View style={styles.sectionContainer}>
+    <Text style={styles.sectionText}>Linea de tipo</Text>
+    <Text style={styles.sectionParagraph}>Aquí va el contenido específico para Línea de tipo, mamahuevo.</Text>
+  </View>
+);
+
+const EstadisticasSection = () => (
+  <View style={styles.sectionContainer}>
+    <Text style={styles.sectionText}>Estadisticas</Text>
+    <Text style={styles.sectionParagraph}>Aquí va el contenido específico para Estadísticas.</Text>
+  </View>
+);
+
+const TextoSection = () => (
+  <View style={styles.sectionContainer}>
+    <Text style={styles.sectionText}>Texto</Text>
+    <Text style={styles.sectionParagraph}>Aquí va el contenido específico para Texto.</Text>
+  </View>
+);
+
+const CosteDeManaSection = () => (
+  <View style={styles.sectionContainer}>
+    <Text style={styles.sectionText}>Coste de mana</Text>
+    <Text style={styles.sectionParagraph}>Aquí va el contenido específico para Coste de mana.</Text>
+  </View>
+);
+
+const ColoresSection = () => (
+  <View style={styles.sectionContainer}>
+    <Text style={styles.sectionText}>Colores</Text>
+    <Text style={styles.sectionParagraph}>Aquí va el contenido específico para Colores.</Text>
+  </View>
+);
+
+const EdicionesSection = () => (
+  <View style={styles.sectionContainer}>
+    <Text style={styles.sectionText}>Ediciones</Text>
+    <Text style={styles.sectionParagraph}>Aquí va el contenido específico para Ediciones.</Text>
+  </View>
+);
+
+const RarezaSection = () => (
+  <View style={styles.sectionContainer}>
+    <Text style={styles.sectionText}>Rareza</Text>
+    <Text style={styles.sectionParagraph}>Aquí va el contenido específico para Rareza.</Text>
+  </View>
+);
+
+const PrecioSection = () => (
+  <View style={styles.sectionContainer}>
+    <Text style={styles.sectionText}>Precio</Text>
+    <Text style={styles.sectionParagraph}>Aquí va el contenido específico para Precio.</Text>
+  </View>
+);
+
+const DisposicionSection = () => (
+  <View style={styles.sectionContainer}>
+    <Text style={styles.sectionText}>Disposicion</Text>
+    <Text style={styles.sectionParagraph}>Aquí va el contenido específico para Disposición.</Text>
+  </View>
+);
+
+const MiscelaneosSection = () => (
+  <View style={styles.sectionContainer}>
+    <Text style={styles.sectionText}>Miscelaneos</Text>
+    <Text style={styles.sectionParagraph}>Aquí va el contenido específico para Misceláneos.</Text>
+  </View>
+);
 
   // Datos de filtros
   const filters = [
@@ -24,47 +117,57 @@ export default function TabTwoScreen() {
     { id: '11', title: 'Miscelaneos' },
   ];
 
-  const legalidadesList = [
-    'Standard', 'Pioneer', 'Modern', 'Legacy', 'Vintage',
-    'Commander', 'Oathbreaker', 'Brawl', 'Explorer', 'Timeless',
-    'Historic', 'Pauper', 'Old School', 'Canadian High.', 'Premodern',
-    'Conquest', 'Tiny Leaders', 'Standard Brawl', 'Gladiator', 'Pauper Cmdr.',
-    'Penny', 'Duel Cmdr.', 'PreDH'
-  ];
+// Lista de legalidades
+const legalidadesList = [
+  'Standard', 'Pioneer', 'Modern', 'Legacy', 'Vintage',
+  'Commander', 'Oathbreaker', 'Brawl', 'Explorer', 'Timeless',
+  'Historic', 'Pauper', 'Old School', 'Canadian High.', 'Premodern',
+  'Conquest', 'Tiny Leaders', 'Standard Brawl', 'Gladiator', 'Pauper Cmdr.',
+  'Penny', 'Duel Cmdr.', 'PreDH'
+];
+
+export default function TabTwoScreen() {
+  const [searchText, setSearchText] = useState('');
+  const [showMore, setShowMore] = useState(false);
 
   // Lógica para mostrar contenido basado en el texto de búsqueda
   const renderFilters = () => (
     <View style={styles.filtersContainer}>
       <Text style={styles.filtersText}>Filtros</Text>
-      {filters.map((filter) => (
-        <View key={filter.id} style={styles.sectionContainer}>
-          <Text style={styles.sectionText}>{filter.title}</Text>
-          {filter.title === 'Legalidades' && (
-            <View style={styles.buttonContainer}>
-              {legalidadesList.slice(0, showMore ? legalidadesList.length : 10).map((title, index) => (
-                <TouchableOpacity key={index} style={styles.button}>
-                  <Text style={styles.buttonText}>{title}</Text>
-                </TouchableOpacity>
-              ))}
-              <TouchableOpacity onPress={() => setShowMore(!showMore)} style={[styles.button, styles.toggleButton]}>
-                <Text style={styles.buttonText}>{showMore ? 'Menos' : 'Más'}</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-          {filter.title !== 'Legalidades' && (
-            <Text style={styles.sectionParagraph}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam vitae ipsum ac lorem vestibulum aliquet.
-            </Text>
-          )}
-        </View>
-      ))}
+      {filters.map((filter) => {
+        switch (filter.title) {
+          case 'Legalidades':
+            return <LegalidadesSection key={filter.id} showMore={showMore} setShowMore={setShowMore} />;
+          case 'Linea de tipo':
+            return <LineaDeTipoSection key={filter.id} />;
+          case 'Estadisticas':
+            return <EstadisticasSection key={filter.id} />;
+          case 'Texto':
+            return <TextoSection key={filter.id} />;
+          case 'Coste de mana':
+            return <CosteDeManaSection key={filter.id} />;
+          case 'Colores':
+            return <ColoresSection key={filter.id} />;
+          case 'Ediciones':
+            return <EdicionesSection key={filter.id} />;
+          case 'Rareza':
+            return <RarezaSection key={filter.id} />;
+          case 'Precio':
+            return <PrecioSection key={filter.id} />;
+          case 'Disposicion':
+            return <DisposicionSection key={filter.id} />;
+          case 'Miscelaneos':
+            return <MiscelaneosSection key={filter.id} />;
+          default:
+            return null;
+        }
+      })}
     </View>
   );
 
   const renderSearchResults = () => (
     <View style={styles.resultsContainer}>
       <Text style={styles.resultsText}>Resultados de búsqueda:</Text>
-      {/* Aquí puedes agregar el contenido dinámico basado en la búsqueda */}
       <Text style={styles.resultsDetail}>Aquí van los resultados para "{searchText}"</Text>
     </View>
   );
@@ -78,7 +181,7 @@ export default function TabTwoScreen() {
           <TextInput
             style={styles.searchBar}
             placeholder="Buscar..."
-            placeholderTextColor="#d1d1d1" // Cambiar color del texto placeholder
+            placeholderTextColor="#d1d1d1"
             value={searchText}
             onChangeText={setSearchText}
           />
@@ -98,10 +201,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   orangeSection: {
-    flex: 0.22, // Reducido el tamaño de la sección naranja
+    flex: 0.22,
     backgroundColor: '#cf4b24',
-    justifyContent: 'center', // Centra verticalmente la barra de búsqueda
-    paddingHorizontal: 20, // Espaciado horizontal
+    justifyContent: 'center',
+    paddingHorizontal: 20,
   },
   searchBarContainer: {
     flexDirection: 'row',
@@ -112,44 +215,44 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   searchIcon: {
-    marginRight: 10, // Espacio entre el icono y el campo de texto
+    marginRight: 10,
   },
   searchBar: {
     flex: 1,
     color: '#fff',
   },
   filtersContainer: {
-    marginTop: 15, // Espacio entre la barra de búsqueda y el contenedor de Filtros
+    marginTop: 15,
     backgroundColor: '#4c4543',
     borderRadius: 8,
     paddingVertical: 10,
     paddingHorizontal: 15,
   },
   filtersText: {
-    color: '#cf4b24', // Cambia el color del texto de "Filtros" a naranja
-    fontSize: 18, // Tamaño de fuente para "Filtros"
-    marginBottom: 10, // Espacio entre el título y las secciones
+    color: '#cf4b24',
+    fontSize: 18,
+    marginBottom: 10,
   },
   sectionContainer: {
     backgroundColor: '#4c4543',
     borderRadius: 8,
     paddingVertical: 10,
     paddingHorizontal: 15,
-    marginBottom: 10, // Espacio entre secciones
+    marginBottom: 10,
   },
   sectionText: {
-    color: '#fff', // Color del texto de las secciones
-    fontSize: 16, // Tamaño de fuente para las secciones
+    color: '#fff',
+    fontSize: 16,
   },
   sectionParagraph: {
-    color: '#d1d1d1', // Color del texto de los párrafos
-    fontSize: 14, // Tamaño de fuente para los párrafos
-    marginTop: 5, // Espacio entre el título y el párrafo
+    color: '#d1d1d1',
+    fontSize: 14,
+    marginTop: 5,
   },
   graySection: {
-    flex: 2.6, // Ajusta el tamaño de la sección gris para el contenido desplazable
+    flex: 2.6,
     backgroundColor: '#4c4543',
-    padding: 20, // Espaciado interior en la sección gris
+    padding: 20,
   },
   resultsContainer: {
     backgroundColor: '#4c4543',
@@ -158,35 +261,35 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   resultsText: {
-    color: '#cf4b24', // Cambia el color del texto de los resultados a naranja
-    fontSize: 18, // Tamaño de fuente para "Resultados de búsqueda"
-    marginBottom: 10, // Espacio entre el título y el contenido
+    color: '#cf4b24',
+    fontSize: 18,
+    marginBottom: 10,
   },
   resultsDetail: {
-    color: '#d1d1d1', // Color del texto de los resultados
-    fontSize: 14, // Tamaño de fuente para el detalle de los resultados
+    color: '#d1d1d1',
+    fontSize: 14,
   },
   buttonContainer: {
     flexDirection: 'row',
-    flexWrap: 'wrap', // Permite que los botones se envuelvan si no hay suficiente espacio
-    justifyContent: 'center', // Centra los botones en la pantalla
+    flexWrap: 'wrap',
+    justifyContent: 'center',
     marginTop: 10,
   },
   button: {
-    backgroundColor: '#2a2827', // Gris oscuro para los botones
+    backgroundColor: '#2a2827',
     borderRadius: 8,
-    paddingVertical: 10, // Ajuste del padding vertical para los botones
-    paddingHorizontal: 15, // Ajuste del padding horizontal para los botones
-    margin: 5, // Espacio uniforme entre los botones
-    flexBasis: (screenWidth / 4) - 20, // Ancho de los botones para 4 columnas
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    margin: 5,
+    flexBasis: (screenWidth / 4) - 20,
   },
   buttonText: {
     color: '#fff',
-    fontSize: 7.3, // Tamaño de fuente más pequeño para los botones
-    textAlign: 'center', // Centra el texto dentro del botón
+    fontSize: calculateFontSize(7.4),
+    textAlign: 'center',
   },
   toggleButton: {
-    marginTop: 10, // Espacio adicional arriba del botón "Más/Menos"
-    backgroundColor: '#cf4b24', // Color diferente para el botón de mostrar más/menos
+    marginTop: 10,
+    backgroundColor: '#cf4b24',
   },
 });

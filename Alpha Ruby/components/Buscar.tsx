@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
-    fontSize: 7.3, // Tamaño de fuente más pequeño para los botones
+    fontSize: 8.4, // Tamaño de fuente más pequeño para los botones
     textAlign: 'center', // Centra el texto dentro del botón
   },
   toggleButton: {

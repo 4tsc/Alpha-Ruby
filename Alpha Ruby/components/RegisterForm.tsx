@@ -1,24 +1,25 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, Text, StyleSheet } from 'react-native';
+import { View, TextInput, Button, Text, StyleSheet, ScrollView } from 'react-native';
 
 const RegisterScreen = () => {
-    // Aquí podrías usar estados para manejar los datos de entrada del formulario si es necesario
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
     return (
-        <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.container}>
             <Text style={styles.title}>Formulario de Registro</Text>
             <TextInput
                 style={styles.input}
                 placeholder="Nombre de usuario"
+                placeholderTextColor="#CCCCCC"
                 value={username}
                 onChangeText={setUsername}
             />
             <TextInput
                 style={styles.input}
                 placeholder="Correo electrónico"
+                placeholderTextColor="#CCCCCC"
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
@@ -26,36 +27,39 @@ const RegisterScreen = () => {
             <TextInput
                 style={styles.input}
                 placeholder="Contraseña"
+                placeholderTextColor="#CCCCCC"
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry
             />
-            <Button title="Registrar" onPress={() => alert('Registro completado')} />
-        </View>
+            <Button title="Registrar" onPress={() => alert('Registro completado')} color="#D94A26" />
+        </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flexGrow: 1,
         justifyContent: 'center',
         alignItems: 'center',
         padding: 20,
-        backgroundColor: '#f5f5f5',
+        backgroundColor: '#3D3D3D',  // Fondo gris oscuro
     },
     title: {
-        fontSize: 24,
+        fontSize: 32,
         marginBottom: 20,
         fontWeight: 'bold',
+        color: '#FFFFFF',
     },
     input: {
         height: 40,
         width: '80%',
-        borderColor: 'gray',
+        borderColor: '#666666',
         borderWidth: 1,
         marginBottom: 10,
         paddingLeft: 8,
-        backgroundColor: '#fff',
+        backgroundColor: '#2C2C2C',
+        color: '#FFFFFF',
     },
 });
 

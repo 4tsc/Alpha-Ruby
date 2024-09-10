@@ -1,6 +1,5 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { AntDesign } from '@expo/vector-icons'; // Asegúrate de importar AntDesign
 
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
@@ -34,24 +33,6 @@ export default function TabLayout() {
           title: 'Buscar',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'search' : 'search-outline'} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="mazos"
-        options={{
-          title: 'Mazos',
-          tabBarIcon: ({ color, focused }) => (
-            <AntDesign name={focused ? 'book' : 'book'} size={24} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="configuracion"
-        options={{
-          title: 'Ajustes',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'settings' : 'settings-outline'} color={color} />
           ),
         }}
       />

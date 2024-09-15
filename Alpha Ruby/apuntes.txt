@@ -1,0 +1,5 @@
+Pantallas en carpeta screens
+formularios y similares en src
+navegation en app.js
+***problema con la pantalla Buscar*** indica error con las imagenes(no es compatible con el navegador que estoy usando)
+***hay que ajustar pantalla de editor y gestor de mazos***

@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 
 import HomeScreen from '../components/RegisterForm'; // Importa tu pantalla principal
-import RegisterScreen from './(tabs)/register'; // Importa tu pantalla de registro
+import RegisterScreen from '../src/screens/register'; // Importa tu pantalla de registro
 import DeckManagementScreen from '../screens/DeckManagementScreen';  // Importar la nueva pantalla
 
 // Crea una instancia de la pila de navegación

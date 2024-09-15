@@ -7,7 +7,7 @@ const { width, height } = Dimensions.get('window');
 const RegisterScreen = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={[styles.title, { fontSize: width * 0.08 }]}>Formulario de Registro</Text>
+      <Text style={[styles.title, { fontSize: width * 0.08 }]}></Text>
       <RegisterForm />
     </ScrollView>
   );

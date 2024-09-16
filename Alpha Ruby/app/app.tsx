@@ -2,10 +2,10 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-
-import HomeScreen from '../components/RegisterForm'; // Importa tu pantalla principal
-import RegisterScreen from '../src/screens/register'; // Importa tu pantalla de registro
-import DeckManagementScreen from '../screens/DeckManagementScreen';  // Importar la nueva pantalla
+import HomeScreen from '../src/screens/homeScreen'; // Importa tu pantalla principal
+import RegisterScreen from '../src/screens/registerScreen'; // Importa tu pantalla de registro
+import DeckManagementScreen from '../src/screens/DeckManagementScreen';  // Importar la nueva pantalla
+import DeckEditorScreen from '../src/screens/deckEditorScreen'; // Importar DeckEditorScreen
 
 // Crea una instancia de la pila de navegación
 const Stack = createNativeStackNavigator();
@@ -36,6 +36,14 @@ const App = () => {
           component={DeckManagementScreen} 
           options={{ 
             title: 'Mazos'
+          }}
+        />
+        {/* Define la pantalla de edición de mazos */}
+        <Stack.Screen 
+          name="DeckEditor" 
+          component={DeckEditorScreen} 
+          options={{ 
+            title: 'Editar Mazo'
           }}
         />
       </Stack.Navigator>

@@ -53,7 +53,7 @@ const App = () => {
         <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Main" component={MainTabNavigator} options={{ headerShown: false }} />
         
-        <Stack.Screen name="DeckEditor" component={DeckEditorScreen} options={{ title: 'Editar Mazo' }} />
+        <Stack.Screen name="DeckEditor" component={DeckEditorScreen} options={{ title: 'Mazos' }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

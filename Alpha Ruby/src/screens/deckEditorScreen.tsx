@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Alert, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Text, TextInput, Alert, StyleSheet, TouchableOpacity, SafeAreaView, Modal } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome'; // Importar iconos
 
 interface Deck {
   id: number;
@@ -20,11 +21,13 @@ interface DeckEditorScreenProps {
 }
 
 const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }) => {
-  // Obtener el mazo de los parámetros, usar valores predeterminados si no están presentes
   const deck = route.params?.deck || { id: 0, name: 'Nuevo Mazo', cards: [] };
 
   const [deckName, setDeckName] = useState(deck.name);
   const [cards, setCards] = useState(deck.cards || []);
+  const [isEditingName, setIsEditingName] = useState(false); // Estado para saber si está en modo edición
+  const [isModalVisible, setIsModalVisible] = useState(false); // Estado para mostrar el modal
+  const [newCardName, setNewCardName] = useState(''); // Estado para el nombre de la nueva carta
 
   // Función para guardar los cambios del mazo
   const saveDeckChanges = () => {
@@ -32,45 +35,105 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
       Alert.alert('Error', 'El nombre del mazo no puede estar vacío.');
       return;
     }
-
-    // Aquí puedes agregar la lógica para guardar el mazo
     console.log('Guardando cambios del mazo:', { id: deck.id, name: deckName, cards });
+    navigation.goBack(); // Volver a DeckManagementScreen
+  };
 
-    // Volver a DeckManagementScreen
-    navigation.goBack(); // O puedes usar navigation.navigate('DeckManagement')
+  // Función para alternar el modo de edición del nombre del mazo
+  const toggleEditName = () => {
+    setIsEditingName(!isEditingName);
   };
 
   // Función para agregar una nueva carta al mazo
   const addCard = () => {
-    const newCardName = `Carta ${cards.length + 1}`;
+    if (newCardName.trim() === '') {
+      Alert.alert('Error', 'El nombre de la carta no puede estar vacío.');
+      return;
+    }
     const newCard = { id: cards.length + 1, name: newCardName };
     setCards([...cards, newCard]);
+    setNewCardName('');
+    setIsModalVisible(false); // Cerrar el modal después de agregar la carta
+  };
+
+  // Función para eliminar una carta del mazo
+  const removeCard = (cardId: number) => {
+    setCards(cards.filter(card => card.id !== cardId));
   };
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* Título de la pantalla */}
       <Text style={styles.title}>Editar Mazo</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Nombre del mazo"
-        value={deckName}
-        onChangeText={setDeckName}
-      />
-      <TouchableOpacity onPress={saveDeckChanges} style={styles.saveButton}>
-        <Text style={styles.saveButtonText}>Guardar Cambios</Text>
-      </TouchableOpacity>
+      
+      {/* Contenedor del nombre del mazo */}
+      <View style={styles.nameContainer}>
+        {isEditingName ? (
+          <TextInput
+            style={styles.input}
+            placeholder="Nombre del mazo"
+            value={deckName}
+            onChangeText={setDeckName}
+            onBlur={toggleEditName} // Terminar edición al salir del input
+          />
+        ) : (
+          <>
+            <Text style={styles.deckName}>{deckName}</Text>
+            <TouchableOpacity onPress={toggleEditName}>
+              <Icon name="pencil" size={20} color="#FFFFFF" />
+            </TouchableOpacity>
+          </>
+        )}
+      </View>
 
       <View style={styles.cardsContainer}>
-        <Text style={styles.sectionTitle}>Cartas del Mazo</Text>
+        <View style={styles.cardsHeader}>
+          <Text style={styles.sectionTitle}>Cartas del Mazo</Text>
+          <TouchableOpacity onPress={() => setIsModalVisible(true)} style={styles.addCardButton}>
+            <Icon name="plus" size={20} color="#FFFFFF" />
+          </TouchableOpacity>
+        </View>
         {cards.map((card) => (
           <View key={card.id} style={styles.cardItem}>
             <Text style={styles.cardText}>{card.name}</Text>
+            <TouchableOpacity onPress={() => removeCard(card.id)} style={styles.deleteButton}>
+              <Icon name="times" size={20} color="#D94A26" />
+            </TouchableOpacity>
           </View>
         ))}
-        <TouchableOpacity onPress={addCard} style={styles.addButton}>
-          <Text style={styles.addButtonText}>Agregar Carta</Text>
-        </TouchableOpacity>
       </View>
+
+      {/* Modal para buscar y agregar una nueva carta */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isModalVisible}
+        onRequestClose={() => setIsModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Buscar Carta</Text>
+            <TextInput
+              style={styles.modalInput} // Estilo del input ajustado
+              placeholder="Nombre de la carta"
+              placeholderTextColor="#CCCCCC"
+              value={newCardName}
+              onChangeText={setNewCardName}
+            />
+            <TouchableOpacity onPress={addCard} style={styles.addButton}>
+              <Text style={styles.addButtonText}>Agregar Carta</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setIsModalVisible(false)} style={styles.cancelButton}>
+              <Text style={styles.cancelButtonText}>Cancelar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Botón de guardar cambios al final */}
+      <TouchableOpacity onPress={saveDeckChanges} style={styles.saveButton}>
+        <Text style={styles.saveButtonText}>Guardar Cambios</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
@@ -86,54 +149,127 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontWeight: 'bold',
     color: '#FFFFFF',
+    textAlign: 'center', // Centrar el título
+  },
+  nameContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between', // Alinea el texto y el ícono a los extremos
+    backgroundColor: '#2C2C2C',
+    padding: 10,
+    borderRadius: 8,
+    marginBottom: 20,
+  },
+  deckName: {
+    fontSize: 18,
+    color: '#FFFFFF',
+    flex: 1, // Ocupa todo el espacio disponible
   },
   input: {
+    flex: 1, // Ocupa todo el espacio disponible
     height: 40,
     borderColor: '#666666',
     borderWidth: 1,
-    marginBottom: 20,
     paddingHorizontal: 10,
     borderRadius: 5,
     backgroundColor: '#2C2C2C',
     color: '#FFFFFF',
   },
-  saveButton: {
-    backgroundColor: '#D94A26',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  saveButtonText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-  },
   cardsContainer: {
+    flex: 1,
     marginBottom: 20,
+  },
+  cardsHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
   },
   sectionTitle: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#FFFFFF',
-    marginBottom: 10,
+  },
+  addCardButton: {
+    backgroundColor: '#D94A26',
+    padding: 8,
+    borderRadius: 5,
   },
   cardItem: {
     backgroundColor: '#2C2C2C',
     padding: 15,
-    marginBottom: 10,
     borderRadius: 5,
+    marginBottom: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   cardText: {
     color: '#FFFFFF',
     fontSize: 18,
+  },
+  deleteButton: {
+    padding: 5,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    width: '80%',
+    backgroundColor: '#3D3D3D',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 24,
+    color: '#FFFFFF',
+    marginBottom: 20,
+  },
+  modalInput: { // Nuevo estilo para el input en el modal
+    height: 40,
+    borderColor: '#666666',
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    backgroundColor: '#2C2C2C',
+    color: '#FFFFFF',
+    marginBottom: 20,
+    width: '100%', // Ajusta el ancho del input
   },
   addButton: {
     backgroundColor: '#D94A26',
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
+    marginBottom: 10,
+    width: '100%',
   },
   addButtonText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+  },
+  cancelButton: {
+    backgroundColor: '#666666',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    width: '100%',
+  },
+  cancelButtonText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+  },
+  saveButton: {
+    backgroundColor: '#D94A26',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  saveButtonText: {
     color: '#FFFFFF',
     fontSize: 18,
   },

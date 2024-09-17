@@ -10,6 +10,7 @@ import HomeScreen from './src/screens/homeScreen';    // Importa tu pantalla de 
 import RegisterScreen from './src/screens/registerScreen';  // Importa tu pantalla de registro
 import DeckManagementScreen from './src/screens/DeckManagementScreen';  // Importa tu pantalla de gestión de mazos
 import DeckEditorScreen from './src/screens/deckEditorScreen';
+import LogoutScreen from './src/screens/logoutScreen'; // Importa tu pantalla de logout
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -29,6 +30,8 @@ function MainTabNavigator() {
             iconName = 'edit';
           } else if (route.name === 'Settings') {
             iconName = 'cog';
+          } else if (route.name === 'Logout') {
+            iconName = 'sign-out';
           }
 
           return <Icon name={iconName} size={size} color={color} />;
@@ -44,6 +47,7 @@ function MainTabNavigator() {
       <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false }}/>
       <Tab.Screen name="DeckManagement" component={DeckManagementScreen} options={{ headerShown: false }}/>
       <Tab.Screen name='DeckEditorScreen' component={DeckEditorScreen} options={{ headerShown: false }}/>
+      <Tab.Screen name='Logout' component={LogoutScreen} options={{ headerShown: false }}/>
     </Tab.Navigator>
   );
 }
@@ -59,11 +63,5 @@ const App = () => {
     </NavigationContainer>
   );
 };
-
-const SettingsScreen = () => (
-  <View>
-    <Text>Settings Screen</Text>
-  </View>
-);
 
 export default App;

@@ -5,14 +5,14 @@ export const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 20,
-    backgroundColor: '#504c56',//cambiar por el mismo color que uso tomas?
+    backgroundColor: '#504c56', // Fondo gris oscuro
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
-    color: '#FFF', // Cambiado a blanco
+    color: '#FFF', // Texto en blanco
   },
   input: {
     height: 40,
@@ -24,8 +24,9 @@ export const styles = StyleSheet.create({
     color: '#FFF', // Texto en blanco
   },
   buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: 'column', // Cambiado a columna para apilar los botones verticalmente
+    justifyContent: 'center', // Centra los botones verticalmente
+    alignItems: 'center', // Centra los botones horizontalmente
     marginTop: 20,
   },
   button: {
@@ -34,7 +35,8 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 30, // Anchura ajustada del botón
     borderRadius: 10,
     alignItems: 'center',
-    alignSelf: 'center', // Mantiene el botón centrado
+    marginBottom: 60,// Añadido margen inferior para separar los botones
+    marginTop: 60, 
   },
   buttonText: {
     color: '#fff',

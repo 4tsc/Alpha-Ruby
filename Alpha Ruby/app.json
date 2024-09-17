@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "ordenado",
-    "slug": "ordenado",
+    "name": "Alpha Ruby",
+    "slug": "alpha-ruby",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -22,6 +22,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "scheme": "alpharuby",
+    "extra": {
+      "auth0Domain": "dev-vbupvvhf.us.auth0.com",
+      "auth0ClientId": "8UrfFln0Sozm9MicW1Q3Cm21vEZCzpcp"
     }
   }
 }

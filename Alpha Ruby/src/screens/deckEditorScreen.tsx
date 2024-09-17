@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, Alert, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, Alert, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
 
 interface Deck {
   id: number;
   name: string;
+  cards?: { id: number; name: string }[]; // Añadir cards para permitir editar
 }
 
 interface DeckEditorScreenProps {
@@ -14,63 +15,40 @@ interface DeckEditorScreenProps {
   };
   navigation: {
     goBack: () => void;
+    navigate: (screen: string, params?: any) => void; // Agregar para la navegación
   };
 }
 
 const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }) => {
-  const deck = route.params?.deck || { id: 0, name: 'Nuevo Mazo' }; // Valor por defecto si no hay parámetros
-  const [deckName, setDeckName] = useState(deck.name);
+  // Obtener el mazo de los parámetros, usar valores predeterminados si no están presentes
+  const deck = route.params?.deck || { id: 0, name: 'Nuevo Mazo', cards: [] };
 
-  // FUTURE IMPLEMENTATION:
-  // Fetch deck details from the database based on the deck ID
-  useEffect(() => {
-    if (deck.id !== 0) {
-      // const fetchDeckDetails = async () => {
-      //   try {
-      //     const response = await fetch(`https://your-api.com/decks/${deck.id}`);
-      //     const data = await response.json();
-      //     setDeckName(data.name);
-      //   } catch (error) {
-      //     console.error('Error fetching deck details:', error);
-      //   }
-      // };
-      // fetchDeckDetails();
-    }
-  }, [deck.id]);
+  const [deckName, setDeckName] = useState(deck.name);
+  const [cards, setCards] = useState(deck.cards || []);
 
   // Función para guardar los cambios del mazo
-  const saveDeck = () => {
+  const saveDeckChanges = () => {
     if (deckName.trim() === '') {
       Alert.alert('Error', 'El nombre del mazo no puede estar vacío.');
       return;
     }
 
-    // Aquí se realizaría la llamada al servidor para actualizar el mazo en la base de datos
-    // Por ejemplo:
-    // fetch('https://tu-servidor.com/api/decks/' + deck.id, {
-    //   method: 'PUT',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify({ name: deckName }),
-    // })
-    // .then(response => response.json())
-    // .then(data => {
-    //   // Manejar la respuesta del servidor
-    //   Alert.alert('Éxito', 'El mazo ha sido actualizado.');
-    //   navigation.goBack();
-    // })
-    // .catch(error => {
-    //   // Manejar errores
-    //   Alert.alert('Error', 'Hubo un problema al actualizar el mazo.');
-    // });
+    // Aquí puedes agregar la lógica para guardar el mazo
+    console.log('Guardando cambios del mazo:', { id: deck.id, name: deckName, cards });
 
-    Alert.alert('Éxito', 'El mazo ha sido actualizado.');
-    navigation.goBack();
+    // Volver a DeckManagementScreen
+    navigation.goBack(); // O puedes usar navigation.navigate('DeckManagement')
+  };
+
+  // Función para agregar una nueva carta al mazo
+  const addCard = () => {
+    const newCardName = `Carta ${cards.length + 1}`;
+    const newCard = { id: cards.length + 1, name: newCardName };
+    setCards([...cards, newCard]);
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Editar Mazo</Text>
       <TextInput
         style={styles.input}
@@ -78,11 +56,22 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
         value={deckName}
         onChangeText={setDeckName}
       />
-      <Button title="Guardar Cambios" onPress={saveDeck} />
-      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.cancelButton}>
-        <Text style={styles.cancelButtonText}>Cancelar</Text>
+      <TouchableOpacity onPress={saveDeckChanges} style={styles.saveButton}>
+        <Text style={styles.saveButtonText}>Guardar Cambios</Text>
       </TouchableOpacity>
-    </View>
+
+      <View style={styles.cardsContainer}>
+        <Text style={styles.sectionTitle}>Cartas del Mazo</Text>
+        {cards.map((card) => (
+          <View key={card.id} style={styles.cardItem}>
+            <Text style={styles.cardText}>{card.name}</Text>
+          </View>
+        ))}
+        <TouchableOpacity onPress={addCard} style={styles.addButton}>
+          <Text style={styles.addButtonText}>Agregar Carta</Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 };
 
@@ -90,29 +79,63 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#333',
+    backgroundColor: '#3D3D3D',
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 32,
     marginBottom: 20,
-    color: '#fff',
+    fontWeight: 'bold',
+    color: '#FFFFFF',
   },
   input: {
     height: 40,
-    borderColor: 'gray',
+    borderColor: '#666666',
     borderWidth: 1,
-    marginBottom: 10,
-    paddingLeft: 8,
-    backgroundColor: '#fff',
+    marginBottom: 20,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    backgroundColor: '#2C2C2C',
+    color: '#FFFFFF',
   },
-  cancelButton: {
-    marginTop: 10,
-    padding: 10,
+  saveButton: {
+    backgroundColor: '#D94A26',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  saveButtonText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+  },
+  cardsContainer: {
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    marginBottom: 10,
+  },
+  cardItem: {
+    backgroundColor: '#2C2C2C',
+    padding: 15,
+    marginBottom: 10,
+    borderRadius: 5,
+  },
+  cardText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+  },
+  addButton: {
+    backgroundColor: '#D94A26',
+    padding: 15,
+    borderRadius: 10,
     alignItems: 'center',
   },
-  cancelButtonText: {
-    color: 'red',
+  addButtonText: {
+    color: '#FFFFFF',
+    fontSize: 18,
   },
 });
 

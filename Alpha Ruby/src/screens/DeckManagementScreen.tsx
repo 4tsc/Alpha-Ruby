@@ -1,16 +1,18 @@
-
 import React, { useState } from 'react';
 import { View, Text, FlatList, TextInput, Alert, StyleSheet, TouchableOpacity, SafeAreaView, Modal } from 'react-native';
+import { useNavigation } from '@react-navigation/native'; // Importar useNavigation
 
 interface Deck {
   id: number;
   name: string;
+  cards?: { id: number; name: string }[]; // Añadir cards al mazo, inicialmente vacío
 }
 
 const DeckManagementScreen: React.FC = () => {
+  const navigation = useNavigation(); // Usar el hook de navegación aquí
+
   const [decks, setDecks] = useState<Deck[]>([
-    { id: 1, name: 'Mazo 1' },
-    { id: 2, name: 'Mazo 2' },
+
   ]);
   const [newDeckName, setNewDeckName] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
@@ -24,6 +26,7 @@ const DeckManagementScreen: React.FC = () => {
     const newDeck = {
       id: decks.length + 1,
       name: newDeckName,
+      cards: [], // Inicializar con un array vacío de cartas
     };
     setDecks([...decks, newDeck]);
     setNewDeckName('');
@@ -37,17 +40,20 @@ const DeckManagementScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Gestión de Mazos</Text>
+      <Text style={styles.title}>Mis Mazos</Text>
       <FlatList
         data={decks}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <View style={styles.deckItem}>
+          <TouchableOpacity
+            style={styles.deckItem}
+            onPress={() => navigation.navigate('DeckEditor', { deck: item })} // Navegar a DeckEditorScreen
+          >
             <Text style={styles.deckText}>{item.name}</Text>
             <TouchableOpacity onPress={() => removeDeck(item.id)} style={styles.deleteButton}>
               <Text style={styles.deleteButtonText}>✕</Text>
             </TouchableOpacity>
-          </View>
+          </TouchableOpacity>
         )}
         contentContainerStyle={styles.listContainer}
       />
@@ -65,7 +71,7 @@ const DeckManagementScreen: React.FC = () => {
             <TextInput
               style={styles.input}
               placeholder="Nombre del nuevo mazo"
-              placeholderTextColor={placeholderColor}
+              placeholderTextColor="#CCCCCC"
               value={newDeckName}
               onChangeText={setNewDeckName}
             />
@@ -194,7 +200,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-
-export const placeholderColor = '#CCCCCC'; // Color del placeholder
 
 export default DeckManagementScreen;

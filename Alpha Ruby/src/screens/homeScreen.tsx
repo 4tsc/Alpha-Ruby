@@ -85,6 +85,7 @@ const styles = StyleSheet.create({
     height: height * 0.2, // Ajusta la altura de las cartas de manera responsiva
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: 8
   },
   cardText: {
     color: '#fff',

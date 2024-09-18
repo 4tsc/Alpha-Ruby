@@ -235,12 +235,12 @@ const ColoresSection: React.FC = () => {
       <Text style={styles.sectionText}>Colores</Text>
 
       <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.imageContainer}>
-        <Image source={require('./images/G.svg')} style={styles.image} />
-        <Image source={require('./images/B.svg')} style={styles.image} />
-        <Image source={require('./images/R.svg')} style={styles.image} />
-        <Image source={require('./images/U.svg')} style={styles.image} />
-        <Image source={require('./images/W.svg')} style={styles.image} />
-        <Image source={require('./images/C.svg')} style={styles.image} />
+        <Image source={require('../images/G.svg')} style={styles.image} />
+        <Image source={require('../images/B.svg')} style={styles.image} />
+        <Image source={require('../images/R.svg')} style={styles.image} />
+        <Image source={require('../images/U.svg')} style={styles.image} />
+        <Image source={require('../images/W.svg')} style={styles.image} />
+        <Image source={require('../images/C.svg')} style={styles.image} />
       </ScrollView>
     </View>
   );
@@ -314,7 +314,7 @@ const filters = [
   { id: '8', title: 'Precio' },
 ];
 
-export default function TabTwoScreen() {
+export default function Buscar() {
   const [searchText, setSearchText] = useState('');
   const [showMore, setShowMore] = useState(false);
 

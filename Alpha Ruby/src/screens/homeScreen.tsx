@@ -1,4 +1,6 @@
-import { StyleSheet, View, Text, SafeAreaView } from 'react-native';
+import { StyleSheet, View, Text, SafeAreaView, Dimensions } from 'react-native';
+
+const { width, height } = Dimensions.get('window');
 
 export default function HomeScreen() {
   return (
@@ -43,20 +45,20 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#4c4543', // Gris para el fondo general
+    backgroundColor: '#4c4543',
   },
   header: {
-    backgroundColor: '#cf4b24', // Naranja para el encabezado
+    backgroundColor: '#cf4b24',
     paddingVertical: 10,
-    height: 120, // Ajusta la altura del encabezado aquí
-    justifyContent: 'flex-end', // Alinea el texto cerca del borde inferior
-    alignItems: 'flex-start', // Alinea horizontalmente el texto a la izquierda
-    paddingHorizontal: 20, // Añade espacio a los lados
+    height: height * 0.15, // Ajusta la altura del encabezado de manera responsiva
+    justifyContent: 'flex-end',
+    alignItems: 'flex-start',
+    paddingHorizontal: 20,
   },
   headerText: {
-    color: '#fff', // Texto blanco para contraste
-    fontSize: 48, // Tamaño del texto aumentado
-    fontWeight: 'bold', // Negrita para destacar el texto
+    color: '#fff',
+    fontSize: width * 0.1, // Ajusta el tamaño del texto de manera responsiva
+    fontWeight: 'bold',
   },
   content: {
     flex: 1,
@@ -66,10 +68,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   sectionTitle: {
-    color: '#fff', // Texto blanco para contraste
-    fontSize: 24, // Tamaño del texto del título
+    color: '#fff',
+    fontSize: width * 0.06, // Ajusta el tamaño del texto de manera responsiva
     fontWeight: 'bold',
-    marginBottom: 10, // Espacio debajo del título
+    marginBottom: 10,
   },
   cardsContainer: {
     flexDirection: 'row',
@@ -77,15 +79,15 @@ const styles = StyleSheet.create({
   },
   card: {
     flex: 1,
-    backgroundColor: '#2a2827', // Gris para las cartas (igual que el fondo de la barra de navegación inferior)
+    backgroundColor: '#2a2827',
     marginHorizontal: 5,
-    padding: 20, // Ajustado para mayor espacio
-    height: 150, // Altura fija para las cartas, ajusta según necesites
+    padding: 20,
+    height: height * 0.2, // Ajusta la altura de las cartas de manera responsiva
     alignItems: 'center',
     justifyContent: 'center',
   },
   cardText: {
-    color: '#fff', // Texto blanco para contraste
+    color: '#fff',
     textAlign: 'center',
   },
   newsSection: {
@@ -95,14 +97,13 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   newsItem: {
-    backgroundColor: '#2a2827', // Gris para las noticias (igual que el fondo de la barra de navegación inferior)
+    backgroundColor: '#2a2827',
     marginBottom: 10,
     padding: 10,
-    borderRadius: 8, // Puedes mantener o ajustar este valor según prefieras
+    borderRadius: 8,
   },
   newsText: {
-    color: '#fff', // Texto blanco para contraste
+    color: '#fff',
     textAlign: 'center',
   },
 });
-

@@ -11,6 +11,7 @@ import HomeScreen from './src/screens/homeScreen';
 import RegisterScreen from './src/screens/registerScreen';
 import DeckManagementScreen from './src/screens/DeckManagementScreen';
 import DeckEditorScreen from './src/screens/deckEditorScreen'; // Importar DeckEditorScreen
+import SearchCard from './src/screens/Buscar';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -28,6 +29,8 @@ function MainTabNavigator() {
             iconName = 'list';
           } else if (route.name === 'Settings') {
             iconName = 'cog';
+          } else if (route.name === 'Buscar') {
+            iconName = 'search';
           }
 
           return <Icon name={iconName} size={size} color={color} />;
@@ -40,6 +43,7 @@ function MainTabNavigator() {
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+      <Tab.Screen name="Buscar" component={SearchCard} options={{ headerShown: false }} />
       <Tab.Screen name="Mazos" component={DeckManagementScreen} options={{ headerShown: false }} />
     </Tab.Navigator>
   );

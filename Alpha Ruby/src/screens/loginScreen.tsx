@@ -6,11 +6,30 @@ export default function Login({ navigation }) {  // Recibe navigation como prop
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
-    if (email === 'a' && password === 'a') {
-      navigation.replace('Main');  // Redirige a la pantalla 'Main' que contiene las tabs, incluyendo HomeScreen
-    } else {
-      Alert.alert('Error de login', 'Correo o contraseña incorrectos');
+  const handleLogin = async () => {
+    try {
+      const response = await fetch('http://186.64.122.218:3000/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        // Si el login es exitoso, redirigir a la pantalla principal y guardar el idusuario
+        Alert.alert('Login exitoso', 'Sesión iniciada correctamente');
+        navigation.replace('Main');  // Redirige a la pantalla principal
+      } else {
+        Alert.alert('Error de login', result.message || 'Correo o contraseña incorrectos');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Hubo un problema con el servidor.');
     }
   };
   

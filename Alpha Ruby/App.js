@@ -12,6 +12,8 @@ import DeckManagementScreen from './src/screens/DeckManagementScreen';  // Impor
 import DeckEditorScreen from './src/screens/deckEditorScreen';
 import Buscar from './src/screens/Buscar';
 
+import { UserProvider } from './src/screens/UserContext';
+
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -54,13 +56,15 @@ function MainTabNavigator() {
 
 const App = () => {
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
-        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }}/>
-        <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }}/>
-        <Stack.Screen name="Main" component={MainTabNavigator} options={{ headerShown: false }}/>
-      </Stack.Navigator>
-    </NavigationContainer>
+    <UserProvider>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Login">
+          <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }}/>
+          <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }}/>
+          <Stack.Screen name="Main" component={MainTabNavigator} options={{ headerShown: false }}/>
+        </Stack.Navigator>
+      </NavigationContainer>
+    </UserProvider>
   );
 };
 

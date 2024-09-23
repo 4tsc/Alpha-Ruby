@@ -1,20 +1,21 @@
+
 import React, { useState } from 'react';
 import { View, Text, FlatList, TextInput, Alert, StyleSheet, TouchableOpacity, SafeAreaView, Modal } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 
 interface Deck {
   id: number;
   name: string;
-  cards?: { id: number; name: string }[];
 }
 
 const DeckManagementScreen: React.FC = () => {
-  const navigation = useNavigation();
-
-  const [decks, setDecks] = useState<Deck[]>([]);
+  const [decks, setDecks] = useState<Deck[]>([
+    { id: 1, name: 'Mazo 1' },
+    { id: 2, name: 'Mazo 2' },
+  ]);
   const [newDeckName, setNewDeckName] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
 
+  // Función para agregar un nuevo mazo
   const addDeck = () => {
     if (newDeckName.trim() === '') {
       Alert.alert('Error', 'El nombre del mazo no puede estar vacío.');
@@ -23,42 +24,34 @@ const DeckManagementScreen: React.FC = () => {
     const newDeck = {
       id: decks.length + 1,
       name: newDeckName,
-      cards: [],
     };
     setDecks([...decks, newDeck]);
     setNewDeckName('');
-    setModalVisible(false);
-    console.log('Deck added:', newDeck);
-    console.log('Updated decks:', [...decks, newDeck]);
+    setModalVisible(false); // Cerrar el modal después de agregar
   };
 
+  // Función para eliminar un mazo
   const removeDeck = (id: number) => {
     setDecks(decks.filter(deck => deck.id !== id));
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Mis Mazos</Text>
+      <Text style={styles.title}>Gestión de Mazos</Text>
       <FlatList
         data={decks}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.deckItem}
-            onPress={() => {
-              console.log('Navigating to DeckEditor with deck:', item);
-              console.log('All decks:', decks);
-              navigation.navigate('DeckEditor', { deck: item, decks }); // Pasar los mazos aquí
-            }}
-          >
+          <View style={styles.deckItem}>
             <Text style={styles.deckText}>{item.name}</Text>
             <TouchableOpacity onPress={() => removeDeck(item.id)} style={styles.deleteButton}>
               <Text style={styles.deleteButtonText}>✕</Text>
             </TouchableOpacity>
-          </TouchableOpacity>
+          </View>
         )}
         contentContainerStyle={styles.listContainer}
       />
+      {/* Modal para agregar un nuevo mazo */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -72,7 +65,7 @@ const DeckManagementScreen: React.FC = () => {
             <TextInput
               style={styles.input}
               placeholder="Nombre del nuevo mazo"
-              placeholderTextColor="#CCCCCC"
+              placeholderTextColor={placeholderColor}
               value={newDeckName}
               onChangeText={setNewDeckName}
             />
@@ -85,6 +78,7 @@ const DeckManagementScreen: React.FC = () => {
           </View>
         </View>
       </Modal>
+      {/* Botón flotante para agregar un mazo */}
       <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.fab}>
         <Text style={styles.fabText}>+</Text>
       </TouchableOpacity>
@@ -200,5 +194,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+
+export const placeholderColor = '#CCCCCC'; // Color del placeholder
 
 export default DeckManagementScreen;

@@ -1,12 +1,46 @@
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, SafeAreaView, Dimensions } from 'react-native';
+
+import { useUser } from './UserContext';
 
 const { width, height } = Dimensions.get('window');
 
 export default function HomeScreen() {
+  const { userId } = useUser(); // Usa el userId directamente desde el contexto
+  const [userName, setUserName] = useState(''); // Estado para almacenar el nombre del usuario
+
+  useEffect(() => {
+    console.log('ID de usuario recibido desde el contexto:', userId);
+
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch(`http://186.64.122.218:3000/obtener-usuario?userId=${userId}`, {
+          method: 'GET',
+          credentials: 'include',
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          setUserName(data.userName); // Almacena el nombre del usuario en el estado
+          console.log('Nombre de usuario:', data.userName);
+        } else {
+          console.log('Error obteniendo los datos del usuario:', data.message);
+        }
+      } catch (error) {
+        console.log('Error en la solicitud:', error);
+      }
+    };
+
+    if (userId) {
+      fetchUserData(); // Solo hacemos la solicitud si el userId está disponible
+    }
+  }, [userId]);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerText}>Bienvenido!</Text>
+        <Text style={styles.headerText}>¡Bienvenido, {userName || 'Cargando...'}!</Text>
       </View>
       <View style={styles.content}>
         <View style={styles.cardsSection}>
@@ -50,14 +84,14 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: '#cf4b24',
     paddingVertical: 10,
-    height: height * 0.15, // Ajusta la altura del encabezado de manera responsiva
+    height: height * 0.15,
     justifyContent: 'flex-end',
     alignItems: 'flex-start',
     paddingHorizontal: 20,
   },
   headerText: {
     color: '#fff',
-    fontSize: width * 0.1, // Ajusta el tamaño del texto de manera responsiva
+    fontSize: width * 0.1,
     fontWeight: 'bold',
   },
   content: {
@@ -69,7 +103,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     color: '#fff',
-    fontSize: width * 0.06, // Ajusta el tamaño del texto de manera responsiva
+    fontSize: width * 0.06,
     fontWeight: 'bold',
     marginBottom: 10,
   },
@@ -82,7 +116,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#2a2827',
     marginHorizontal: 5,
     padding: 20,
-    height: height * 0.2, // Ajusta la altura de las cartas de manera responsiva
+    height: height * 0.2,
     alignItems: 'center',
     justifyContent: 'center',
   },

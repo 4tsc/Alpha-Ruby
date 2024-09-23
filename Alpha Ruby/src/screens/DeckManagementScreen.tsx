@@ -2,12 +2,16 @@
 import React, { useState } from 'react';
 import { View, Text, FlatList, TextInput, Alert, StyleSheet, TouchableOpacity, SafeAreaView, Modal } from 'react-native';
 
+import { useUser } from './UserContext';
+
 interface Deck {
   id: number;
   name: string;
 }
 
 const DeckManagementScreen: React.FC = () => {
+  const { userId } = useUser(); // Usa el userId directamente desde el contexto
+
   const [decks, setDecks] = useState<Deck[]>([
     { id: 1, name: 'Mazo 1' },
     { id: 2, name: 'Mazo 2' },

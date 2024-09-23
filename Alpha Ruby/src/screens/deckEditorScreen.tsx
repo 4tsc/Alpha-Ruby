@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, Alert, StyleSheet, TouchableOpacity } from 'react-native';
 
+import { useUser } from './UserContext';
+
 interface Deck {
   id: number;
   name: string;
@@ -18,6 +20,8 @@ interface DeckEditorScreenProps {
 }
 
 const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }) => {
+  const { userId } = useUser(); // Usa el userId directamente desde el contexto
+
   const deck = route.params?.deck || { id: 0, name: 'Nuevo Mazo' }; // Valor por defecto si no hay parámetros
   const [deckName, setDeckName] = useState(deck.name);
 

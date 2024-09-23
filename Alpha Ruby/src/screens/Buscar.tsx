@@ -3,6 +3,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Importa el icono de FontAwesome
 
+import { useUser } from './UserContext';
 
 // Obtener el ancho de la pantalla
 const screenWidth = Dimensions.get('window').width;
@@ -315,6 +316,8 @@ const filters = [
 ];
 
 export default function Buscar() {
+  const { userId } = useUser(); // Usa el userId directamente desde el contexto
+
   const [searchText, setSearchText] = useState('');
   const [showMore, setShowMore] = useState(false);
 

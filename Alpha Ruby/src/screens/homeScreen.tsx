@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, SafeAreaView, Dimensions } from 'react-native';
-
+import { StyleSheet, View, Text, SafeAreaView, Dimensions, TouchableOpacity } from 'react-native';
 import { useUser } from './UserContext';
 
 const { width, height } = Dimensions.get('window');
 
-export default function HomeScreen() {
-  const { userId } = useUser(); // Usa el userId directamente desde el contexto
+export default function HomeScreen({ navigation }) {
+  const { userId, setUserId } = useUser(); // Usa el userId directamente desde el contexto
   const [userName, setUserName] = useState(''); // Estado para almacenar el nombre del usuario
 
   useEffect(() => {
@@ -37,10 +36,31 @@ export default function HomeScreen() {
     }
   }, [userId]);
 
+  const handleLogout = async () => {
+    try {
+      const response = await fetch('http://186.64.122.218:3000/logout', {
+        method: 'POST',
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        setUserId(null); // Limpiar el userId en el contexto
+        navigation.replace('Login'); // Redirigir a la pantalla de inicio de sesión
+      } else {
+        console.log('Error cerrando sesión');
+      }
+    } catch (error) {
+      console.log('Error en la solicitud de cierre de sesión:', error);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerText}>¡Bienvenido, {userName || 'Cargando...'}!</Text>
+        <TouchableOpacity style={styles.profileButton} onPress={() => navigation.navigate('Profile')}>
+          <Text style={styles.profileButtonText}>Perfil</Text>
+        </TouchableOpacity>
       </View>
       <View style={styles.content}>
         <View style={styles.cardsSection}>
@@ -71,6 +91,9 @@ export default function HomeScreen() {
             </View>
           </View>
         </View>
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+          <Text style={styles.logoutButtonText}>Cerrar sesión</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -88,11 +111,22 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'flex-start',
     paddingHorizontal: 20,
+    flexDirection: 'row',
+    // justifyContent: 'space-between',
   },
   headerText: {
     color: '#fff',
     fontSize: width * 0.1,
     fontWeight: 'bold',
+  },
+  profileButton: {
+    backgroundColor: '#2a2827',
+    padding: 10,
+    borderRadius: 5,
+  },
+  profileButtonText: {
+    color: '#fff',
+    fontSize: width * 0.05,
   },
   content: {
     flex: 1,
@@ -139,5 +173,16 @@ const styles = StyleSheet.create({
   newsText: {
     color: '#fff',
     textAlign: 'center',
+  },
+  logoutButton: {
+    backgroundColor: '#cf4b24',
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  logoutButtonText: {
+    color: '#fff',
+    fontSize: width * 0.05,
   },
 });

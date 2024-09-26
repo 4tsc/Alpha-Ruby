@@ -11,7 +11,7 @@ import LoginScreen from './src/screens/loginScreen';
 import HomeScreen from './src/screens/homeScreen';
 import RegisterScreen from './src/screens/registerScreen';
 import DeckManagementScreen from './src/screens/DeckManagementScreen';
-// import DeckEditorScreen from './src/screens/deckEditorScreen'; // Importar DeckEditorScreen
+import DeckEditorScreen from './src/screens/deckEditorScreen'; // Importar DeckEditorScreen
 import SearchCard from './src/screens/Search';
 
 const Stack = createStackNavigator();
@@ -62,7 +62,7 @@ const App = () => {
           <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
           <Stack.Screen name="Main" component={MainTabNavigator} options={{ headerShown: false }} />
         
-          {/* <Stack.Screen name="DeckEditor" component={DeckEditorScreen} options={{ title: 'Mazos' }} /> */}
+          <Stack.Screen name="DeckEditor" component={DeckEditorScreen} options={{ title: 'Mazos', headerShown: false }} />
         </Stack.Navigator>
       </NavigationContainer>
     </UserProvider>

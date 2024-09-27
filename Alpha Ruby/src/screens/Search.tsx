@@ -1,11 +1,10 @@
-import { Image, StyleSheet, View, TextInput, Text, ScrollView, Modal, FlatList, TouchableHighlight, Dimensions, TouchableOpacity } from 'react-native';
+import { Image, View, TextInput, ScrollView, Text, Modal, FlatList, TouchableHighlight, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Importa el icono de FontAwesome
-
-
-// Obtener el ancho de la pantalla
-const screenWidth = Dimensions.get('window').width;
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import styles from '../styles/stylesSearch';
 
 // Lista de legalidades
 const legalidadesList = [
@@ -24,15 +23,15 @@ interface LegalidadesSectionProps {
 
 const LegalidadesSection: React.FC<LegalidadesSectionProps> = ({ showMore, setShowMore }) => (
   <View style={styles.sectionContainer}>
-    <Text style={styles.sectionText}>Legalidades</Text>
+    <Text style={[styles.sectionText, { fontSize: wp('4%') }]}>Legalidades</Text>
     <View style={styles.buttonContainer}>
       {legalidadesList.slice(0, showMore ? legalidadesList.length : 10).map((title, index) => (
-        <TouchableOpacity key={index} style={styles.button}>
-          <Text style={styles.buttonText}>{title}</Text>
+        <TouchableOpacity key={index} style={[styles.button, { padding: wp('2%') }]}>
+          <Text style={[styles.buttonText, { fontSize: wp('3.5%') }]}>{title}</Text>
         </TouchableOpacity>
       ))}
-      <TouchableOpacity onPress={() => setShowMore(!showMore)} style={[styles.button, styles.toggleButton]}>
-        <Text style={styles.buttonText}>{showMore ? 'Menos' : 'Más'}</Text>
+      <TouchableOpacity onPress={() => setShowMore(!showMore)} style={[styles.button, styles.toggleButton, { padding: wp('2%') }]}>
+        <Text style={[styles.buttonText, { fontSize: wp('3.5%') }]}>{showMore ? 'Menos' : 'Más'}</Text>
       </TouchableOpacity>
     </View>
   </View>
@@ -40,9 +39,9 @@ const LegalidadesSection: React.FC<LegalidadesSectionProps> = ({ showMore, setSh
 
 const LineaDeTipoSection = () => (
   <View style={styles.sectionContainer}>
-    <Text style={styles.sectionText}>Linea de tipo</Text>
+    <Text style={[styles.sectionText, { fontSize: wp('4%') }]}>Linea de tipo</Text>
     <TextInput
-      style={styles.smallTextInput} // Cambié a un estilo más pequeño
+      style={[styles.smallTextInput, { fontSize: wp('3.5%'), height: hp('5%') }]} // Cambié a un estilo más pequeño
       placeholder="Legendaria, Artefacto, criatura"
       placeholderTextColor="#d1d1d1" // Placeholder gris más claro para mejor contraste
     />
@@ -81,12 +80,12 @@ const EstadisticasSection: React.FC = () => {
 
   return (
     <View style={styles.sectionContainer}>
-      <Text style={styles.sectionText}>Estadísticas</Text>
+      <Text style={[styles.sectionText, { fontSize: wp('4%') }]}>Estadísticas</Text>
 
-      <TouchableOpacity style={styles.dropdownButton} onPress={() => setModalVisible(true)}>
-        <Text style={styles.dropdownText}>{selectedOption}</Text>
+      <TouchableOpacity style={[styles.dropdownButton, { width: wp('80%'), height: hp('5%') }]} onPress={() => setModalVisible(true)}>
+        <Text style={[styles.dropdownText, { fontSize: wp('3.5%') }]}>{selectedOption}</Text>
         <View style={styles.iconContainer}>
-          <Icon name="bars" size={20} color="#fff" />
+          <Icon name="bars" size={wp('5%')} color="#fff" />
         </View>
       </TouchableOpacity>
 
@@ -97,16 +96,16 @@ const EstadisticasSection: React.FC = () => {
         onRequestClose={() => setModalVisible(false)}
       >
         <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
+          <View style={[styles.modalContent, { width: wp('80%'), maxHeight: hp('40%') }]}>
             <FlatList
               data={options}
               renderItem={({ item }) => (
                 <TouchableHighlight
                   onPress={() => handleOptionSelect(item)}
-                  style={styles.optionButton}
+                  style={[styles.optionButton, { padding: wp('2%') }]}
                   underlayColor="#ddd"
                 >
-                  <Text style={styles.optionText}>{item}</Text>
+                  <Text style={[styles.optionText, { fontSize: wp('3.5%') }]}>{item}</Text>
                 </TouchableHighlight>
               )}
               keyExtractor={(item) => item}
@@ -117,13 +116,13 @@ const EstadisticasSection: React.FC = () => {
 
       {/* Botón para alternar símbolos y campo de texto */}
       <View style={styles.row}>
-        <TouchableOpacity style={styles.smallSymbolButton} onPress={toggleSymbol}>
-          <Text style={styles.symbolText}>{currentSymbol}</Text>
+        <TouchableOpacity style={[styles.smallSymbolButton, { width: wp('15%'), height: hp('5%') }]} onPress={toggleSymbol}>
+          <Text style={[styles.symbolText, { fontSize: wp('4%') }]}>{currentSymbol}</Text>
         </TouchableOpacity>
         
         {/* Campo de texto */}
         <TextInput
-          style={styles.textInput}
+          style={[styles.textInput, { fontSize: wp('3.5%'), height: hp('5%'), width: wp('60%') }]}
           value={inputValue}
           onChangeText={(text) => setInputValue(text)}
           placeholder="Escribe algo"
@@ -140,25 +139,25 @@ const TextoSection: React.FC = () => {
 
   return (
     <View style={styles.sectionContainer}>
-      <Text style={styles.sectionText}>Texto de la carta</Text>
+      <Text style={[styles.sectionText, { fontSize: wp('4%') }]}>Texto de la carta</Text>
       
       <View style={styles.inputWrapper}>
         {/* Contenedor de Input y Botón dentro del mismo */}
-        <View style={styles.inputContainer}>
+        <View style={[styles.inputContainer, { height: hp('5%') }]}>
           <TextInput
-            style={styles.input}
+            style={[styles.input, { fontSize: wp('3.5%'), height: hp('5%') }]}
             value={inputValue}
             onChangeText={setInputValue}
             placeholder="Roba una carta, vuela"
           />
-          <TouchableOpacity style={styles.inputButton} onPress={() => setModalVisible(true)}>
-            <Ionicons name="add" size={20} color="white" />
+          <TouchableOpacity style={[styles.inputButton, { padding: wp('2%') }]} onPress={() => setModalVisible(true)}>
+            <Ionicons name="add" size={wp('5%')} color="white" />
           </TouchableOpacity>
         </View>
         
         {/* Botón al lado derecho */}
-        <TouchableOpacity style={styles.sideButton}>
-          <Text style={styles.sideButtonText}>Añadir</Text>
+        <TouchableOpacity style={[styles.sideButton, { height: hp('5%'), width: wp('20%') }]}>
+          <Text style={[styles.sideButtonText, { fontSize: wp('3.5%') }]}>Añadir</Text>
         </TouchableOpacity>
       </View>
 
@@ -170,10 +169,10 @@ const TextoSection: React.FC = () => {
         onRequestClose={() => setModalVisible(false)}
       >
         <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalText}>Contenido del Modal</Text>
-            <TouchableOpacity style={styles.modalButton} onPress={() => setModalVisible(false)}>
-              <Text style={styles.modalButtonText}>Cerrar</Text>
+          <View style={[styles.modalContent, { width: wp('80%'), maxHeight: hp('40%') }]}>
+            <Text style={[styles.modalText, { fontSize: wp('4%') }]}>Contenido del Modal</Text>
+            <TouchableOpacity style={[styles.modalButton, { padding: wp('2%') }]} onPress={() => setModalVisible(false)}>
+              <Text style={[styles.modalButtonText, { fontSize: wp('3.5%') }]}>Cerrar</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -187,25 +186,25 @@ const CosteDeManaSection: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
   return(
     <View style={styles.sectionContainer}>
-      <Text style={styles.sectionText}>Coste de mana</Text>
+      <Text style={[styles.sectionText, { fontSize: wp('4%') }]}>Coste de mana</Text>
       
       <View style={styles.inputWrapper}>
         {/* Contenedor de Input y Botón dentro del mismo */}
-        <View style={styles.inputContainer}>
+        <View style={[styles.inputContainer, { height: hp('5%') }]}>
           <TextInput
-            style={styles.input}
+            style={[styles.input, { fontSize: wp('3.5%'), height: hp('5%') }]}
             value={inputValue}
             onChangeText={setInputValue}
             placeholder="2{G}{W}"
           />
-          <TouchableOpacity style={styles.inputButton} onPress={() => setModalVisible(true)}>
-            <Ionicons name="add" size={20} color="white" />
+          <TouchableOpacity style={[styles.inputButton, { padding: wp('2%') }]} onPress={() => setModalVisible(true)}>
+            <Ionicons name="add" size={wp('5%')} color="white" />
           </TouchableOpacity>
         </View>
         
         {/* Botón al lado derecho */}
-        <TouchableOpacity style={styles.sideButton}>
-          <Text style={styles.sideButtonText}>Añadir</Text>
+        <TouchableOpacity style={[styles.sideButton, { height: hp('5%'), width: wp('20%') }]}>
+          <Text style={[styles.sideButtonText, { fontSize: wp('3.5%') }]}>Añadir</Text>
         </TouchableOpacity>
       </View>
 
@@ -217,10 +216,10 @@ const CosteDeManaSection: React.FC = () => {
         onRequestClose={() => setModalVisible(false)}
       >
         <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalText}>Contenido del Modal</Text>
-            <TouchableOpacity style={styles.modalButton} onPress={() => setModalVisible(false)}>
-              <Text style={styles.modalButtonText}>Cerrar</Text>
+          <View style={[styles.modalContent, { width: wp('80%'), maxHeight: hp('40%') }]}>
+            <Text style={[styles.modalText, { fontSize: wp('4%') }]}>Contenido del Modal</Text>
+            <TouchableOpacity style={[styles.modalButton, { padding: wp('2%') }]} onPress={() => setModalVisible(false)}>
+              <Text style={[styles.modalButtonText, { fontSize: wp('3.5%') }]}>Cerrar</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -232,15 +231,15 @@ const CosteDeManaSection: React.FC = () => {
 const ColoresSection: React.FC = () => {
   return(
     <View style={styles.sectionContainerImg}>
-      <Text style={styles.sectionText}>Colores</Text>
+      <Text style={[styles.sectionText, { fontSize: wp('4%') }]}>Colores</Text>
 
       <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.imageContainer}>
-        <Image source={require('../images/G.png')} style={styles.image} />
-        <Image source={require('../images/B.png')} style={styles.image} />
-        <Image source={require('../images/R.png')} style={styles.image} />
-        <Image source={require('../images/U.png')} style={styles.image} />
-        <Image source={require('../images/W.png')} style={styles.image} />
-        <Image source={require('../images/C.png')} style={styles.image} />
+        <Image source={require('../images/G.png')} style={[styles.image, { width: wp('12%'), height: wp('12%') }]} />
+        <Image source={require('../images/B.png')} style={[styles.image, { width: wp('12%'), height: wp('12%') }]} />
+        <Image source={require('../images/R.png')} style={[styles.image, { width: wp('12%'), height: wp('12%') }]} />
+        <Image source={require('../images/U.png')} style={[styles.image, { width: wp('12%'), height: wp('12%') }]} />
+        <Image source={require('../images/W.png')} style={[styles.image, { width: wp('12%'), height: wp('12%') }]} />
+        <Image source={require('../images/C.png')} style={[styles.image, { width: wp('12%'), height: wp('12%') }]} />
       </ScrollView>
     </View>
   );
@@ -251,14 +250,15 @@ const EdicionesSection: React.FC = () => {
   
  return(
   <View style={styles.sectionContainer}>
-    <Text style={styles.sectionText}>Ediciones</Text>
-    <View style={styles.inputContainer}></View>
+    <Text style={[styles.sectionText, { fontSize: wp('4%') }]}>Ediciones</Text>
+    <View style={[styles.inputContainer, { height: hp('5%') }]}>
       <TextInput
-        style={styles.inputContainer}
+        style={[styles.input, { fontSize: wp('3.5%'), height: hp('5%') }]}
         value={inputValue}
         onChangeText={setInputValue}
         placeholder="Edición"
       />
+    </View>
   </View>
  );
 };
@@ -279,15 +279,15 @@ const PrecioSection: React.FC = () => {
 
   return (
     <View style={styles.sectionContainer}>
-      <Text style={styles.sectionText}>Precio</Text>
+      <Text style={[styles.sectionText, { fontSize: wp('4%') }]}>Precio</Text>
 
       <View style={styles.row}>
-        <TouchableOpacity style={styles.smallSymbolButton2} onPress={toggleSymbol}>
-          <Text style={styles.symbolText2}>{currentSymbol}</Text>
+        <TouchableOpacity style={[styles.smallSymbolButton2, { width: wp('15%'), height: hp('5%') }]} onPress={toggleSymbol}>
+          <Text style={[styles.symbolText2, { fontSize: wp('4%') }]}>{currentSymbol}</Text>
         </TouchableOpacity>
         
         <TextInput
-          style={styles.textInput2}
+          style={[styles.textInput2, { fontSize: wp('3.5%'), height: hp('5%'), width: wp('60%') }]}
           value={inputValue}
           onChangeText={setInputValue}
           placeholder="Precio"
@@ -295,8 +295,8 @@ const PrecioSection: React.FC = () => {
           keyboardType="numeric" // Opcional: para mostrar el teclado numérico
         />
 
-        <TouchableOpacity style={styles.sideButton}>
-          <Text style={styles.sideButtonText}>Añadir</Text>
+        <TouchableOpacity style={[styles.sideButton, { height: hp('5%'), width: wp('20%') }]}>
+          <Text style={[styles.sideButtonText, { fontSize: wp('3.5%') }]}>Añadir</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -321,7 +321,7 @@ export default function TabTwoScreen() {
   // Lógica para mostrar contenido basado en el texto de búsqueda
   const renderFilters = () => (
     <View style={styles.filtersContainer}>
-      <Text style={styles.filtersText}>Filtros</Text>
+      <Text style={[styles.filtersText, { fontSize: wp('5%') }]}>Filtros</Text>
       {filters.map((filter) => {
         switch (filter.title) {
           case 'Legalidades':
@@ -349,19 +349,19 @@ export default function TabTwoScreen() {
 
   const renderSearchResults = () => (
     <View style={styles.resultsContainer}>
-      <Text style={styles.resultsText}>Resultados de búsqueda:</Text>
-      <Text style={styles.resultsDetail}>Aquí van los resultados para "{searchText}"</Text>
+      <Text style={[styles.resultsText, { fontSize: wp('5%') }]}>Resultados de búsqueda:</Text>
+      <Text style={[styles.resultsDetail, { fontSize: wp('4%') }]}>Aquí van los resultados para "{searchText}"</Text>
     </View>
   );
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       {/* Área superior con fondo naranja y barra de búsqueda */}
-      <View style={styles.orangeSection}>
-        <View style={styles.searchBarContainer}>
-          <Ionicons name="search" size={20} color="#fff" style={styles.searchIcon} />
+      <View style={[styles.orangeSection, { paddingHorizontal: wp('5%'), paddingVertical: hp('2%') }]}>
+        <View style={[styles.searchBarContainer, { padding: wp('2%') }]}>
+          <Ionicons name="search" size={wp('5%')} color="#fff" style={styles.searchIcon} />
           <TextInput
-            style={styles.searchBar}
+            style={[styles.searchBar, { fontSize: wp('4%'), height: hp('5%') }]}
             placeholder="Buscar..."
             placeholderTextColor="#d1d1d1"
             value={searchText}
@@ -371,284 +371,9 @@ export default function TabTwoScreen() {
       </View>
 
       {/* Área inferior con fondo gris claro */}
-      <ScrollView style={styles.graySection}>
+      <ScrollView style={[styles.graySection, { padding: wp('5%') }]}>
         {searchText.length > 0 ? renderSearchResults() : renderFilters()}
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  sectionContainerImg: {
-    flex: 1,
-    padding: 20,
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  imageContainer: {
-    flexDirection: 'row',
-  },
-  image: {
-    width: 45, // Ajusta el tamaño de las imágenes según sea necesario
-    height: 45,
-    marginRight: 10, // Espacio entre imágenes
-  },
-  container: {
-    flex: 1,
-    backgroundColor: '#3b3535', // Cambia a gris más oscuro
-  },
-  inputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    flex: 1,
-    marginRight: 10,
-  },
-  input: {
-    flex: 1,
-    height: 40,
-    paddingLeft: 10,
-  },
-  inputButton: {
-    backgroundColor: '#4c4543', // Puedes cambiar este color
-    padding: 10,
-    borderTopRightRadius: 5,
-    borderBottomRightRadius: 5,
-  },
-  sideButton: {
-    backgroundColor: '#cf4b24', // Puedes cambiar este color
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 4,
-    width: 80,
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  sideButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  modalText: {
-    fontSize: 18,
-    marginBottom: 20,
-  },
-  modalButton: {
-    backgroundColor: '#cf4b24', // Puedes cambiar este color
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-  },
-  modalButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  row: {
-    flexDirection: 'row',  // Asegura que los elementos estén en fila
-    alignItems: 'center',
-    marginTop: 20,
-    justifyContent: 'center',
-  },
-  smallSymbolButton: {
-    backgroundColor: '#3b3535',
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    borderRadius: 5,
-    width: 60,
-    height: 35,  // Asegura que tenga la misma altura que el campo de texto
-    alignItems: 'center',
-    justifyContent: 'center',  // Centra el texto dentro del botón
-    marginRight: 10,  // Espacio entre el botón y el campo de texto
-  },
-  symbolText: {
-    color: '#fff',
-    fontSize: 18,  // Reducido el tamaño del texto
-  },
-  smallSymbolButton2: {
-    backgroundColor: '#cf4b24',
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    borderRadius: 5,
-    width: 60,
-    height: 35,  // Asegura que tenga la misma altura que el campo de texto
-    alignItems: 'center',
-    justifyContent: 'center',  // Centra el texto dentro del botón
-    marginRight: 10,  // Espacio entre el botón y el campo de texto
-    borderTopEndRadius: 20,
-    borderTopStartRadius: 20,
-    borderBottomEndRadius: 20,
-    borderBottomStartRadius: 20,
-  },
-  symbolText2: {
-    color: '#fff',
-    fontSize: 18,  // Reducido el tamaño del texto
-  },
-  textInput: {
-    backgroundColor: 'black',
-    color: '#fff',
-    borderRadius: 5,
-    paddingVertical: 5, // Ajustado para que coincida con el botón
-    paddingHorizontal: 10,
-    height: 35, // Altura para coincidir con el botón
-    fontSize: 18,
-    width: screenWidth, // Ancho del campo de texto
-  },
-  textInput2: {
-    backgroundColor: 'black',
-    color: '#fff',
-    borderRadius: 5,
-    paddingVertical: 5, // Ajustado para que coincida con el botón
-    paddingHorizontal: 10,
-    height: 35, // Altura para coincidir con el botón
-    fontSize: 18,
-    width: screenWidth / 2, // Ancho del campo de texto
-  },
-  orangeSection: {
-    flex: 0.22,
-    backgroundColor: '#cf4b24',
-    justifyContent: 'center',
-    paddingHorizontal: 20,
-  },
-  searchBarContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#a94f42',
-    borderRadius: 5,
-    padding: 10,
-  },
-  optionButton: {
-    padding: 15,
-    backgroundColor: '#cf4b24',
-  },
-  optionText: {
-    fontSize: 16,
-    color: '#fff',
-  },
-  searchIcon: {
-    marginRight: 10,
-  },
-  searchBar: {
-    flex: 1,
-    height: 40,
-    color: '#fff',
-  },
-  graySection: {
-    flex: 1,
-    backgroundColor: '#4c4543',
-    padding: 20,
-  },
-  filtersContainer: {
-    marginTop: 20,
-  },
-  filtersText: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#fff',
-  },
-  sectionContainer: {
-    marginBottom: 20,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparente para el fondo
-  },
-  modalContent: {
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    width: '80%',
-    maxHeight: 300,
-    overflow: 'hidden',
-  },
-  sectionText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#fff',
-  },
-  sectionParagraph: {
-    fontSize: 16,
-    color: '#fff',
-  },
-  buttonContent: {
-    flexDirection: 'row',  // Alinea el texto y el icono en fila
-    alignItems: 'center',
-  },
-  icon: {
-    marginLeft: 8,  // Añade un margen para separar el icono del texto
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
-  button: {
-    backgroundColor: '#cf4b24',
-    padding: 10,
-    borderRadius: 5,
-    margin: 5,
-  },
-  buttonText: {
-    color: '#fff',
-  },
-  toggleButton: {
-    backgroundColor: '#9e6b4e',
-    alignSelf: 'center',
-  },
-  smallTextInput: {
-    height: 40,
-    borderColor: '#ddd',
-    borderWidth: 1,
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    marginTop: 10,
-    backgroundColor: '#a03718',
-    color: '#000',
-  },
-  dropdownButton: {
-    backgroundColor: '#cf4b24',
-    paddingVertical: 5,  // Ajusta el espacio vertical
-    paddingHorizontal: 10, // Ajusta el espacio horizontal
-    borderRadius: 5,
-    width: 150, // Reduce el ancho
-    height: 35,  // Reduce la altura
-    justifyContent: 'center', // Centra el texto verticalmente
-    alignItems: 'center', // Centra el texto horizontalmente
-    marginTop: 10,
-    position: 'relative',
-  },
-  iconContainer: {
-    position: 'absolute',  // Fija la posición del ícono
-    right: 10,             // Mantén el ícono fijo a la derecha del botón
-    top: '50%',            // Centra el ícono verticalmente
-    transform: [{ translateY: -10 }],  // Ajusta el ícono para que esté correctamente alineado verticalmente
-  },
-  dropdownText: {
-    color: '#fff',
-    fontSize: 14, // Reduce el tamaño de la fuente
-  },
-  picker: {
-    backgroundColor: '#bc350d',
-  },
-  resultsContainer: {
-    marginTop: 20,
-  },
-  resultsText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#fff',
-  },
-  resultsDetail: {
-    fontSize: 16,
-    color: '#fff',
-  },
- });

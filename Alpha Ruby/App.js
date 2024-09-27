@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -11,8 +10,9 @@ import LoginScreen from './src/screens/loginScreen';
 import HomeScreen from './src/screens/homeScreen';
 import RegisterScreen from './src/screens/registerScreen';
 import DeckManagementScreen from './src/screens/DeckManagementScreen';
-import DeckEditorScreen from './src/screens/deckEditorScreen'; // Importar DeckEditorScreen
+import DeckEditorScreen from './src/screens/deckEditorScreen';
 import SearchCard from './src/screens/Search';
+import ProfileScreen from './src/screens/ProfileScreen'; // Importar ProfileScreen
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -30,10 +30,8 @@ function MainTabNavigator() {
             iconName = 'search';
           } else if (route.name === 'Mazos') {
             iconName = 'tasks';
-          } else if (route.name === 'Editor mazos') {
-            iconName = 'edit';
-          } else if (route.name === 'Settings') {
-            iconName = 'cog';
+          } else if (route.name === 'Perfil') {
+            iconName = 'user';
           }
 
           return <Icon name={iconName} size={size} color={color} />;
@@ -48,7 +46,7 @@ function MainTabNavigator() {
       <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
       <Tab.Screen name="Buscar" component={SearchCard} options={{ headerShown: false }} />
       <Tab.Screen name="Mazos" component={DeckManagementScreen} options={{ headerShown: false }} />
-      {/* <Tab.Screen name='Editor mazos' component={DeckEditorScreen} options={{ headerShown: false }}/> */}
+      <Tab.Screen name="Perfil" component={ProfileScreen} options={{ headerShown: false }} />
     </Tab.Navigator>
   );
 }
@@ -61,18 +59,11 @@ const App = () => {
           <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
           <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
           <Stack.Screen name="Main" component={MainTabNavigator} options={{ headerShown: false }} />
-        
           <Stack.Screen name="DeckEditor" component={DeckEditorScreen} options={{ title: 'Mazos', headerShown: false }} />
         </Stack.Navigator>
       </NavigationContainer>
     </UserProvider>
   );
 };
-
-const SettingsScreen = () => (
-  <View>
-    <Text>Settings Screen</Text>
-  </View>
-);
 
 export default App;

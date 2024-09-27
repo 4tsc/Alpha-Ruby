@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, TextInput, Alert, StyleSheet, TouchableOpacity, SafeAreaView, Modal } from 'react-native';
+import { View, Text, FlatList, TextInput, Alert, TouchableOpacity, Modal } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import styles from '../styles/stylesDeckManagementScreen';
 
 interface Deck {
   id: number;
@@ -37,23 +40,23 @@ const DeckManagementScreen: React.FC = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Mis Mazos</Text>
+    <SafeAreaView style={[styles.container, { padding: wp('5%') }]}>
+      <Text style={[styles.title, { fontSize: wp('8%'), marginTop: hp('5%') }]}>Mis Mazos</Text>
       <FlatList
         data={decks}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <TouchableOpacity
-            style={styles.deckItem}
+            style={[styles.deckItem, { padding: wp('4%'), marginVertical: hp('1%'), width: wp('90%') }]}
             onPress={() => {
               console.log('Navigating to DeckEditor with deck:', item);
               console.log('All decks:', decks);
               navigation.navigate('DeckEditor', { deck: item, decks }); // Pasar los mazos aquí
             }}
           >
-            <Text style={styles.deckText}>{item.name}</Text>
+            <Text style={[styles.deckText, { fontSize: wp('4.5%') }]}>{item.name}</Text>
             <TouchableOpacity onPress={() => removeDeck(item.id)} style={styles.deleteButton}>
-              <Text style={styles.deleteButtonText}>✕</Text>
+              <Text style={[styles.deleteButtonText, { fontSize: wp('4.5%') }]}>✕</Text>
             </TouchableOpacity>
           </TouchableOpacity>
         )}
@@ -68,137 +71,28 @@ const DeckManagementScreen: React.FC = () => {
         }}
       >
         <View style={styles.modalContainer}>
-          <View style={styles.modalView}>
+          <View style={[styles.modalView, { padding: wp('5%'), width: wp('80%') }]}>
             <TextInput
-              style={styles.input}
+              style={[styles.input, { height: hp('5%'), marginBottom: hp('2%'), width: wp('90%') }]}
               placeholder="Nombre del nuevo mazo"
               placeholderTextColor="#CCCCCC"
               value={newDeckName}
               onChangeText={setNewDeckName}
             />
-            <TouchableOpacity onPress={addDeck} style={styles.addButton}>
-              <Text style={styles.addButtonText}>Agregar Mazo</Text>
+            <TouchableOpacity onPress={addDeck} style={[styles.addButton, { padding: wp('4%'), width: wp('90%') }]}>
+              <Text style={[styles.addButtonText, { fontSize: wp('4.5%') }]}>Agregar Mazo</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => setModalVisible(!modalVisible)} style={styles.cancelButton}>
-              <Text style={styles.cancelButtonText}>Cancelar</Text>
+            <TouchableOpacity onPress={() => setModalVisible(!modalVisible)} style={[styles.cancelButton, { padding: wp('4%'), width: wp('90%') }]}>
+              <Text style={[styles.cancelButtonText, { fontSize: wp('4.5%') }]}>Cancelar</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
-      <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.fab}>
-        <Text style={styles.fabText}>+</Text>
+      <TouchableOpacity onPress={() => setModalVisible(true)} style={[styles.fab, { width: wp('15%'), height: wp('15%'), bottom: hp('5%'), right: wp('5%') }]}>
+        <Text style={[styles.fabText, { fontSize: wp('7.5%') }]}>+</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#3D3D3D', // Fondo gris oscuro
-  },
-  title: {
-    fontSize: 32,
-    marginBottom: 20,
-    fontWeight: 'bold',
-    color: '#FFFFFF', // Texto blanco
-    marginTop: 40, // Ajustar este valor para mover el título hacia abajo
-  },
-  listContainer: {
-    width: '100%',
-    alignItems: 'center', // Centrar la lista
-  },
-  deckItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#2C2C2C', // Fondo gris oscuro para cada mazo
-    padding: 15,
-    marginVertical: 10,
-    width: '90%', // Hacer los elementos más largos
-    borderRadius: 10,
-    elevation: 3, // Sombra para que se vea más vistoso
-  },
-  deckText: {
-    fontSize: 18,
-    flex: 1,
-    color: '#FFFFFF', // Texto blanco
-  },
-  deleteButton: {
-    marginLeft: 10,
-    padding: 10,
-  },
-  deleteButtonText: {
-    fontSize: 18,
-    color: '#D94A26', // Color naranja para la "X"
-  },
-  input: {
-    height: 40,
-    borderColor: '#666666',
-    borderWidth: 1,
-    marginBottom: 20,
-    paddingHorizontal: 10,
-    width: '90%',
-    borderRadius: 5,
-    backgroundColor: '#2C2C2C', // Fondo gris oscuro para input
-    color: '#FFFFFF', // Texto blanco
-  },
-  addButton: {
-    backgroundColor: '#D94A26', // Naranja para el botón
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-    width: '90%',
-    marginBottom: 10,
-  },
-  addButtonText: {
-    color: '#FFFFFF', // Texto blanco
-    fontSize: 18,
-  },
-  cancelButton: {
-    backgroundColor: '#666666', // Gris para el botón de cancelar
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-    width: '90%',
-  },
-  cancelButtonText: {
-    color: '#FFFFFF', // Texto blanco
-    fontSize: 18,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalView: {
-    width: '80%',
-    backgroundColor: '#3D3D3D',
-    padding: 20,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  fab: {
-    position: 'absolute',
-    bottom: 30,
-    right: 30,
-    backgroundColor: '#D94A26', // Naranja para el FAB
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 5,
-  },
-  fabText: {
-    color: '#FFFFFF',
-    fontSize: 30,
-    fontWeight: 'bold',
-  },
-});
 
 export default DeckManagementScreen;

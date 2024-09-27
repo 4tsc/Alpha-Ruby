@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { styles, placeholderColor } from '../styles/stylesLogin'; // Importa los estilos
 
@@ -47,7 +48,7 @@ export default function Login({ navigation }) {  // Recibe navigation como prop
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Inicie sesión</Text>
       
       <TextInput
@@ -79,6 +80,6 @@ export default function Login({ navigation }) {  // Recibe navigation como prop
           <Text style={styles.buttonText}>Registrarse</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }

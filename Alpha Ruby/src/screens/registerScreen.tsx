@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, ScrollView } from 'react-native';
 import { styles, placeholderColor } from '../styles/stylesRegister'; // Importa los estilos
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function RegisterScreen({ navigation }) {  
   const [username, setUsername] = useState('');
@@ -49,6 +50,7 @@ export default function RegisterScreen({ navigation }) {
   };
 
   return (
+    <SafeAreaView style={styles.container}>
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Formulario de Registro</Text>
       
@@ -90,5 +92,6 @@ export default function RegisterScreen({ navigation }) {
         </TouchableOpacity>
       </View>
     </ScrollView>
+    </SafeAreaView>
   );
 }

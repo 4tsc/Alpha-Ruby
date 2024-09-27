@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Alert, StyleSheet, TouchableOpacity, SafeAreaView, Modal } from 'react-native';
+import { View, Text, TextInput, Alert, TouchableOpacity, Modal } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Picker } from '@react-native-picker/picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import styles from '../styles/stylesDeckEditorScreen';
 
 interface Deck {
   id: number;
@@ -73,11 +76,11 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Editar Mazo</Text>
+    <SafeAreaView style={[styles.container, { padding: wp('10%') }]}>
+      <Text style={[styles.title, { fontSize: wp('8%'), marginBottom: hp('2%') }]}>Editar Mazo</Text>
       
-      <TouchableOpacity onPress={() => setIsPickerVisible(true)} style={styles.pickerButton}>
-        <Text style={styles.pickerButtonText}>Seleccionar Mazo</Text>
+      <TouchableOpacity onPress={() => setIsPickerVisible(true)} style={[styles.pickerButton, { padding: wp('3%') }]}>
+        <Text style={[styles.pickerButtonText, { fontSize: wp('4%') }]}>Seleccionar Mazo</Text>
       </TouchableOpacity>
 
       {isPickerVisible && (
@@ -88,8 +91,8 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
           onRequestClose={() => setIsPickerVisible(false)}
         >
           <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Seleccionar Mazo</Text>
+            <View style={[styles.modalContent, { padding: wp('5%'), width: wp('80%') }]}>
+              <Text style={[styles.modalTitle, { fontSize: wp('6%') }]}>Seleccionar Mazo</Text>
               <Picker
                 selectedValue={deck.id}
                 onValueChange={(itemValue) => {
@@ -104,18 +107,18 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
                   <Picker.Item key={d.id} label={d.name} value={d.id} />
                 ))}
               </Picker>
-              <TouchableOpacity onPress={() => setIsPickerVisible(false)} style={styles.cancelButton}>
-                <Text style={styles.cancelButtonText}>Cancelar</Text>
+              <TouchableOpacity onPress={() => setIsPickerVisible(false)} style={[styles.cancelButton, { padding: wp('3%') }]}>
+                <Text style={[styles.cancelButtonText, { fontSize: wp('4%') }]}>Cancelar</Text>
               </TouchableOpacity>
             </View>
           </View>
         </Modal>
       )}
 
-      <View style={styles.nameContainer}>
+      <View style={[styles.nameContainer, { padding: wp('3%'), marginBottom: hp('2%') }]}>
         {isEditingName ? (
           <TextInput
-            style={styles.input}
+            style={[styles.input, { height: hp('5%'), paddingHorizontal: wp('3%') }]}
             placeholder="Nombre del mazo"
             value={deckName}
             onChangeText={setDeckName}
@@ -123,26 +126,26 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
           />
         ) : (
           <>
-            <Text style={styles.deckName}>{deckName}</Text>
+            <Text style={[styles.deckName, { fontSize: wp('4.5%') }]}>{deckName}</Text>
             <TouchableOpacity onPress={toggleEditName}>
-              <Icon name="pencil" size={20} color="#FFFFFF" />
+              <Icon name="pencil" size={wp('5%')} color="#FFFFFF" />
             </TouchableOpacity>
           </>
         )}
       </View>
 
-      <View style={styles.cardsContainer}>
-        <View style={styles.cardsHeader}>
-          <Text style={styles.sectionTitle}>Cartas del Mazo</Text>
-          <TouchableOpacity onPress={() => setIsModalVisible(true)} style={styles.addCardButton}>
-            <Icon name="plus" size={20} color="#FFFFFF" />
+      <View style={[styles.cardsContainer, { marginBottom: hp('2%') }]}>
+        <View style={[styles.cardsHeader, { marginBottom: hp('1%') }]}>
+          <Text style={[styles.sectionTitle, { fontSize: wp('6%') }]}>Cartas del Mazo</Text>
+          <TouchableOpacity onPress={() => setIsModalVisible(true)} style={[styles.addCardButton, { padding: wp('2%') }]}>
+            <Icon name="plus" size={wp('5%')} color="#FFFFFF" />
           </TouchableOpacity>
         </View>
         {cards.map((card) => (
-          <View key={card.id} style={styles.cardItem}>
-            <Text style={styles.cardText}>{card.name}</Text>
+          <View key={card.id} style={[styles.cardItem, { padding: wp('4%'), marginBottom: hp('1%') }]}>
+            <Text style={[styles.cardText, { fontSize: wp('4.5%') }]}>{card.name}</Text>
             <TouchableOpacity onPress={() => removeCard(card.id)} style={styles.deleteButton}>
-              <Icon name="times" size={20} color="#D94A26" />
+              <Icon name="times" size={wp('5%')} color="#D94A26" />
             </TouchableOpacity>
           </View>
         ))}
@@ -155,182 +158,30 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
         onRequestClose={() => setIsModalVisible(false)}
       >
         <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Buscar Carta</Text>
+          <View style={[styles.modalContent, { padding: wp('5%'), width: wp('80%') }]}>
+            <Text style={[styles.modalTitle, { fontSize: wp('6%'), marginBottom: hp('2%') }]}>Buscar Carta</Text>
             <TextInput
-              style={styles.modalInput}
+              style={[styles.modalInput, { height: hp('5%'), paddingHorizontal: wp('3%'), marginBottom: hp('2%') }]}
               placeholder="Nombre de la carta"
               placeholderTextColor="#CCCCCC"
               value={newCardName}
               onChangeText={setNewCardName}
             />
-            <TouchableOpacity onPress={addCard} style={styles.addButton}>
-              <Text style={styles.addButtonText}>Agregar Carta</Text>
+            <TouchableOpacity onPress={addCard} style={[styles.addButton, { padding: wp('3%'), marginBottom: hp('1%') }]}>
+              <Text style={[styles.addButtonText, { fontSize: wp('4.5%') }]}>Agregar Carta</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => setIsModalVisible(false)} style={styles.cancelButton}>
-              <Text style={styles.cancelButtonText}>Cancelar</Text>
+            <TouchableOpacity onPress={() => setIsModalVisible(false)} style={[styles.cancelButton, { padding: wp('3%') }]}>
+              <Text style={[styles.cancelButtonText, { fontSize: wp('4.5%') }]}>Cancelar</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
 
-      <TouchableOpacity onPress={saveDeckChanges} style={styles.saveButton}>
-        <Text style={styles.saveButtonText}>Guardar Cambios</Text>
+      <TouchableOpacity onPress={saveDeckChanges} style={[styles.saveButton, { padding: wp('3%') }]}>
+        <Text style={[styles.saveButtonText, { fontSize: wp('4.5%') }]}>Guardar Cambios</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#3D3D3D',
-  },
-  title: {
-    fontSize: 32,
-    marginBottom: 20,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    textAlign: 'center',
-  },
-  nameContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: '#2C2C2C',
-    padding: 10,
-    borderRadius: 8,
-    marginBottom: 20,
-  },
-  deckName: {
-    fontSize: 18,
-    color: '#FFFFFF',
-    flex: 1,
-  },
-  input: {
-    flex: 1,
-    height: 40,
-    borderColor: '#666666',
-    borderWidth: 1,
-    paddingHorizontal: 10,
-    borderRadius: 5,
-    backgroundColor: '#2C2C2C',
-    color: '#FFFFFF',
-  },
-  cardsContainer: {
-    flex: 1,
-    marginBottom: 20,
-  },
-  cardsHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-  },
-  addCardButton: {
-    backgroundColor: '#D94A26',
-    padding: 8,
-    borderRadius: 5,
-  },
-  cardItem: {
-    backgroundColor: '#2C2C2C',
-    padding: 15,
-    borderRadius: 5,
-    marginBottom: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  cardText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-  },
-  deleteButton: {
-    padding: 5,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContent: {
-    width: '80%',
-    backgroundColor: '#3D3D3D',
-    padding: 20,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  modalTitle: {
-    fontSize: 24,
-    color: '#FFFFFF',
-    marginBottom: 20,
-  },
-  modalInput: {
-    height: 40,
-    borderColor: '#666666',
-    borderWidth: 1,
-    paddingHorizontal: 10,
-    borderRadius: 5,
-    backgroundColor: '#2C2C2C',
-    color: '#FFFFFF',
-    marginBottom: 20,
-    width: '100%',
-  },
-  addButton: {
-    backgroundColor: '#D94A26',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginBottom: 10,
-    width: '100%',
-  },
-  addButtonText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-  },
-  cancelButton: {
-    backgroundColor: '#666666',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-    width: '100%',
-  },
-  cancelButtonText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-  },
-  saveButton: {
-    backgroundColor: '#D94A26',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  saveButtonText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-  },
-  pickerButton: {
-    backgroundColor: '#D94A26',
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  pickerButtonText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-  },
-  picker: {
-    width: '100%',
-    color: '#FFFFFF',
-  },
-});
 
 export default DeckEditorScreen;

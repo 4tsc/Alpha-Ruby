@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/FontAwesome'; // Importar iconos
 interface Deck {
   id: number;
   name: string;
-  cards?: { id: number; name: string }[]; // Añadir cards para permitir editar
+  cards?: { id: number; name: string }[];
 }
 
 interface DeckEditorScreenProps {
@@ -16,7 +16,7 @@ interface DeckEditorScreenProps {
   };
   navigation: {
     goBack: () => void;
-    navigate: (screen: string, params?: any) => void; // Agregar para la navegación
+    navigate: (screen: string, params?: any) => void;
   };
 }
 
@@ -25,26 +25,23 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
 
   const [deckName, setDeckName] = useState(deck.name);
   const [cards, setCards] = useState(deck.cards || []);
-  const [isEditingName, setIsEditingName] = useState(false); // Estado para saber si está en modo edición
-  const [isModalVisible, setIsModalVisible] = useState(false); // Estado para mostrar el modal
-  const [newCardName, setNewCardName] = useState(''); // Estado para el nombre de la nueva carta
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [newCardName, setNewCardName] = useState('');
 
-  // Función para guardar los cambios del mazo
   const saveDeckChanges = () => {
     if (deckName.trim() === '') {
       Alert.alert('Error', 'El nombre del mazo no puede estar vacío.');
       return;
     }
     console.log('Guardando cambios del mazo:', { id: deck.id, name: deckName, cards });
-    navigation.goBack(); // Volver a DeckManagementScreen
+    navigation.goBack();
   };
 
-  // Función para alternar el modo de edición del nombre del mazo
   const toggleEditName = () => {
     setIsEditingName(!isEditingName);
   };
 
-  // Función para agregar una nueva carta al mazo
   const addCard = () => {
     if (newCardName.trim() === '') {
       Alert.alert('Error', 'El nombre de la carta no puede estar vacío.');
@@ -53,10 +50,9 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
     const newCard = { id: cards.length + 1, name: newCardName };
     setCards([...cards, newCard]);
     setNewCardName('');
-    setIsModalVisible(false); // Cerrar el modal después de agregar la carta
+    setIsModalVisible(false);
   };
 
-  // Función para eliminar una carta del mazo
   const removeCard = (cardId: number) => {
     setCards(cards.filter(card => card.id !== cardId));
   };
@@ -74,7 +70,7 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
             placeholder="Nombre del mazo"
             value={deckName}
             onChangeText={setDeckName}
-            onBlur={toggleEditName} // Terminar edición al salir del input
+            onBlur={toggleEditName}
           />
         ) : (
           <>
@@ -103,9 +99,9 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
         ))}
       </View>
 
-      {/* Modal para buscar y agregar una nueva carta */}
+      {/* Modal para agregar una nueva carta */}
       <Modal
-        animationType="slide"
+        animationType="fade"
         transparent={true}
         visible={isModalVisible}
         onRequestClose={() => setIsModalVisible(false)}
@@ -114,7 +110,7 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Buscar Carta</Text>
             <TextInput
-              style={styles.modalInput} // Estilo del input ajustado
+              style={styles.modalInput}
               placeholder="Nombre de la carta"
               placeholderTextColor="#CCCCCC"
               value={newCardName}
@@ -130,7 +126,7 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
         </View>
       </Modal>
 
-      {/* Botón de guardar cambios al final */}
+      {/* Botón de guardar cambios */}
       <TouchableOpacity onPress={saveDeckChanges} style={styles.saveButton}>
         <Text style={styles.saveButtonText}>Guardar Cambios</Text>
       </TouchableOpacity>
@@ -149,29 +145,34 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontWeight: 'bold',
     color: '#FFFFFF',
-    textAlign: 'center', // Centrar el título
+    textAlign: 'center',
   },
   nameContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between', // Alinea el texto y el ícono a los extremos
+    justifyContent: 'space-between',
     backgroundColor: '#2C2C2C',
     padding: 10,
-    borderRadius: 8,
+    borderRadius: 12, // Bordes redondeados
     marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
   },
   deckName: {
     fontSize: 18,
     color: '#FFFFFF',
-    flex: 1, // Ocupa todo el espacio disponible
+    flex: 1,
   },
   input: {
-    flex: 1, // Ocupa todo el espacio disponible
+    flex: 1,
     height: 40,
     borderColor: '#666666',
     borderWidth: 1,
     paddingHorizontal: 10,
-    borderRadius: 5,
+    borderRadius: 10,
     backgroundColor: '#2C2C2C',
     color: '#FFFFFF',
   },
@@ -191,18 +192,28 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   addCardButton: {
-    backgroundColor: '#D94A26',
+    backgroundColor: '#F77F00',
     padding: 8,
-    borderRadius: 5,
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
   },
   cardItem: {
     backgroundColor: '#2C2C2C',
     padding: 15,
-    borderRadius: 5,
+    borderRadius: 12,
     marginBottom: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
   },
   cardText: {
     color: '#FFFFFF',
@@ -223,25 +234,30 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 10,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
   },
   modalTitle: {
     fontSize: 24,
     color: '#FFFFFF',
     marginBottom: 20,
   },
-  modalInput: { // Nuevo estilo para el input en el modal
+  modalInput: {
     height: 40,
     borderColor: '#666666',
     borderWidth: 1,
     paddingHorizontal: 10,
-    borderRadius: 5,
+    borderRadius: 8,
     backgroundColor: '#2C2C2C',
     color: '#FFFFFF',
     marginBottom: 20,
-    width: '100%', // Ajusta el ancho del input
+    width: '100%',
   },
   addButton: {
-    backgroundColor: '#D94A26',
+    backgroundColor: '#F77F00',
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
@@ -264,7 +280,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   saveButton: {
-    backgroundColor: '#D94A26',
+    backgroundColor: '#F77F00',
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',

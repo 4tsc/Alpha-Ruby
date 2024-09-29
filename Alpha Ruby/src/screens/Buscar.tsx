@@ -384,18 +384,19 @@ const styles = StyleSheet.create({
     padding: 20,
     alignItems: 'center',
     marginBottom: 20,
+    backgroundColor: '#333333', // Gris oscuro
   },
   imageContainer: {
     flexDirection: 'row',
   },
   image: {
-    width: 45, // Ajusta el tamaño de las imágenes según sea necesario
+    width: 45, 
     height: 45,
-    marginRight: 10, // Espacio entre imágenes
+    marginRight: 10, 
   },
   container: {
     flex: 1,
-    backgroundColor: '#3b3535', // Cambia a gris más oscuro
+    backgroundColor: '#4A4A4A', // Fondo gris oscuro
   },
   inputWrapper: {
     flexDirection: 'row',
@@ -406,7 +407,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#333333', 
     borderRadius: 5,
     flex: 1,
     marginRight: 10,
@@ -415,15 +416,18 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 40,
     paddingLeft: 10,
+    backgroundColor: '#333333', // Gris oscuro
+    color: '#FFFFFF', // Texto blanco
+    borderRadius: 5,
   },
   inputButton: {
-    backgroundColor: '#4c4543', // Puedes cambiar este color
+    backgroundColor: '#FF7F00', // Naranja brillante
     padding: 10,
     borderTopRightRadius: 5,
     borderBottomRightRadius: 5,
   },
   sideButton: {
-    backgroundColor: '#cf4b24', // Puedes cambiar este color
+    backgroundColor: '#FF7F00',
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 4,
@@ -433,116 +437,115 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   sideButtonText: {
-    color: 'white',
+    color: '#FFFFFF',
     fontWeight: 'bold',
     fontSize: 16,
   },
   modalText: {
     fontSize: 18,
     marginBottom: 20,
+    color: '#FFFFFF',
   },
   modalButton: {
-    backgroundColor: '#cf4b24', // Puedes cambiar este color
+    backgroundColor: '#FF7F00',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
   },
   modalButtonText: {
-    color: 'white',
+    color: '#FFFFFF',
     fontWeight: 'bold',
   },
   row: {
-    flexDirection: 'row',  // Asegura que los elementos estén en fila
+    flexDirection: 'row',
     alignItems: 'center',
     marginTop: 20,
     justifyContent: 'center',
   },
   smallSymbolButton: {
-    backgroundColor: '#3b3535',
+    backgroundColor: '#4A4A4A',
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 5,
     width: 60,
-    height: 35,  // Asegura que tenga la misma altura que el campo de texto
+    height: 35,
     alignItems: 'center',
-    justifyContent: 'center',  // Centra el texto dentro del botón
-    marginRight: 10,  // Espacio entre el botón y el campo de texto
+    justifyContent: 'center',
+    marginRight: 10,
   },
   symbolText: {
-    color: '#fff',
-    fontSize: 18,  // Reducido el tamaño del texto
+    color: '#FFFFFF',
+    fontSize: 18,
   },
   smallSymbolButton2: {
-    backgroundColor: '#cf4b24',
+    backgroundColor: '#FF7F00',
     paddingVertical: 5,
     paddingHorizontal: 10,
-    borderRadius: 5,
+    borderRadius: 20,
     width: 60,
-    height: 35,  // Asegura que tenga la misma altura que el campo de texto
+    height: 35,
     alignItems: 'center',
-    justifyContent: 'center',  // Centra el texto dentro del botón
-    marginRight: 10,  // Espacio entre el botón y el campo de texto
-    borderTopEndRadius: 20,
-    borderTopStartRadius: 20,
-    borderBottomEndRadius: 20,
-    borderBottomStartRadius: 20,
+    justifyContent: 'center',
+    marginRight: 10,
   },
   symbolText2: {
-    color: '#fff',
-    fontSize: 18,  // Reducido el tamaño del texto
+    color: '#FFFFFF',
+    fontSize: 18,
   },
   textInput: {
-    backgroundColor: 'black',
-    color: '#fff',
+    backgroundColor: '#333333',
+    color: '#FFFFFF',
     borderRadius: 5,
-    paddingVertical: 5, // Ajustado para que coincida con el botón
+    paddingVertical: 5,
     paddingHorizontal: 10,
-    height: 35, // Altura para coincidir con el botón
+    height: 35,
     fontSize: 18,
-    width: screenWidth, // Ancho del campo de texto
+    width: screenWidth, 
   },
   textInput2: {
-    backgroundColor: 'black',
-    color: '#fff',
+    backgroundColor: '#333333',
+    color: '#FFFFFF',
     borderRadius: 5,
-    paddingVertical: 5, // Ajustado para que coincida con el botón
+    paddingVertical: 5,
     paddingHorizontal: 10,
-    height: 35, // Altura para coincidir con el botón
+    height: 35,
     fontSize: 18,
-    width: screenWidth / 2, // Ancho del campo de texto
+    width: screenWidth / 2, 
   },
   orangeSection: {
     flex: 0.22,
-    backgroundColor: '#cf4b24',
+    backgroundColor: '#FF7F00', // Naranja brillante
     justifyContent: 'center',
     paddingHorizontal: 20,
   },
   searchBarContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#a94f42',
+    backgroundColor: '#333333', 
     borderRadius: 5,
     padding: 10,
   },
   optionButton: {
     padding: 15,
-    backgroundColor: '#cf4b24',
+    backgroundColor: '#FF7F00',
+    borderRadius: 5,
   },
   optionText: {
     fontSize: 16,
-    color: '#fff',
+    color: '#FFFFFF',
   },
   searchIcon: {
     marginRight: 10,
+    color: '#FFFFFF',
   },
   searchBar: {
     flex: 1,
     height: 40,
-    color: '#fff',
+    color: '#FFFFFF',
   },
   graySection: {
     flex: 1,
-    backgroundColor: '#4c4543',
+    backgroundColor: '#4A4A4A', 
     padding: 20,
   },
   filtersContainer: {
@@ -552,7 +555,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: 'bold',
     marginBottom: 10,
-    color: '#fff',
+    color: '#FFFFFF',
   },
   sectionContainer: {
     marginBottom: 20,
@@ -561,44 +564,45 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparente para el fondo
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', 
   },
   modalContent: {
-    backgroundColor: '#fff',
+    backgroundColor: '#333333',
     borderRadius: 10,
     width: '80%',
     maxHeight: 300,
+    padding: 20,
     overflow: 'hidden',
   },
   sectionText: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
-    color: '#fff',
+    color: '#FFFFFF',
   },
   sectionParagraph: {
     fontSize: 16,
-    color: '#fff',
+    color: '#FFFFFF',
   },
   buttonContent: {
-    flexDirection: 'row',  // Alinea el texto y el icono en fila
+    flexDirection: 'row',
     alignItems: 'center',
   },
   icon: {
-    marginLeft: 8,  // Añade un margen para separar el icono del texto
+    marginLeft: 8,
   },
   buttonContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
   },
   button: {
-    backgroundColor: '#cf4b24',
+    backgroundColor: '#FF7F00',
     padding: 10,
     borderRadius: 5,
     margin: 5,
   },
   buttonText: {
-    color: '#fff',
+    color: '#FFFFFF',
   },
   toggleButton: {
     backgroundColor: '#9e6b4e',
@@ -611,33 +615,30 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 10,
     marginTop: 10,
-    backgroundColor: '#a03718',
-    color: '#000',
+    backgroundColor: '#FF7F00', // Naranja suave
+    color: '#000000',
   },
   dropdownButton: {
-    backgroundColor: '#cf4b24',
-    paddingVertical: 5,  // Ajusta el espacio vertical
-    paddingHorizontal: 10, // Ajusta el espacio horizontal
+    backgroundColor: '#FF7F00',
+    paddingVertical: 5,
+    paddingHorizontal: 10,
     borderRadius: 5,
-    width: 150, // Reduce el ancho
-    height: 35,  // Reduce la altura
-    justifyContent: 'center', // Centra el texto verticalmente
-    alignItems: 'center', // Centra el texto horizontalmente
+    width: 150,
+    height: 35,
+    justifyContent: 'center',
+    alignItems: 'center',
     marginTop: 10,
     position: 'relative',
   },
   iconContainer: {
-    position: 'absolute',  // Fija la posición del ícono
-    right: 10,             // Mantén el ícono fijo a la derecha del botón
-    top: '50%',            // Centra el ícono verticalmente
-    transform: [{ translateY: -10 }],  // Ajusta el ícono para que esté correctamente alineado verticalmente
+    position: 'absolute',
+    right: 10,
+    top: '50%',
+    transform: [{ translateY: -10 }],
   },
   dropdownText: {
-    color: '#fff',
-    fontSize: 14, // Reduce el tamaño de la fuente
-  },
-  picker: {
-    backgroundColor: '#bc350d',
+    color: '#FFFFFF',
+    fontSize: 14,
   },
   resultsContainer: {
     marginTop: 20,
@@ -645,10 +646,11 @@ const styles = StyleSheet.create({
   resultsText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#FFFFFF',
   },
   resultsDetail: {
     fontSize: 16,
-    color: '#fff',
+    color: '#FFFFFF',
   },
- });
+});
+

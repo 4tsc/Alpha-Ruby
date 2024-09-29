@@ -1,23 +1,21 @@
 import React, { useState } from 'react';
 import { View, Text, FlatList, TextInput, Alert, StyleSheet, TouchableOpacity, SafeAreaView, Modal } from 'react-native';
-import { useNavigation } from '@react-navigation/native'; // Importar useNavigation
+import { useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 interface Deck {
   id: number;
   name: string;
-  cards?: { id: number; name: string }[]; // Añadir cards al mazo, inicialmente vacío
+  cards?: { id: number; name: string }[];
 }
 
 const DeckManagementScreen: React.FC = () => {
-  const navigation = useNavigation(); // Usar el hook de navegación aquí
+  const navigation = useNavigation();
 
-  const [decks, setDecks] = useState<Deck[]>([
-
-  ]);
+  const [decks, setDecks] = useState<Deck[]>([]);
   const [newDeckName, setNewDeckName] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
 
-  // Función para agregar un nuevo mazo
   const addDeck = () => {
     if (newDeckName.trim() === '') {
       Alert.alert('Error', 'El nombre del mazo no puede estar vacío.');
@@ -26,14 +24,13 @@ const DeckManagementScreen: React.FC = () => {
     const newDeck = {
       id: decks.length + 1,
       name: newDeckName,
-      cards: [], // Inicializar con un array vacío de cartas
+      cards: [],
     };
     setDecks([...decks, newDeck]);
     setNewDeckName('');
-    setModalVisible(false); // Cerrar el modal después de agregar
+    setModalVisible(false);
   };
 
-  // Función para eliminar un mazo
   const removeDeck = (id: number) => {
     setDecks(decks.filter(deck => deck.id !== id));
   };
@@ -47,11 +44,11 @@ const DeckManagementScreen: React.FC = () => {
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.deckItem}
-            onPress={() => navigation.navigate('DeckEditor', { deck: item })} // Navegar a DeckEditorScreen
+            onPress={() => navigation.navigate('DeckEditor', { deck: item })}
           >
             <Text style={styles.deckText}>{item.name}</Text>
             <TouchableOpacity onPress={() => removeDeck(item.id)} style={styles.deleteButton}>
-              <Text style={styles.deleteButtonText}>✕</Text>
+              <Icon name="times" size={20} color="#D94A26" />
             </TouchableOpacity>
           </TouchableOpacity>
         )}
@@ -59,12 +56,10 @@ const DeckManagementScreen: React.FC = () => {
       />
       {/* Modal para agregar un nuevo mazo */}
       <Modal
-        animationType="slide"
+        animationType="fade"
         transparent={true}
         visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
+        onRequestClose={() => setModalVisible(!modalVisible)}
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalView}>
@@ -86,7 +81,7 @@ const DeckManagementScreen: React.FC = () => {
       </Modal>
       {/* Botón flotante para agregar un mazo */}
       <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.fab}>
-        <Text style={styles.fabText}>+</Text>
+        <Icon name="plus" size={30} color="#FFFFFF" />
       </TouchableOpacity>
     </SafeAreaView>
   );
@@ -105,22 +100,26 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontWeight: 'bold',
     color: '#FFFFFF', // Texto blanco
-    marginTop: 40, // Ajustar este valor para mover el título hacia abajo
+    marginTop: 40,
   },
   listContainer: {
     width: '100%',
-    alignItems: 'center', // Centrar la lista
+    alignItems: 'center',
   },
   deckItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#2C2C2C', // Fondo gris oscuro para cada mazo
+    backgroundColor: '#2C2C2C',
     padding: 15,
     marginVertical: 10,
-    width: '90%', // Hacer los elementos más largos
-    borderRadius: 10,
-    elevation: 3, // Sombra para que se vea más vistoso
+    width: '90%',
+    borderRadius: 12, // Bordes redondeados
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5, // Sombra para Android
   },
   deckText: {
     fontSize: 18,
@@ -131,10 +130,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     padding: 10,
   },
-  deleteButtonText: {
-    fontSize: 18,
-    color: '#D94A26', // Color naranja para la "X"
-  },
   input: {
     height: 40,
     borderColor: '#666666',
@@ -142,12 +137,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     paddingHorizontal: 10,
     width: '90%',
-    borderRadius: 5,
-    backgroundColor: '#2C2C2C', // Fondo gris oscuro para input
-    color: '#FFFFFF', // Texto blanco
+    borderRadius: 10,
+    backgroundColor: '#2C2C2C', // Fondo gris oscuro para el input
+    color: '#FFFFFF',
   },
   addButton: {
-    backgroundColor: '#D94A26', // Naranja para el botón
+    backgroundColor: '#F77F00', // Naranja vibrante para el botón
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
@@ -159,7 +154,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   cancelButton: {
-    backgroundColor: '#666666', // Gris para el botón de cancelar
+    backgroundColor: '#666666', // Gris oscuro para el botón de cancelar
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
@@ -186,18 +181,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 30,
     right: 30,
-    backgroundColor: '#D94A26', // Naranja para el FAB
+    backgroundColor: '#F77F00', // Naranja vibrante para el FAB
     width: 60,
     height: 60,
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 5,
-  },
-  fabText: {
-    color: '#FFFFFF',
-    fontSize: 30,
-    fontWeight: 'bold',
+    elevation: 5, // Sombra para el botón flotante
   },
 });
 

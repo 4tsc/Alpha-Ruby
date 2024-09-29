@@ -6,48 +6,73 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#2C2C2C', // Fondo gris oscuro moderno
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
   },
   title: {
-    fontSize: 32, // Tamaño de fuente grande para destacar
-    marginBottom: 20,
+    fontSize: 40,
     fontWeight: 'bold',
-    color: '#FFFFFF', // Texto en blanco para mayor contraste
+    marginBottom: 40,
+    textAlign: 'center',
+    color: '#87CEEB',
+    fontFamily: 'serif',
+    textShadowColor: '#000',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 6,
   },
   input: {
-    height: 50, // Aumentar altura para mejorar accesibilidad
-    width: '80%',
-    borderColor: '#666666',
+    height: 50,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
     borderWidth: 1,
-    marginBottom: 20, // Más espacio entre los inputs
-    paddingLeft: 15, // Espaciado para comodidad
-    backgroundColor: '#3D3D3D', // Fondo gris oscuro para los inputs
-    color: '#FFFFFF', // Texto blanco
-    borderRadius: 10, // Esquinas más redondeadas para un look moderno
+    borderColor: '#87CEEB',
+    marginBottom: 20,
+    paddingHorizontal: 20,
+    borderRadius: 25,
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontFamily: 'serif',
+    width: '100%',
+    textShadowColor: '#000',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
   buttonContainer: {
-    flexDirection: 'row', // Los botones alineados en fila
-    justifyContent: 'space-between', 
-    marginTop: 20,
-    width: '80%',
+    marginTop: 10,  // Reducimos el margen superior para acercar los botones a los inputs
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
   },
   button: {
-    backgroundColor: '#F77F00', // Naranja vibrante para los botones
-    paddingVertical: 12, // Más padding para mejorar la sensación táctil
-    paddingHorizontal: 40, // Botones más amplios
-    borderRadius: 12, // Esquinas redondeadas
+    backgroundColor: 'transparent',
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 25,
+    borderWidth: 0,
+    justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000', // Sombras suaves
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4, 
-    elevation: 3, // Sombra para Android
+    width: '40%',
+    height: 60,
   },
   buttonText: {
-    color: '#FFFFFF', // Texto en blanco
-    fontSize: 18, // Fuente más grande para mejor legibilidad
+    color: '#FFFFFF',
+    fontSize: 16,
     fontWeight: 'bold',
+    fontFamily: 'serif',
+    textShadowColor: '#000',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
+    textAlign: 'center',
+  },
+  signUpButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+    fontFamily: 'serif',
+    textShadowColor: '#000',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
+    textAlign: 'center',
   },
 });
 
-export const placeholderColor = '#999999'; // Placeholder en gris claro
+export const placeholderColor = '#87CEEB'; // Placeholder azul suave acorde a los tonos del fondo

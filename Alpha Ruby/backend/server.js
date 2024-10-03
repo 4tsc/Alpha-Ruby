@@ -12,10 +12,10 @@ app.use(bodyParser.json());
 
 // Conexión a la base de datos MySQL
 const db = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME
+  host: 'localhost',
+  user: 'root', // Tu usuario de MySQL (predeterminado de XAMPP)
+  password: '', // Tu contraseña de MySQL (normalmente en XAMPP es vacía)
+  database: 'nombre_de_tu_base_de_datos' // Nombre de tu base de datos
 });
 
 // Conectar a la base de datos
@@ -46,5 +46,5 @@ app.post('/register', (req, res) => {
 
 // Iniciar el servidor
 app.listen(port, () => {
-  console.log(`Servidor escuchando en ${port}`);
+  console.log(`Servidor escuchando en http://localhost:${port}`);
 });

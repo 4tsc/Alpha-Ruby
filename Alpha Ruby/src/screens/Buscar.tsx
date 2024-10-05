@@ -1,6 +1,6 @@
-import { Image, StyleSheet, View, TextInput, Text, ScrollView, Modal, FlatList, TouchableHighlight, Dimensions, TouchableOpacity } from 'react-native';
+import { ActivityIndicator, Image, StyleSheet, View, TextInput, Text, ScrollView, Modal, FlatList, TouchableHighlight, Dimensions, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Importa el icono de FontAwesome
 
 
@@ -315,8 +315,77 @@ const filters = [
 ];
 
 export default function TabTwoScreen() {
+  const [cards, setCards] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [showMore, setShowMore] = useState(false);
+  const [cardResults, setCardResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [filter, setFilter] = useState({
+    order: 'name',
+    dir: 'auto',
+    colors: [],
+    cmc: '',
+    power: '',
+    toughness: '',
+  });
+
+  const fetchCards = async () => {
+    if (searchText.trim() === '') return;
+
+    setLoading(true);
+    const colorsQuery = filter.colors.length ? `+color:${filter.colors.join(',')}` : '';
+    const cmcQuery = filter.cmc ? `+cmc=${filter.cmc}` : '';
+    const powerQuery = filter.power ? `+pow=${filter.power}` : '';
+    const toughnessQuery = filter.toughness ? `+tou=${filter.toughness}` : '';
+
+    // Imprimir la URL generada para la solicitud
+    const fetchUrl = `https://api.scryfall.com/cards/search?q=${encodeURIComponent(searchText)}${colorsQuery}${cmcQuery}${powerQuery}${toughnessQuery}&order=${filter.order}&dir=${filter.dir}`;
+    console.log('URL de búsqueda:', fetchUrl);
+
+    try {
+        const response = await fetch(fetchUrl);
+        const data = await response.json();
+
+        if (data && data.data) {
+            setCardResults(data.data); // Guardamos las cartas en el estado
+        } else {
+            setCardResults([]); // No se encontraron cartas
+        }
+    } catch (error) {
+        console.error('Error al buscar cartas:', error);
+        setCardResults([]); // En caso de error, vaciamos el estado
+    } finally {
+        setLoading(false); // Finalizamos la carga
+    }
+};
+
+  useEffect(() => {
+    fetchCards(); // Cada vez que se cambie el texto de búsqueda o los filtros, busca cartas
+  }, [searchText, filter]);
+
+  // Renderizado de los resultados de búsqueda
+  const renderSearchResults = () => (
+    <View style={styles.resultsContainer}>
+      <Text style={styles.resultsText}>Resultados de búsqueda para "{searchText}":</Text>
+      {loading ? (
+        <ActivityIndicator size="large" color="#fff" />
+      ) : cardResults.length > 0 ? (
+        <ScrollView>
+          {cardResults.map((card) => (
+            <View key={card.id} style={styles.cardContainer}>
+              <Text style={styles.cardName}>{card.name}</Text>
+              <Text style={styles.cardDetails}>{card.type_line}</Text>
+              {card.power && <Text style={styles.cardStats}>Power: {card.power}</Text>}
+              {card.toughness && <Text style={styles.cardStats}>Toughness: {card.toughness}</Text>}
+            </View>
+          ))}
+        </ScrollView>
+      ) : (
+        <Text style={styles.noResultsText}>No se encontraron cartas.</Text>
+      )}
+    </View>
+  );
+  
 
   // Lógica para mostrar contenido basado en el texto de búsqueda
   const renderFilters = () => (
@@ -347,13 +416,6 @@ export default function TabTwoScreen() {
     </View>
   );
 
-  const renderSearchResults = () => (
-    <View style={styles.resultsContainer}>
-      <Text style={styles.resultsText}>Resultados de búsqueda:</Text>
-      <Text style={styles.resultsDetail}>Aquí van los resultados para "{searchText}"</Text>
-    </View>
-  );
-
   return (
     <View style={styles.container}>
       {/* Área superior con fondo naranja y barra de búsqueda */}
@@ -379,6 +441,39 @@ export default function TabTwoScreen() {
 }
 
 const styles = StyleSheet.create({
+  cardContainer: {
+    backgroundColor: '#fff',         // Fondo blanco para las cartas
+    padding: 10,                     // Espaciado interior
+    marginVertical: 8,               // Margen superior e inferior
+    marginHorizontal: 16,            // Margen lateral
+    borderRadius: 8,                 // Bordes redondeados
+    shadowColor: '#000',             // Sombra para dar efecto de tarjeta
+    shadowOffset: { width: 0, height: 2 }, 
+    shadowOpacity: 0.1,              // Transparencia de la sombra
+    shadowRadius: 4,                 // Radio de la sombra
+    elevation: 2,                    // Para dar un efecto de sombra en Android
+  },
+  cardName: {
+    fontSize: 18,                    // Tamaño de fuente más grande para el nombre
+    fontWeight: 'bold',              // Negrita para resaltar el nombre
+    color: '#333',                   // Color gris oscuro
+    marginBottom: 4,                 // Espaciado debajo del nombre
+  },
+  cardDetails: {
+    fontSize: 14,                    // Tamaño de fuente más pequeño para los detalles
+    color: '#555',                   // Un gris un poco más claro para los detalles
+    marginBottom: 4,                 // Espaciado debajo de los detalles
+  },
+  cardStats: {
+    fontSize: 14,                    // Tamaño de fuente estándar
+    color: '#888',                   // Color gris claro para estadísticas
+  },
+  noResultsText: {
+    fontSize: 16,                    // Tamaño de texto cuando no hay resultados
+    color: '#ff4444',                // Color rojo para indicar que no hay resultados
+    textAlign: 'center',             // Centrar el texto en pantalla
+    marginTop: 20,                   // Margen superior para dar espacio desde arriba
+  },
   sectionContainerImg: {
     flex: 1,
     padding: 20,

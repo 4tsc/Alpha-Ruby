@@ -12,7 +12,7 @@ import RegisterScreen from './src/screens/registerScreen';
 import DeckManagementScreen from './src/screens/DeckManagementScreen';
 import DeckEditorScreen from './src/screens/deckEditorScreen';
 import SearchCard from './src/screens/Buscar';
-import ProfileScreen from './src/screens/profileScreen';
+import ProfileScreen from './src/screens/ProfileScreen';
 
 import { UserProvider } from './src/screens/UserContext';
 

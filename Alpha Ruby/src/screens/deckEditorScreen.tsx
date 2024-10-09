@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Alert, TouchableOpacity, Modal } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Picker } from '@react-native-picker/picker';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import styles from '../styles/stylesDeckEditorScreen';
+import { View, Text, TextInput, Alert, StyleSheet, TouchableOpacity, SafeAreaView, Modal } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome'; // Importar iconos
+
+import { useUser } from './UserContext';
 
 interface Deck {
   id: number;
@@ -16,7 +14,6 @@ interface DeckEditorScreenProps {
   route: {
     params?: {
       deck?: Deck;
-      decks?: Deck[]; // Recibir los mazos aquí
     };
   };
   navigation: {
@@ -26,19 +23,15 @@ interface DeckEditorScreenProps {
 }
 
 const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }) => {
-  const decks = route.params?.decks || [];
-  const initialDeck = route.params?.deck || decks[0] || { id: 0, name: '', cards: [] };
+  const { userId } = useUser();
+  
+  const deck = route.params?.deck || { id: 0, name: 'Nuevo Mazo', cards: [] };
 
-  console.log('Received deck:', route.params?.deck);
-  console.log('Received decks:', route.params?.decks);
-
-  const [deck, setDeck] = useState(initialDeck);
   const [deckName, setDeckName] = useState(deck.name);
   const [cards, setCards] = useState(deck.cards || []);
   const [isEditingName, setIsEditingName] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [newCardName, setNewCardName] = useState('');
-  const [isPickerVisible, setIsPickerVisible] = useState(false);
 
   const saveDeckChanges = () => {
     if (deckName.trim() === '') {
@@ -68,57 +61,16 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
     setCards(cards.filter(card => card.id !== cardId));
   };
 
-  const selectDeck = (selectedDeck: Deck) => {
-    setDeck(selectedDeck);
-    setDeckName(selectedDeck.name);
-    setCards(selectedDeck.cards || []);
-    setIsPickerVisible(false);
-  };
-
   return (
-    <SafeAreaView style={[styles.container, { padding: wp('10%') }]}>
-      <Text style={[styles.title, { fontSize: wp('8%'), marginBottom: hp('2%') }]}>Editar Mazo</Text>
+    <SafeAreaView style={styles.container}>
+      {/* Título de la pantalla */}
+      <Text style={styles.title}>Editar Mazo</Text>
       
-      <TouchableOpacity onPress={() => setIsPickerVisible(true)} style={[styles.pickerButton, { padding: wp('3%') }]}>
-        <Text style={[styles.pickerButtonText, { fontSize: wp('4%') }]}>Seleccionar Mazo</Text>
-      </TouchableOpacity>
-
-      {isPickerVisible && (
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={isPickerVisible}
-          onRequestClose={() => setIsPickerVisible(false)}
-        >
-          <View style={styles.modalContainer}>
-            <View style={[styles.modalContent, { padding: wp('5%'), width: wp('80%') }]}>
-              <Text style={[styles.modalTitle, { fontSize: wp('6%') }]}>Seleccionar Mazo</Text>
-              <Picker
-                selectedValue={deck.id}
-                onValueChange={(itemValue) => {
-                  const selectedDeck = decks.find(d => d.id === itemValue);
-                  if (selectedDeck) {
-                    selectDeck(selectedDeck);
-                  }
-                }}
-                style={styles.picker}
-              >
-                {decks.map((d) => (
-                  <Picker.Item key={d.id} label={d.name} value={d.id} />
-                ))}
-              </Picker>
-              <TouchableOpacity onPress={() => setIsPickerVisible(false)} style={[styles.cancelButton, { padding: wp('3%') }]}>
-                <Text style={[styles.cancelButtonText, { fontSize: wp('4%') }]}>Cancelar</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal>
-      )}
-
-      <View style={[styles.nameContainer, { padding: wp('3%'), marginBottom: hp('2%') }]}>
+      {/* Contenedor del nombre del mazo */}
+      <View style={styles.nameContainer}>
         {isEditingName ? (
           <TextInput
-            style={[styles.input, { height: hp('5%'), paddingHorizontal: wp('3%') }]}
+            style={styles.input}
             placeholder="Nombre del mazo"
             value={deckName}
             onChangeText={setDeckName}
@@ -126,62 +78,221 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
           />
         ) : (
           <>
-            <Text style={[styles.deckName, { fontSize: wp('4.5%') }]}>{deckName}</Text>
+            <Text style={styles.deckName}>{deckName}</Text>
             <TouchableOpacity onPress={toggleEditName}>
-              <Icon name="pencil" size={wp('5%')} color="#FFFFFF" />
+              <Icon name="pencil" size={20} color="#FFFFFF" />
             </TouchableOpacity>
           </>
         )}
       </View>
 
-      <View style={[styles.cardsContainer, { marginBottom: hp('2%') }]}>
-        <View style={[styles.cardsHeader, { marginBottom: hp('1%') }]}>
-          <Text style={[styles.sectionTitle, { fontSize: wp('6%') }]}>Cartas del Mazo</Text>
-          <TouchableOpacity onPress={() => setIsModalVisible(true)} style={[styles.addCardButton, { padding: wp('2%') }]}>
-            <Icon name="plus" size={wp('5%')} color="#FFFFFF" />
+      <View style={styles.cardsContainer}>
+        <View style={styles.cardsHeader}>
+          <Text style={styles.sectionTitle}>Cartas del Mazo</Text>
+          <TouchableOpacity onPress={() => setIsModalVisible(true)} style={styles.addCardButton}>
+            <Icon name="plus" size={20} color="#FFFFFF" />
           </TouchableOpacity>
         </View>
         {cards.map((card) => (
-          <View key={card.id} style={[styles.cardItem, { padding: wp('4%'), marginBottom: hp('1%') }]}>
-            <Text style={[styles.cardText, { fontSize: wp('4.5%') }]}>{card.name}</Text>
+          <View key={card.id} style={styles.cardItem}>
+            <Text style={styles.cardText}>{card.name}</Text>
             <TouchableOpacity onPress={() => removeCard(card.id)} style={styles.deleteButton}>
-              <Icon name="times" size={wp('5%')} color="#D94A26" />
+              <Icon name="times" size={20} color="#D94A26" />
             </TouchableOpacity>
           </View>
         ))}
       </View>
 
+      {/* Modal para agregar una nueva carta */}
       <Modal
-        animationType="slide"
+        animationType="fade"
         transparent={true}
         visible={isModalVisible}
         onRequestClose={() => setIsModalVisible(false)}
       >
         <View style={styles.modalContainer}>
-          <View style={[styles.modalContent, { padding: wp('5%'), width: wp('80%') }]}>
-            <Text style={[styles.modalTitle, { fontSize: wp('6%'), marginBottom: hp('2%') }]}>Buscar Carta</Text>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Buscar Carta</Text>
             <TextInput
-              style={[styles.modalInput, { height: hp('5%'), paddingHorizontal: wp('3%'), marginBottom: hp('2%') }]}
+              style={styles.modalInput}
               placeholder="Nombre de la carta"
               placeholderTextColor="#CCCCCC"
               value={newCardName}
               onChangeText={setNewCardName}
             />
-            <TouchableOpacity onPress={addCard} style={[styles.addButton, { padding: wp('3%'), marginBottom: hp('1%') }]}>
-              <Text style={[styles.addButtonText, { fontSize: wp('4.5%') }]}>Agregar Carta</Text>
+            <TouchableOpacity onPress={addCard} style={styles.addButton}>
+              <Text style={styles.addButtonText}>Agregar Carta</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => setIsModalVisible(false)} style={[styles.cancelButton, { padding: wp('3%') }]}>
-              <Text style={[styles.cancelButtonText, { fontSize: wp('4.5%') }]}>Cancelar</Text>
+            <TouchableOpacity onPress={() => setIsModalVisible(false)} style={styles.cancelButton}>
+              <Text style={styles.cancelButtonText}>Cancelar</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
 
-      <TouchableOpacity onPress={saveDeckChanges} style={[styles.saveButton, { padding: wp('3%') }]}>
-        <Text style={[styles.saveButtonText, { fontSize: wp('4.5%') }]}>Guardar Cambios</Text>
+      {/* Botón de guardar cambios */}
+      <TouchableOpacity onPress={saveDeckChanges} style={styles.saveButton}>
+        <Text style={styles.saveButtonText}>Guardar Cambios</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#3D3D3D',
+  },
+  title: {
+    fontSize: 32,
+    marginBottom: 20,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    textAlign: 'center',
+  },
+  nameContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#2C2C2C',
+    padding: 10,
+    borderRadius: 12, // Bordes redondeados
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  deckName: {
+    fontSize: 18,
+    color: '#FFFFFF',
+    flex: 1,
+  },
+  input: {
+    flex: 1,
+    height: 40,
+    borderColor: '#666666',
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    backgroundColor: '#2C2C2C',
+    color: '#FFFFFF',
+  },
+  cardsContainer: {
+    flex: 1,
+    marginBottom: 20,
+  },
+  cardsHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  sectionTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+  },
+  addCardButton: {
+    backgroundColor: '#F77F00',
+    padding: 8,
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  cardItem: {
+    backgroundColor: '#2C2C2C',
+    padding: 15,
+    borderRadius: 12,
+    marginBottom: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  cardText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+  },
+  deleteButton: {
+    padding: 5,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    width: '80%',
+    backgroundColor: '#3D3D3D',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalTitle: {
+    fontSize: 24,
+    color: '#FFFFFF',
+    marginBottom: 20,
+  },
+  modalInput: {
+    height: 40,
+    borderColor: '#666666',
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    borderRadius: 8,
+    backgroundColor: '#2C2C2C',
+    color: '#FFFFFF',
+    marginBottom: 20,
+    width: '100%',
+  },
+  addButton: {
+    backgroundColor: '#F77F00',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginBottom: 10,
+    width: '100%',
+  },
+  addButtonText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+  },
+  cancelButton: {
+    backgroundColor: '#666666',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    width: '100%',
+  },
+  cancelButtonText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+  },
+  saveButton: {
+    backgroundColor: '#F77F00',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  saveButtonText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+  },
+});
 
 export default DeckEditorScreen;

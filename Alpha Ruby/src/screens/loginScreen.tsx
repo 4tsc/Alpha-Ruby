@@ -1,16 +1,16 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, Alert, ImageBackground } from 'react-native';
 import { styles, placeholderColor } from '../styles/stylesLogin'; // Importa los estilos
 
 import { useUser } from './UserContext';
 
-export default function Login({ navigation }) {  // Recibe navigation como prop
+
+export default function Login({ navigation }) {  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const { setUserId } = useUser();
-
+ 
   const handleLogin = async () => {
     try {
       const response = await fetch('http://186.64.122.218:3000/login', {
@@ -44,42 +44,49 @@ export default function Login({ navigation }) {  // Recibe navigation como prop
   };
 
   const handleRegister = () => {
-    navigation.replace('Register');  // Redirige a la pantalla 'Register' para registrar un nuevo usuario
-  }
+    navigation.replace('Register');  
+  };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Inicie sesión</Text>
-      
-      <TextInput
-        style={styles.input}
-        placeholder="Correo electrónico"
-        placeholderTextColor={placeholderColor} 
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-      
-      <TextInput
-        style={styles.input}
-        placeholder="Contraseña"
-        placeholderTextColor={placeholderColor} 
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-        autoCapitalize="none"
-      />
-      
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleLogin}>
-          <Text style={styles.buttonText}>Iniciar sesión</Text>
-        </TouchableOpacity>
+    // Aquí usamos ImageBackground para la imagen de fondo
+    <ImageBackground
+      source={require('../images/back.jpg')}  // Asegúrate de que la ruta sea correcta
+      style={{ flex: 1, width: '100%', height: '100%' }}  // Ocupa toda la pantalla
+      resizeMode="cover"  // Asegura que la imagen cubra toda la pantalla
+    >
+      <View style={styles.container}>
+        <Text style={styles.title}>Inicie sesión</Text>
+        
+        <TextInput
+          style={styles.input}
+          placeholder="Correo electrónico"
+          placeholderTextColor={placeholderColor}
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+        
+        <TextInput
+          style={styles.input}
+          placeholder="Contraseña"
+          placeholderTextColor={placeholderColor}
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+          autoCapitalize="none"
+        />
+        
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={handleLogin}>
+            <Text style={styles.buttonText}>Iniciar sesión</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button} onPress={handleRegister}>
-          <Text style={styles.buttonText}>Registrarse</Text>
-        </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={handleRegister}>
+            <Text style={styles.signUpButtonText}>Registrarse</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </SafeAreaView>
+    </ImageBackground>
   );
 }

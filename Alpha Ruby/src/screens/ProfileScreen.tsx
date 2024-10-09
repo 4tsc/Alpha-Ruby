@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Button, Alert } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, Text, Button, StyleSheet, Alert, ImageBackground, Dimensions } from 'react-native';
 import { useUser } from './UserContext';
-import { styles } from '../styles/stylesProfileScreen';
+
+const { width, height } = Dimensions.get('window');
 
 export default function ProfileScreen({ navigation }) {
   const { userId, setUserId } = useUser();
@@ -38,39 +38,45 @@ export default function ProfileScreen({ navigation }) {
       const response = await fetch('http://186.64.122.218:3000/logout', {
         method: 'POST',
         credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
       });
 
       if (response.ok) {
-        setUserId(null); // Limpiar el userId en el contexto
-        navigation.navigate('LoginScreen'); // Navegar a la pantalla de login
+        setUserId(null);
+        navigation.replace('Login');
       } else {
-        const errorText = await response.text();
-        console.log('Error cerrando sesión:', errorText);
-        Alert.alert('Error', 'Error cerrando sesión. Por favor, inténtalo de nuevo.');
+        Alert.alert('Error de logout', 'No se pudo cerrar la sesión');
       }
     } catch (error) {
-      console.log('Error en la solicitud de logout:', error);
-      Alert.alert('Error', 'Error en la solicitud de logout. Por favor, inténtalo de nuevo.');
+      Alert.alert('Error', 'Hubo un problema con el servidor.');
+      console.error('Error en el fetch:', error);
     }
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>Perfil</Text>
+    <ImageBackground
+      source={require('../images/back.jpg')}
+      style={{ flex: 1, width: '100%', height: '100%' }}
+      resizeMode="cover"
+    >
+      <View style={styles.container}>
+        <Text style={styles.text}>Nombre: {userData.nombre}</Text>
+        <Text style={styles.text}>Correo: {userData.correo}</Text>
+        <Button title="Cerrar sesión" onPress={handleLogout} />
       </View>
-      <View style={styles.content}>
-        <Text style={styles.label}>Nombre:</Text>
-        <Text style={styles.value}>{userData.nombre || 'Cargando...'}</Text>
-        <Text style={styles.label}>Correo:</Text>
-        <Text style={styles.value}>{userData.correo || 'Cargando...'}</Text>
-      </View>
-      <View style={styles.logoutButtonContainer}>
-        <Button title="Cerrar Sesión" onPress={handleLogout} />
-      </View>
-    </SafeAreaView>
+    </ImageBackground>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: width * 0.05,
+  },
+  text: {
+    color: '#fff',
+    fontSize: width * 0.05,
+    marginBottom: height * 0.02,
+  },
+});

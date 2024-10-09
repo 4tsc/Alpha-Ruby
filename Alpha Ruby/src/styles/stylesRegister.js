@@ -6,42 +6,73 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#3D3D3D', // Fondo gris oscuro originalmente, ajustado a #504c56 si es necesario
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
   },
   title: {
-    fontSize: 32,
-    marginBottom: 20,
+    fontSize: 40,
     fontWeight: 'bold',
-    color: '#FFFFFF', // Texto blanco
+    marginBottom: 40,
+    textAlign: 'center',
+    color: '#87CEEB',
+    fontFamily: 'serif',
+    textShadowColor: '#000',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 6,
   },
   input: {
-    height: 40,
-    width: '80%',
-    borderColor: '#666666',
+    height: 50,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
     borderWidth: 1,
-    marginBottom: 10,
-    paddingLeft: 8,
-    backgroundColor: '#2C2C2C', // Fondo gris oscuro para input
-    color: '#FFFFFF', // Texto blanco
+    borderColor: '#87CEEB',
+    marginBottom: 20,
+    paddingHorizontal: 20,
+    borderRadius: 25,
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontFamily: 'serif',
+    width: '100%',
+    textShadowColor: '#000',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
   buttonContainer: {
-    flexDirection: 'row', // Hace que los botones se alineen en una fila
-    justifyContent: 'space-between', // Agrega espacio entre los botones
-    marginTop: 20,
-    width: '80%', // Ajusta el ancho del contenedor de los botones
+    marginTop: 10,  // Reducimos el margen superior para acercar los botones a los inputs
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
   },
   button: {
-    backgroundColor: '#D94A26', // Naranja para el botón
-    padding: 10,
-    borderRadius: 5,
-    width: '48%', // Ajusta el ancho del botón para que ambos quepan en una fila
+    backgroundColor: 'transparent',
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 25,
+    borderWidth: 0,
+    justifyContent: 'center',
     alignItems: 'center',
+    width: '40%',
+    height: 60,
   },
   buttonText: {
-    color: '#FFFFFF', // Texto blanco
+    color: '#FFFFFF',
     fontSize: 16,
     fontWeight: 'bold',
+    fontFamily: 'serif',
+    textShadowColor: '#000',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
+    textAlign: 'center',
+  },
+  signUpButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+    fontFamily: 'serif',
+    textShadowColor: '#000',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
+    textAlign: 'center',
   },
 });
 
-export const placeholderColor = '#CCCCCC'; // Color del placeholder
+export const placeholderColor = '#87CEEB'; // Placeholder azul suave acorde a los tonos del fondo

@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Alert, StyleSheet, TouchableOpacity, SafeAreaView, Modal } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Importar iconos
 
+import { useUser } from './UserContext';
+
 interface Deck {
   id: number;
   name: string;
@@ -21,6 +23,8 @@ interface DeckEditorScreenProps {
 }
 
 const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }) => {
+  const { userId } = useUser();
+  
   const deck = route.params?.deck || { id: 0, name: 'Nuevo Mazo', cards: [] };
 
   const [deckName, setDeckName] = useState(deck.name);

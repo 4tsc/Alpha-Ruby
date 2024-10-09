@@ -12,6 +12,10 @@ import RegisterScreen from './src/screens/registerScreen';
 import DeckManagementScreen from './src/screens/DeckManagementScreen';
 import DeckEditorScreen from './src/screens/deckEditorScreen';
 import SearchCard from './src/screens/Buscar';
+import ProfileScreen from './src/screens/ProfileScreen';
+
+import { UserProvider } from './src/screens/UserContext';
+
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -33,6 +37,10 @@ function MainTabNavigator() {
           } else if (route.name === 'Buscar') {
             iconName = 'search';
           }
+            else if (route.name === 'Profile') {
+            iconName = 'user';
+          }
+          
 
           return <Icon name={iconName} size={size} color={color} />;
         },
@@ -53,20 +61,23 @@ function MainTabNavigator() {
       <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
       <Tab.Screen name="Buscar" component={SearchCard} options={{ headerShown: false }} />
       <Tab.Screen name="Mazos" component={DeckManagementScreen} options={{ headerShown: false }} />
+      <Tab.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
     </Tab.Navigator>
   );
 }
 
 const App = () => {
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
-        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Main" component={MainTabNavigator} options={{ headerShown: false }} />
-        <Stack.Screen name="DeckEditor" component={DeckEditorScreen} options={{ title: 'Mazos', headerStyle: { backgroundColor: '#3D3D3D' }, headerTintColor: '#fff' }} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <UserProvider>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Login">
+          <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="Main" component={MainTabNavigator} options={{ headerShown: false }} />
+          <Stack.Screen name="DeckEditor" component={DeckEditorScreen} options={{ title: 'Mazos', headerStyle: { backgroundColor: '#3D3D3D' }, headerTintColor: '#fff' }} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </UserProvider>
   );
 };
 

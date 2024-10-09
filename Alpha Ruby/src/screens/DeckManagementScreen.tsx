@@ -3,6 +3,8 @@ import { View, Text, FlatList, TextInput, Alert, StyleSheet, TouchableOpacity, S
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+import { useUser } from './UserContext';
+
 interface Deck {
   id: number;
   name: string;
@@ -11,6 +13,8 @@ interface Deck {
 
 const DeckManagementScreen: React.FC = () => {
   const navigation = useNavigation();
+  
+  const { userId } = useUser();
 
   const [decks, setDecks] = useState<Deck[]>([]);
   const [newDeckName, setNewDeckName] = useState('');

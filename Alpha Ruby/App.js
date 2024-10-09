@@ -44,10 +44,10 @@ function MainTabNavigator() {
 
           return <Icon name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: '#D94A26', // Bright orange for active tab
-        tabBarInactiveTintColor: '#FFFFFF', // White for inactive tabs
+        tabBarActiveTintColor: '#D3C298', // Bright orange for active tab
+        tabBarInactiveTintColor: '#E0DCC3', // White for inactive tabs
         tabBarStyle: {
-          backgroundColor: '#3D3D3D', // Dark background for the tab bar
+          backgroundColor: '#0A0B1E', // Dark background for the tab bar
           borderTopWidth: 0, // Remove top border for a sleek look
           height: 60, // Increase height for better spacing
           paddingBottom: 10, // Add padding for better touch interaction

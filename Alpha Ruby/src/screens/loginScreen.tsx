@@ -10,7 +10,7 @@ export default function Login({ navigation }) {
   const [password, setPassword] = useState('');
 
   const { setUserId } = useUser();
-
+ 
   const handleLogin = async () => {
     try {
       const response = await fetch('http://186.64.122.218:3000/login', {

@@ -1,6 +1,5 @@
-import { StyleSheet, View, Text, SafeAreaView, Dimensions } from 'react-native';
+import { StyleSheet, View, Text, SafeAreaView, Dimensions, ImageBackground } from 'react-native';
 import React, { useEffect, useState } from 'react';
-
 import { useUser } from './UserContext';
 
 const { width, height } = Dimensions.get('window');
@@ -9,6 +8,7 @@ export default function HomeScreen() {
   const { userId } = useUser(); // Usa el userId directamente desde el contexto
   const [userName, setUserName] = useState(''); // Estado para almacenar el nombre del usuario
 
+  // No se toca el useEffect como pediste
   useEffect(() => {
     console.log('ID de usuario recibido desde el contexto:', userId);
 
@@ -36,79 +36,98 @@ export default function HomeScreen() {
       fetchUserData(); // Solo hacemos la solicitud si el userId está disponible
     }
   }, [userId]);
-  return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>¡Bienvenido!</Text>
-      </View>
-      <View style={styles.content}>
-        {/* Sección de cartas */}
-        <View style={styles.cardsSection}>
-          <Text style={styles.sectionTitle}>Últimas cartas buscadas</Text>
-          <View style={styles.cardsContainer}>
-            <View style={styles.card}>
-              <Text style={styles.cardText}>Card 1</Text>
-            </View>
-            <View style={styles.card}>
-              <Text style={styles.cardText}>Card 2</Text>
-            </View>
-            <View style={styles.card}>
-              <Text style={styles.cardText}>Card 3</Text>
-            </View>
-          </View>
-        </View>
 
-        {/* Sección de noticias */}
-        <View style={styles.newsSection}>
-          <Text style={styles.sectionTitle}>Noticias</Text>
-          <View style={styles.newsContainer}>
-            <View style={styles.newsItem}>
-              <Text style={styles.newsText}>News 1</Text>
+  return (
+    <ImageBackground 
+      source={require('../images/back.jpg')} // Aquí iría tu imagen de fondo
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <SafeAreaView style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.headerText}>¡Bienvenido, {userName}!</Text>
+        </View>
+        <View style={styles.content}>
+          {/* Sección de cartas */}
+          <View style={styles.cardsSection}>
+            <Text style={styles.sectionTitle}>Últimas cartas buscadas</Text>
+            <View style={styles.cardsContainer}>
+              <View style={styles.card}>
+                <Text style={styles.cardText}>Card 1</Text>
+              </View>
+              <View style={styles.card}>
+                <Text style={styles.cardText}>Card 2</Text>
+              </View>
+              <View style={styles.card}>
+                <Text style={styles.cardText}>Card 3</Text>
+              </View>
             </View>
-            <View style={styles.newsItem}>
-              <Text style={styles.newsText}>News 2</Text>
-            </View>
-            <View style={styles.newsItem}>
-              <Text style={styles.newsText}>News 3</Text>
+          </View>
+
+          {/* Sección de noticias */}
+          <View style={styles.newsSection}>
+            <Text style={styles.sectionTitle}>Noticias</Text>
+            <View style={styles.newsContainer}>
+              <View style={styles.newsItem}>
+                <Text style={styles.newsText}>News 1</Text>
+              </View>
+              <View style={styles.newsItem}>
+                <Text style={styles.newsText}>News 2</Text>
+              </View>
+              <View style={styles.newsItem}>
+                <Text style={styles.newsText}>News 3</Text>
+              </View>
             </View>
           </View>
         </View>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
   container: {
     flex: 1,
-    backgroundColor: '#3D3D3D', // Fondo gris oscuro más moderno
+    padding: 20,
   },
   header: {
-    backgroundColor: '#F77F00', // Naranja vibrante para el encabezado
+    backgroundColor: 'rgba(15, 15, 35, 0.9)', // Azul oscuro casi negro
     paddingVertical: 10,
     height: height * 0.15,
-    justifyContent: 'flex-end',
-    alignItems: 'flex-start',
-    paddingHorizontal: 20,
-    borderBottomLeftRadius: 20, // Bordes redondeados para hacer el diseño más atractivo
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
+    borderColor: '#8A7F5A', // Dorado más suave para bordes, menos brillante
+    borderWidth: 2,
   },
   headerText: {
-    color: '#fff',
-    fontSize: width * 0.1, // Ajusta el tamaño del texto de manera responsiva
+    color: '#D3C298', // Dorado suave para el texto
+    fontSize: width * 0.1,
     fontWeight: 'bold',
+    textShadowColor: '#000', // Sombra más sutil para profundidad
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 4,
   },
   content: {
     flex: 1,
-    padding: 20,
+    marginTop: 20,
   },
   cardsSection: {
     marginBottom: 20,
   },
   sectionTitle: {
-    color: '#fff',
-    fontSize: width * 0.06, // Ajusta el tamaño del texto de manera responsiva
+    color: '#D3C298', // Dorado suave para los títulos de las secciones
+    fontSize: width * 0.06,
     fontWeight: 'bold',
+    textShadowColor: '#000',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
     marginBottom: 10,
   },
   cardsContainer: {
@@ -117,22 +136,26 @@ const styles = StyleSheet.create({
   },
   card: {
     flex: 1,
-    backgroundColor: '#2a2827',
+    backgroundColor: 'rgba(10, 10, 30, 0.9)', // Azul oscuro casi negro para las cartas
     marginHorizontal: 5,
     padding: 20,
-    height: height * 0.2, // Ajusta la altura de las cartas de manera responsiva
+    height: height * 0.2,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 12, // Bordes más redondeados
+    borderRadius: 12,
+    borderColor: '#8A7F5A', // Borde dorado suave
+    borderWidth: 2,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3, // Sombras para añadir profundidad
-    shadowRadius: 4,
-    elevation: 5, // Elevación para Android
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 6,
+    elevation: 6,
   },
   cardText: {
-    color: '#fff',
+    color: '#E0DCC3', // Texto dorado claro suave
     textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 18,
   },
   newsSection: {
     marginTop: 20,
@@ -141,18 +164,24 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   newsItem: {
-    backgroundColor: '#2a2827',
+    backgroundColor: 'rgba(10, 10, 30, 0.9)', // Fondo azul oscuro casi negro para las noticias
     marginBottom: 10,
-    padding: 15, // Más padding para mayor comodidad visual
-    borderRadius: 12, // Bordes redondeados
+    padding: 15,
+    borderRadius: 12,
+    borderColor: '#8A7F5A',
+    borderWidth: 2,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 5, // Sombras para mayor profundidad
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 6,
+    elevation: 6,
   },
   newsText: {
-    color: '#fff',
+    color: '#E0DCC3', // Texto dorado claro suave para las noticias
     textAlign: 'center',
+    fontWeight: 'bold',
   },
 });
+
+
+

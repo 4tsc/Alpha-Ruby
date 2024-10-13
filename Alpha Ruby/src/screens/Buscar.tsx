@@ -442,7 +442,7 @@ export default function TabTwoScreen() {
 
 const styles = StyleSheet.create({
   cardContainer: {
-    backgroundColor: '#fff',         // Fondo blanco para las cartas
+    backgroundColor: '#1E1F28',         // Fondo oscuro para las cartas
     padding: 10,                     // Espaciado interior
     marginVertical: 8,               // Margen superior e inferior
     marginHorizontal: 16,            // Margen lateral
@@ -456,12 +456,12 @@ const styles = StyleSheet.create({
   cardName: {
     fontSize: 18,                    // Tamaño de fuente más grande para el nombre
     fontWeight: 'bold',              // Negrita para resaltar el nombre
-    color: '#333',                   // Color gris oscuro
+    color: '#F1E6C8',                // Color dorado suave para el texto
     marginBottom: 4,                 // Espaciado debajo del nombre
   },
   cardDetails: {
     fontSize: 14,                    // Tamaño de fuente más pequeño para los detalles
-    color: '#555',                   // Un gris un poco más claro para los detalles
+    color: '#D3C298',                // Dorado suave para los detalles
     marginBottom: 4,                 // Espaciado debajo de los detalles
   },
   cardStats: {
@@ -491,7 +491,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#4A4A4A', // Fondo gris oscuro
+    backgroundColor: '#1E1F28', // Fondo oscuro unificado
   },
   inputWrapper: {
     flexDirection: 'row',
@@ -516,13 +516,13 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   inputButton: {
-    backgroundColor: '#FF7F00', // Naranja brillante
+    backgroundColor: '#D3C298', // Dorado suave para botón
     padding: 10,
     borderTopRightRadius: 5,
     borderBottomRightRadius: 5,
   },
   sideButton: {
-    backgroundColor: '#FF7F00',
+    backgroundColor: '#D3C298',  // Dorado suave para botón
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 4,
@@ -532,7 +532,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   sideButtonText: {
-    color: '#FFFFFF',
+    color: '#1E1F28',
     fontWeight: 'bold',
     fontSize: 16,
   },
@@ -542,13 +542,13 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   modalButton: {
-    backgroundColor: '#FF7F00',
+    backgroundColor: '#D3C298',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
   },
   modalButtonText: {
-    color: '#FFFFFF',
+    color: '#1E1F28',
     fontWeight: 'bold',
   },
   row: {
@@ -573,7 +573,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   smallSymbolButton2: {
-    backgroundColor: '#FF7F00',
+    backgroundColor: '#D3C298',  // Dorado suave para botón
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 20,
@@ -584,7 +584,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   symbolText2: {
-    color: '#FFFFFF',
+    color: '#1E1F28',
     fontSize: 18,
   },
   textInput: {
@@ -609,7 +609,7 @@ const styles = StyleSheet.create({
   },
   orangeSection: {
     flex: 0.22,
-    backgroundColor: '#FF7F00', // Naranja brillante
+    backgroundColor: '#1E1F28', // Fondo oscuro en vez de naranja
     justifyContent: 'center',
     paddingHorizontal: 20,
   },
@@ -622,12 +622,12 @@ const styles = StyleSheet.create({
   },
   optionButton: {
     padding: 15,
-    backgroundColor: '#FF7F00',
+    backgroundColor: '#D3C298',  // Dorado suave
     borderRadius: 5,
   },
   optionText: {
     fontSize: 16,
-    color: '#FFFFFF',
+    color: '#1E1F28',
   },
   searchIcon: {
     marginRight: 10,
@@ -640,7 +640,7 @@ const styles = StyleSheet.create({
   },
   graySection: {
     flex: 1,
-    backgroundColor: '#4A4A4A', 
+    backgroundColor: '#1E1F28', 
     padding: 20,
   },
   filtersContainer: {
@@ -650,7 +650,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: 'bold',
     marginBottom: 10,
-    color: '#FFFFFF',
+    color: '#D3C298',
   },
   sectionContainer: {
     marginBottom: 20,
@@ -691,13 +691,13 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   button: {
-    backgroundColor: '#FF7F00',
+    backgroundColor: '#D3C298',  // Dorado suave para botones
     padding: 10,
     borderRadius: 5,
     margin: 5,
   },
   buttonText: {
-    color: '#FFFFFF',
+    color: '#1E1F28',
   },
   toggleButton: {
     backgroundColor: '#9e6b4e',
@@ -710,11 +710,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 10,
     marginTop: 10,
-    backgroundColor: '#FF7F00', // Naranja suave
+    backgroundColor: '#D3C298', // Naranja suave
     color: '#000000',
   },
   dropdownButton: {
-    backgroundColor: '#FF7F00',
+    backgroundColor: '#D3C298',
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 5,
@@ -732,7 +732,7 @@ const styles = StyleSheet.create({
     transform: [{ translateY: -10 }],
   },
   dropdownText: {
-    color: '#FFFFFF',
+    color: '#1E1F28',
     fontSize: 14,
   },
   resultsContainer: {

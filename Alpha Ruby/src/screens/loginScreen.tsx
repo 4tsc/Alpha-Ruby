@@ -50,7 +50,7 @@ export default function Login({ navigation }) {
   return (
     // Aquí usamos ImageBackground para la imagen de fondo
     <ImageBackground
-      source={require('../images/back.jpg')}  // Asegúrate de que la ruta sea correcta
+        // Asegúrate de que la ruta sea correcta
       style={{ flex: 1, width: '100%', height: '100%' }}  // Ocupa toda la pantalla
       resizeMode="cover"  // Asegura que la imagen cubra toda la pantalla
     >

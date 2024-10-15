@@ -15,7 +15,6 @@ import SearchCard from './src/screens/Buscar';
 
 import { UserProvider } from './src/screens/UserContext';
 
-
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 

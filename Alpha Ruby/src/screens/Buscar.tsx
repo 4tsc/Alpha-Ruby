@@ -246,23 +246,6 @@ const ColoresSection: React.FC = () => {
   );
 };
 
-const EdicionesSection: React.FC = () => {
- const [inputValue, setInputValue] = useState('');
-  
- return(
-  <View style={styles.sectionContainer}>
-    <Text style={styles.sectionText}>Ediciones</Text>
-    <View style={styles.inputContainer}></View>
-      <TextInput
-        style={styles.inputContainer}
-        value={inputValue}
-        onChangeText={setInputValue}
-        placeholder="Edición"
-      />
-  </View>
- );
-};
-
 const PrecioSection: React.FC = () => {
   const [inputValue, setInputValue] = useState<string>(''); // Estado para el campo de texto
   const [currentSymbol, setCurrentSymbol] = useState<string>('>'); // Estado para el símbolo
@@ -310,8 +293,7 @@ const filters = [
   { id: '4', title: 'Texto' },
   { id: '5', title: 'Coste de mana' },
   { id: '6', title: 'Colores' },
-  { id: '7', title: 'Ediciones' },
-  { id: '8', title: 'Precio' },
+  { id: '7', title: 'Precio' },
 ];
 
 export default function TabTwoScreen() {
@@ -371,14 +353,25 @@ export default function TabTwoScreen() {
         <ActivityIndicator size="large" color="#fff" />
       ) : cardResults.length > 0 ? (
         <ScrollView>
-          {cardResults.map((card) => (
-            <View key={card.id} style={styles.cardContainer}>
-              <Text style={styles.cardName}>{card.name}</Text>
-              <Text style={styles.cardDetails}>{card.type_line}</Text>
-              {card.power && <Text style={styles.cardStats}>Power: {card.power}</Text>}
-              {card.toughness && <Text style={styles.cardStats}>Toughness: {card.toughness}</Text>}
-            </View>
-          ))}
+          <View style={styles.cardsGrid}>  {/* Grid de cartas */}
+            {cardResults.map((card) => (
+              <View key={card.id} style={styles.cardContainer}>
+                {/* Mostrar la imagen de la carta */}
+                {card.image_uris && (
+                  <Image
+                    source={{ uri: card.image_uris.small }} // Tamaño pequeño de la imagen
+                    style={styles.cardImage}
+                  />
+                )}
+                {/* Mostrar el nombre de la carta */}
+                <Text style={styles.cardName}>{card.name}</Text>
+  
+                {/* Mostrar las estadísticas de Power y Toughness si existen */}
+                {card.power && <Text style={styles.cardStats}>Power: {card.power}</Text>}
+                {card.toughness && <Text style={styles.cardStats}>Toughness: {card.toughness}</Text>}
+              </View>
+            ))}
+          </View>
         </ScrollView>
       ) : (
         <Text style={styles.noResultsText}>No se encontraron cartas.</Text>
@@ -405,8 +398,6 @@ export default function TabTwoScreen() {
             return <CosteDeManaSection key={filter.id} />;
           case 'Colores':
             return <ColoresSection key={filter.id} />;
-          case 'Ediciones':
-            return <EdicionesSection key={filter.id} />;
           case 'Precio':
             return <PrecioSection key={filter.id} />;
           default:
@@ -441,38 +432,49 @@ export default function TabTwoScreen() {
 }
 
 const styles = StyleSheet.create({
+  resultsContainer: {
+    padding: 16,
+  },
+  cardsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',               // Permitir que las cartas se envuelvan en múltiples filas
+    justifyContent: 'space-between' // Espacio entre las cartas
+  },
   cardContainer: {
-    backgroundColor: '#fff',         // Fondo blanco para las cartas
-    padding: 10,                     // Espaciado interior
-    marginVertical: 8,               // Margen superior e inferior
-    marginHorizontal: 16,            // Margen lateral
-    borderRadius: 8,                 // Bordes redondeados
-    shadowColor: '#000',             // Sombra para dar efecto de tarjeta
-    shadowOffset: { width: 0, height: 2 }, 
-    shadowOpacity: 0.1,              // Transparencia de la sombra
-    shadowRadius: 4,                 // Radio de la sombra
-    elevation: 2,                    // Para dar un efecto de sombra en Android
+    backgroundColor: '#fff',
+    padding: 10,
+    marginBottom: 16,
+    width: '47%',                   // Ocupa el 47% del ancho para hacer dos columnas
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  cardImage: {
+    width: '100%',                  // La imagen ocupará todo el ancho del contenedor
+    height: 220,                    // Aumentar la altura para evitar que se recorten
+    marginBottom: 8,                // Espacio entre la imagen y el nombre
+    resizeMode: 'contain',          // Ajustar la imagen sin recortarla
   },
   cardName: {
-    fontSize: 18,                    // Tamaño de fuente más grande para el nombre
-    fontWeight: 'bold',              // Negrita para resaltar el nombre
-    color: '#333',                   // Color gris oscuro
-    marginBottom: 4,                 // Espaciado debajo del nombre
-  },
-  cardDetails: {
-    fontSize: 14,                    // Tamaño de fuente más pequeño para los detalles
-    color: '#555',                   // Un gris un poco más claro para los detalles
-    marginBottom: 4,                 // Espaciado debajo de los detalles
+    fontSize: 14,                  // Reducir el tamaño de la fuente para el nombre
+    fontWeight: 'bold',
+    color: '#333',
+    textAlign: 'center',           // Centrar el nombre debajo de la imagen
+    marginBottom: 4,
   },
   cardStats: {
-    fontSize: 14,                    // Tamaño de fuente estándar
-    color: '#888',                   // Color gris claro para estadísticas
+    fontSize: 12,                  // Reducir el tamaño de las estadísticas
+    color: '#888',
+    textAlign: 'center',           // Centrar las estadísticas
   },
   noResultsText: {
-    fontSize: 16,                    // Tamaño de texto cuando no hay resultados
-    color: '#ff4444',                // Color rojo para indicar que no hay resultados
-    textAlign: 'center',             // Centrar el texto en pantalla
-    marginTop: 20,                   // Margen superior para dar espacio desde arriba
+    fontSize: 16,
+    color: '#ff4444',
+    textAlign: 'center',
+    marginTop: 20,
   },
   sectionContainerImg: {
     flex: 1,
@@ -748,4 +750,3 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
 });
-

@@ -23,7 +23,7 @@ const DeckManagementScreen: React.FC = () => {
     // Función para obtener los mazos del usuario
     const fetchDecks = async () => {
       try {
-        const response = await fetch(`http://186.64.122.218:3000/api/barajasdeusuaio2/${userId}`, {
+        const response = await fetch(`https://magicarduct.online:3000/api/barajasdeusuaio2/${userId}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -66,7 +66,7 @@ const DeckManagementScreen: React.FC = () => {
   
       try {
         // Realizar la solicitud POST al endpoint para agregar la baraja
-        const response = await fetch('http://186.64.122.218:3000/api/createmazo2', {
+        const response = await fetch('https://magicarduct.online:3000/api/createmazo2', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -107,7 +107,7 @@ const DeckManagementScreen: React.FC = () => {
       
       try {
         // Realiza la solicitud HTTP DELETE al servidor con el nuevo endpoint
-        const response = await fetch(`http://186.64.122.218:3000/api/eliminarmazo2/${deckName}/${userId}`, {
+        const response = await fetch(`https://magicarduct.online:3000/api/eliminarmazo2/${deckName}/${userId}`, {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",

@@ -3,7 +3,6 @@ import { Ionicons } from '@expo/vector-icons';
 import React, { useState, useEffect } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Importa el icono de FontAwesome
 
-
 // Obtener el ancho de la pantalla
 const screenWidth = Dimensions.get('window').width;
 
@@ -16,36 +15,71 @@ const legalidadesList = [
   'Penny', 'Duel Cmdr.', 'PreDH'
 ];
 
+const typesList = [
+  'Artifact',
+  'Creature',
+  'Enchantment',
+  'Instant',
+  'Land',
+  'Planeswalker',
+  'Sorcery',
+  'Tribal',
+];
+
 // Definir tipos para las props del componente LegalidadesSection
 interface LegalidadesSectionProps {
   showMore: boolean;
   setShowMore: (show: boolean) => void;
+  setFilter: (filter: any) => void; // O el tipo correcto que estés usando
+  selectedLegality: string | null; // Añadir legalidad seleccionada
+  setSelectedLegality: (legality: string | null) => void; // Añadir función para establecer la legalidad seleccionada
 }
 
-const LegalidadesSection: React.FC<LegalidadesSectionProps> = ({ showMore, setShowMore }) => (
+const LegalidadesSection: React.FC<LegalidadesSectionProps> = ({ showMore, setShowMore, selectedLegality, setSelectedLegality }) => (
   <View style={styles.sectionContainer}>
     <Text style={styles.sectionText}>Legalidades</Text>
     <View style={styles.buttonContainer}>
-      {legalidadesList.slice(0, showMore ? legalidadesList.length : 10).map((title, index) => (
-        <TouchableOpacity key={index} style={styles.button}>
-          <Text style={styles.buttonText}>{title}</Text>
-        </TouchableOpacity>
-      ))}
+      {legalidadesList.slice(0, showMore ? legalidadesList.length : 10).map((title, index) => {
+        const isSelected = selectedLegality === title; // Verifica si el botón está seleccionado
+        return (
+          <TouchableOpacity
+            key={index}
+            style={[styles.button, isSelected && styles.selectedButton]} // Aplica estilo de selección
+            onPress={() => setSelectedLegality(isSelected ? null : title)} // Desmarcar si ya está seleccionado
+          >
+            <Text style={styles.buttonText}>{title}</Text>
+          </TouchableOpacity>
+        );
+      })}
       <TouchableOpacity onPress={() => setShowMore(!showMore)} style={[styles.button, styles.toggleButton]}>
-        <Text style={styles.buttonText}>{showMore ? 'Menos' : 'Más'}</Text>
+        <Text style={styles.buttonText}>{showMore ? 'less' : 'more'}</Text>
       </TouchableOpacity>
     </View>
   </View>
 );
 
-const LineaDeTipoSection = () => (
+interface TypesSectionProps {
+  selectedType: string | null;
+  setSelectedType: (type: string | null) => void;
+}
+
+const LineaDeTipoSection: React.FC<TypesSectionProps> = ({ selectedType, setSelectedType }) => (
   <View style={styles.sectionContainer}>
-    <Text style={styles.sectionText}>Linea de tipo</Text>
-    <TextInput
-      style={styles.smallTextInput} // Cambié a un estilo más pequeño
-      placeholder="Legendaria, Artefacto, criatura"
-      placeholderTextColor="#d1d1d1" // Placeholder gris más claro para mejor contraste
-    />
+    <Text style={styles.sectionText}>Tipos de Carta</Text>
+    <View style={styles.buttonContainer}>
+      {typesList.map((title, index) => {
+        const isSelected = selectedType === title;
+        return (
+          <TouchableOpacity
+            key={index}
+            style={[styles.button, isSelected && styles.selectedButton]}
+            onPress={() => setSelectedType(isSelected ? null : title)}
+          >
+            <Text style={styles.buttonText}>{title}</Text>
+          </TouchableOpacity>
+        );
+      })}
+    </View>
   </View>
 );
 
@@ -302,6 +336,8 @@ export default function TabTwoScreen() {
   const [showMore, setShowMore] = useState(false);
   const [cardResults, setCardResults] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [selectedLegality, setSelectedLegality] = useState<string | null>(null);
+  const [selectedType, setSelectedType] = useState<string | null>(null);
   const [filter, setFilter] = useState({
     order: 'name',
     dir: 'auto',
@@ -309,19 +345,23 @@ export default function TabTwoScreen() {
     cmc: '',
     power: '',
     toughness: '',
+    legality: '',
   });
 
   const fetchCards = async () => {
     if (searchText.trim() === '') return;
 
     setLoading(true);
+    
     const colorsQuery = filter.colors.length ? `+color:${filter.colors.join(',')}` : '';
     const cmcQuery = filter.cmc ? `+cmc=${filter.cmc}` : '';
     const powerQuery = filter.power ? `+pow=${filter.power}` : '';
     const toughnessQuery = filter.toughness ? `+tou=${filter.toughness}` : '';
+    const legalityQuery = filter.legality ? `+legal:${filter.legality}` : ''; // Agregar legalidad a la consulta
+    const typeQuery = selectedType ? `+type:${selectedType}` : '';
 
-    // Imprimir la URL generada para la solicitud
-    const fetchUrl = `https://api.scryfall.com/cards/search?q=${encodeURIComponent(searchText)}${colorsQuery}${cmcQuery}${powerQuery}${toughnessQuery}&order=${filter.order}&dir=${filter.dir}`;
+    const fetchUrl = `https://api.scryfall.com/cards/search?q=${encodeURIComponent(searchText)}${colorsQuery}${cmcQuery}${powerQuery}${toughnessQuery}${legalityQuery}${typeQuery}&order=${filter.order}&dir=${filter.dir}`;
+    
     console.log('URL de búsqueda:', fetchUrl);
 
     try {
@@ -329,15 +369,15 @@ export default function TabTwoScreen() {
         const data = await response.json();
 
         if (data && data.data) {
-            setCardResults(data.data); // Guardamos las cartas en el estado
+            setCardResults(data.data);
         } else {
-            setCardResults([]); // No se encontraron cartas
+            setCardResults([]);
         }
     } catch (error) {
         console.error('Error al buscar cartas:', error);
-        setCardResults([]); // En caso de error, vaciamos el estado
+        setCardResults([]);
     } finally {
-        setLoading(false); // Finalizamos la carga
+        setLoading(false);
     }
 };
 
@@ -387,9 +427,9 @@ export default function TabTwoScreen() {
       {filters.map((filter) => {
         switch (filter.title) {
           case 'Legalidades':
-            return <LegalidadesSection key={filter.id} showMore={showMore} setShowMore={setShowMore} />;
+            return <LegalidadesSection key={filter.id} showMore={showMore} setShowMore={setShowMore} setFilter={setFilter} selectedLegality={selectedLegality} setSelectedLegality={setSelectedLegality}/>;
           case 'Linea de tipo':
-            return <LineaDeTipoSection key={filter.id} />;
+            return <LineaDeTipoSection key={filter.id} selectedType={selectedType} setSelectedType={setSelectedType}/>;
           case 'Estadisticas':
             return <EstadisticasSection key={filter.id} />;
           case 'Texto':
@@ -420,9 +460,15 @@ export default function TabTwoScreen() {
             value={searchText}
             onChangeText={setSearchText}
           />
+          {/* Icono de limpiar búsqueda */}
+          {searchText.length > 0 && (
+            <TouchableOpacity onPress={() => setSearchText('')} style={styles.clearButton}>
+              <Icon name="times" size={20} color="#fff" />
+            </TouchableOpacity>
+          )}
         </View>
       </View>
-
+  
       {/* Área inferior con fondo gris claro */}
       <ScrollView style={styles.graySection}>
         {searchText.length > 0 ? renderSearchResults() : renderFilters()}
@@ -432,6 +478,15 @@ export default function TabTwoScreen() {
 }
 
 const styles = StyleSheet.create({
+  clearButton: {
+    paddingHorizontal: 10, // Espaciado horizontal para el ícono
+    justifyContent: 'center', // Centrar verticalmente el ícono
+    alignItems: 'center', // Centrar horizontalmente el ícono
+  },
+  selectedButton: {
+    backgroundColor: '#ccc', // Cambia esto al color que prefieras
+    opacity: 0.7, // Opción para añadir un poco de opacidad
+  },
   resultsContainer: {
     padding: 16,
   },

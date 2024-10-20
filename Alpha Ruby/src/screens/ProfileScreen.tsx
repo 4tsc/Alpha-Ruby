@@ -11,7 +11,7 @@ export default function ProfileScreen({ navigation }) {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch(`http://186.64.122.218:3000/usuario`, {
+        const response = await fetch(` https://magicarduct.online:3000/usuario`, {
           method: 'GET',
           credentials: 'include',
         });
@@ -35,7 +35,7 @@ export default function ProfileScreen({ navigation }) {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch('http://186.64.122.218:3000/logout', {
+      const response = await fetch(' https://magicarduct.online:3000/logout', {
         method: 'POST',
         credentials: 'include',
       });

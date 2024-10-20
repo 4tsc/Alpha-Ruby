@@ -70,7 +70,7 @@ const DeckManagementScreen: React.FC = () => {
             <TextInput
               style={styles.input}
               placeholder="Nombre del nuevo mazo"
-              placeholderTextColor="#CCCCCC"
+              placeholderTextColor={placeholderColor}
               value={newDeckName}
               onChangeText={setNewDeckName}
             />
@@ -97,14 +97,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#3D3D3D', // Fondo gris oscuro
+    backgroundColor: '#1E1F28', // Fondo plano oscuro
   },
   title: {
     fontSize: 32,
-    marginBottom: 20,
     fontWeight: 'bold',
+    marginBottom: 40,
+    textAlign: 'center',
     color: '#FFFFFF', // Texto blanco
-    marginTop: 40,
   },
   listContainer: {
     width: '100%',
@@ -114,11 +114,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#2C2C2C',
+    backgroundColor: '#2C2D37', // Fondo gris oscuro
     padding: 15,
     marginVertical: 10,
     width: '90%',
     borderRadius: 12, // Bordes redondeados
+    borderWidth: 1,
+    borderColor: '#D3C298', // Borde dorado suave
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
@@ -135,34 +137,36 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   input: {
-    height: 40,
-    borderColor: '#666666',
+    height: 50,
+    backgroundColor: '#2C2D37', // Fondo gris oscuro para los inputs
     borderWidth: 1,
+    borderColor: '#D3C298', // Borde dorado suave
     marginBottom: 20,
-    paddingHorizontal: 10,
-    width: '90%',
-    borderRadius: 10,
-    backgroundColor: '#2C2C2C', // Fondo gris oscuro para el input
-    color: '#FFFFFF',
+    paddingHorizontal: 20,
+    borderRadius: 25,
+    color: '#FFFFFF', // Texto blanco
+    fontSize: 16,
+    width: '100%',
   },
   addButton: {
-    backgroundColor: '#F77F00', // Naranja vibrante para el botón
-    padding: 15,
-    borderRadius: 10,
+    backgroundColor: '#D3C298', // Fondo dorado suave para el botón
+    paddingVertical: 15,
+    borderRadius: 25,
     alignItems: 'center',
-    width: '90%',
-    marginBottom: 10,
+    width: '100%',
+    marginBottom: 15,
   },
   addButtonText: {
-    color: '#FFFFFF', // Texto blanco
+    color: '#1E1F28', // Texto oscuro para contraste
     fontSize: 18,
+    fontWeight: 'bold',
   },
   cancelButton: {
     backgroundColor: '#666666', // Gris oscuro para el botón de cancelar
-    padding: 15,
-    borderRadius: 10,
+    paddingVertical: 15,
+    borderRadius: 25,
     alignItems: 'center',
-    width: '90%',
+    width: '100%',
   },
   cancelButtonText: {
     color: '#FFFFFF', // Texto blanco
@@ -176,7 +180,7 @@ const styles = StyleSheet.create({
   },
   modalView: {
     width: '80%',
-    backgroundColor: '#3D3D3D',
+    backgroundColor: '#1E1F28',
     padding: 20,
     borderRadius: 10,
     alignItems: 'center',
@@ -185,7 +189,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 30,
     right: 30,
-    backgroundColor: '#F77F00', // Naranja vibrante para el FAB
+    backgroundColor: '#D3C298', // Naranja suave para el FAB
     width: 60,
     height: 60,
     borderRadius: 30,
@@ -195,4 +199,5 @@ const styles = StyleSheet.create({
   },
 });
 
+export const placeholderColor = '#D3C298'; // Placeholder dorado suave
 export default DeckManagementScreen;

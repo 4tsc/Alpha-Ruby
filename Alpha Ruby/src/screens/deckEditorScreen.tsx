@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Alert, StyleSheet, TouchableOpacity, SafeAreaView, Modal } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Importar iconos
-
 import { useUser } from './UserContext';
 
 interface Deck {
@@ -75,6 +74,7 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
             value={deckName}
             onChangeText={setDeckName}
             onBlur={toggleEditName}
+            placeholderTextColor={placeholderColor}
           />
         ) : (
           <>
@@ -116,7 +116,7 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
             <TextInput
               style={styles.modalInput}
               placeholder="Nombre de la carta"
-              placeholderTextColor="#CCCCCC"
+              placeholderTextColor={placeholderColor}
               value={newCardName}
               onChangeText={setNewCardName}
             />
@@ -141,48 +141,47 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#3D3D3D',
+    padding: 20,  // Ya tienes un padding general de 20
+    backgroundColor: '#1E1F28',
   },
   title: {
     fontSize: 32,
     marginBottom: 20,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+    color: '#FFFFFF', // Texto blanco
     textAlign: 'center',
   },
   nameContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#2C2C2C',
-    padding: 10,
-    borderRadius: 12, // Bordes redondeados
+    backgroundColor: '#3D3D3D',
+    padding: 15, // Ajusta el padding si es necesario para que haya más espacio en los bordes
+    borderRadius: 12, 
     marginBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 5,
+    marginHorizontal: 20,  // Añadimos un margen lateral para separar del borde
   },
   deckName: {
     fontSize: 18,
     color: '#FFFFFF',
-    flex: 1,
+    paddingHorizontal: 10
   },
   input: {
     flex: 1,
     height: 40,
-    borderColor: '#666666',
+    borderColor: '#D3C298', // Borde dorado suave
     borderWidth: 1,
     paddingHorizontal: 10,
     borderRadius: 10,
-    backgroundColor: '#2C2C2C',
-    color: '#FFFFFF',
+    backgroundColor: '#2C2D37',
+    color: '#FFFFFF', // Texto blanco
+    marginHorizontal: 10,  // Añadimos un margen horizontal en el input
   },
   cardsContainer: {
     flex: 1,
     marginBottom: 20,
+    paddingHorizontal: 10, // Agregar padding para evitar que se pegue a los bordes laterales
+    paddingVertical: 20,   // Agregar un margen vertical entre secciones
   },
   cardsHeader: {
     flexDirection: 'row',
@@ -196,28 +195,18 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   addCardButton: {
-    backgroundColor: '#F77F00',
+    backgroundColor: '#D3C298', // Botón dorado
     padding: 8,
     borderRadius: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 5,
   },
   cardItem: {
-    backgroundColor: '#2C2C2C',
+    backgroundColor: '#2C2D37', // Fondo gris oscuro
     padding: 15,
     borderRadius: 12,
     marginBottom: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 5,
   },
   cardText: {
     color: '#FFFFFF',
@@ -234,15 +223,10 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     width: '80%',
-    backgroundColor: '#3D3D3D',
+    backgroundColor: '#1E1F28', // Fondo oscuro
     padding: 20,
     borderRadius: 10,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 5,
   },
   modalTitle: {
     fontSize: 24,
@@ -251,17 +235,17 @@ const styles = StyleSheet.create({
   },
   modalInput: {
     height: 40,
-    borderColor: '#666666',
+    borderColor: '#D3C298', // Borde dorado suave
     borderWidth: 1,
     paddingHorizontal: 10,
     borderRadius: 8,
-    backgroundColor: '#2C2C2C',
-    color: '#FFFFFF',
+    backgroundColor: '#2C2D37', // Fondo gris oscuro
+    color: '#FFFFFF', // Texto blanco
     marginBottom: 20,
     width: '100%',
   },
   addButton: {
-    backgroundColor: '#F77F00',
+    backgroundColor: '#D3C298', // Botón dorado suave
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
@@ -269,30 +253,33 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   addButtonText: {
-    color: '#FFFFFF',
+    color: '#1E1F28', // Texto oscuro
     fontSize: 18,
   },
   cancelButton: {
-    backgroundColor: '#666666',
+    backgroundColor: '#666666', // Botón gris para cancelar
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
     width: '100%',
   },
   cancelButtonText: {
-    color: '#FFFFFF',
+    color: '#FFFFFF', // Texto blanco
     fontSize: 18,
   },
   saveButton: {
-    backgroundColor: '#F77F00',
+    backgroundColor: '#D3C298', // Botón dorado suave
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
   },
   saveButtonText: {
-    color: '#FFFFFF',
+    color: '#1E1F28', // Texto oscuro
     fontSize: 18,
   },
 });
 
+const placeholderColor = '#A09C99'; // Placeholder gris claro
+
 export default DeckEditorScreen;
+

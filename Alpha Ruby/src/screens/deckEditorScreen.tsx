@@ -45,15 +45,10 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
     setIsEditingName(!isEditingName);
   };
 
+  // Eliminado el modal de agregar carta, ahora se redirige a la pantalla de búsqueda
   const addCard = () => {
-    if (newCardName.trim() === '') {
-      Alert.alert('Error', 'El nombre de la carta no puede estar vacío.');
-      return;
-    }
-    const newCard = { id: cards.length + 1, name: newCardName };
-    setCards([...cards, newCard]);
-    setNewCardName('');
-    setIsModalVisible(false);
+    // Redirigir a la pantalla de búsqueda
+    navigation.navigate('Buscar', { deckId: deck.id });
   };
 
   const removeCard = (cardId: number) => {
@@ -89,7 +84,8 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
       <View style={styles.cardsContainer}>
         <View style={styles.cardsHeader}>
           <Text style={styles.sectionTitle}>Cartas del Mazo</Text>
-          <TouchableOpacity onPress={() => setIsModalVisible(true)} style={styles.addCardButton}>
+          {/* El botón "+" ahora redirige a la pantalla de búsqueda */}
+          <TouchableOpacity onPress={addCard} style={styles.addCardButton}>
             <Icon name="plus" size={20} color="#FFFFFF" />
           </TouchableOpacity>
         </View>
@@ -102,33 +98,6 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
           </View>
         ))}
       </View>
-
-      {/* Modal para agregar una nueva carta */}
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={isModalVisible}
-        onRequestClose={() => setIsModalVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Buscar Carta</Text>
-            <TextInput
-              style={styles.modalInput}
-              placeholder="Nombre de la carta"
-              placeholderTextColor={placeholderColor}
-              value={newCardName}
-              onChangeText={setNewCardName}
-            />
-            <TouchableOpacity onPress={addCard} style={styles.addButton}>
-              <Text style={styles.addButtonText}>Agregar Carta</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => setIsModalVisible(false)} style={styles.cancelButton}>
-              <Text style={styles.cancelButtonText}>Cancelar</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
 
       {/* Botón de guardar cambios */}
       <TouchableOpacity onPress={saveDeckChanges} style={styles.saveButton}>
@@ -215,58 +184,6 @@ const styles = StyleSheet.create({
   deleteButton: {
     padding: 5,
   },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContent: {
-    width: '80%',
-    backgroundColor: '#1E1F28', // Fondo oscuro
-    padding: 20,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  modalTitle: {
-    fontSize: 24,
-    color: '#FFFFFF',
-    marginBottom: 20,
-  },
-  modalInput: {
-    height: 40,
-    borderColor: '#D3C298', // Borde dorado suave
-    borderWidth: 1,
-    paddingHorizontal: 10,
-    borderRadius: 8,
-    backgroundColor: '#2C2D37', // Fondo gris oscuro
-    color: '#FFFFFF', // Texto blanco
-    marginBottom: 20,
-    width: '100%',
-  },
-  addButton: {
-    backgroundColor: '#D3C298', // Botón dorado suave
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginBottom: 10,
-    width: '100%',
-  },
-  addButtonText: {
-    color: '#1E1F28', // Texto oscuro
-    fontSize: 18,
-  },
-  cancelButton: {
-    backgroundColor: '#666666', // Botón gris para cancelar
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-    width: '100%',
-  },
-  cancelButtonText: {
-    color: '#FFFFFF', // Texto blanco
-    fontSize: 18,
-  },
   saveButton: {
     backgroundColor: '#D3C298', // Botón dorado suave
     padding: 15,
@@ -282,4 +199,3 @@ const styles = StyleSheet.create({
 const placeholderColor = '#A09C99'; // Placeholder gris claro
 
 export default DeckEditorScreen;
-

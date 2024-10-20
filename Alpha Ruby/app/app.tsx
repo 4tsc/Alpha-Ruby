@@ -6,6 +6,7 @@ import HomeScreen from '../src/screens/homeScreen';
 import RegisterScreen from '../src/screens/registerScreen';
 import DeckManagementScreen from '../src/screens/DeckManagementScreen';
 import DeckEditorScreen from '../src/screens/deckEditorScreen'; // Importar DeckEditorScreen
+import ImageViewScreen from '../src/screens/ImageViewScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -33,6 +34,11 @@ const App = () => {
           name="DeckEditor" 
           component={DeckEditorScreen} 
           options={{ title: 'Editar Mazo' }}
+        />
+        <Stack.Screen 
+        name="ImageViewScreen" 
+        component={ImageViewScreen} 
+        options={{ title: 'Ver Imagen' }} 
         />
       </Stack.Navigator>
     </NavigationContainer>

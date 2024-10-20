@@ -12,6 +12,7 @@ import RegisterScreen from './src/screens/registerScreen';
 import DeckManagementScreen from './src/screens/DeckManagementScreen';
 import DeckEditorScreen from './src/screens/deckEditorScreen';
 import SearchCard from './src/screens/Buscar';
+import ImageViewScreen from './src/screens/ImageViewScreen';
 
 import { UserProvider } from './src/screens/UserContext';
 
@@ -68,6 +69,7 @@ const App = () => {
           <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
           <Stack.Screen name="Main" component={MainTabNavigator} options={{ headerShown: false }} />
           <Stack.Screen name="DeckEditor" component={DeckEditorScreen} options={{ title: 'Mazos', headerStyle: { backgroundColor: '#3D3D3D' }, headerTintColor: '#fff' }} />
+          <Stack.Screen name="ImageViewScreen" component={ImageViewScreen} options={{ title: 'Ver Imagen' }} />
         </Stack.Navigator>
       </NavigationContainer>
     </UserProvider>

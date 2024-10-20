@@ -1,5 +1,6 @@
 import { ActivityIndicator, Image, StyleSheet, View, TextInput, Text, ScrollView, Modal, FlatList, TouchableHighlight, Dimensions, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation  } from '@react-navigation/native';
 import React, { useState, useEffect } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Importa el icono de FontAwesome
 
@@ -83,93 +84,12 @@ const LineaDeTipoSection: React.FC<TypesSectionProps> = ({ selectedType, setSele
   </View>
 );
 
-const EstadisticasSection: React.FC = () => {
-  const [selectedOption, setSelectedOption] = useState<string>('Valor de mana');
-  const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const [currentSymbol, setCurrentSymbol] = useState<string>('>');
-  const [inputValue, setInputValue] = useState<string>(''); // Estado para el campo de texto
+interface TextoSectionProps {
+  inputValue: string; // Valor actual del input
+  setInputValue: (value: string) => void; // Función para actualizar el valor del input
+}
 
-  const options = [
-    'Valor de mana',
-    'Fuerza',
-    'Resistencia',
-    'Lealtad',
-    'Defensa',
-  ];
-
-  const handleOptionSelect = (value: string) => {
-    setSelectedOption(value);
-    setModalVisible(false);
-  };
-
-  // Función para alternar los signos
-  const toggleSymbol = () => {
-    if (currentSymbol === '>') {
-      setCurrentSymbol('<');
-    } else if (currentSymbol === '<') {
-      setCurrentSymbol('=');
-    } else {
-      setCurrentSymbol('>');
-    }
-  };
-
-  return (
-    <View style={styles.sectionContainer}>
-      <Text style={styles.sectionText}>Estadísticas</Text>
-
-      <TouchableOpacity style={styles.dropdownButton} onPress={() => setModalVisible(true)}>
-        <Text style={styles.dropdownText}>{selectedOption}</Text>
-        <View style={styles.iconContainer}>
-          <Icon name="bars" size={20} color="#fff" />
-        </View>
-      </TouchableOpacity>
-
-      <Modal
-        transparent={true}
-        visible={modalVisible}
-        animationType="fade"
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <FlatList
-              data={options}
-              renderItem={({ item }) => (
-                <TouchableHighlight
-                  onPress={() => handleOptionSelect(item)}
-                  style={styles.optionButton}
-                  underlayColor="#ddd"
-                >
-                  <Text style={styles.optionText}>{item}</Text>
-                </TouchableHighlight>
-              )}
-              keyExtractor={(item) => item}
-            />
-          </View>
-        </View>
-      </Modal>
-
-      {/* Botón para alternar símbolos y campo de texto */}
-      <View style={styles.row}>
-        <TouchableOpacity style={styles.smallSymbolButton} onPress={toggleSymbol}>
-          <Text style={styles.symbolText}>{currentSymbol}</Text>
-        </TouchableOpacity>
-        
-        {/* Campo de texto */}
-        <TextInput
-          style={styles.textInput}
-          value={inputValue}
-          onChangeText={(text) => setInputValue(text)}
-          placeholder="Escribe algo"
-          placeholderTextColor="#ccc"
-        />
-      </View>
-    </View>
-  );
-};
-
-const TextoSection: React.FC = () => {
-  const [inputValue, setInputValue] = useState('');
+const TextoSection: React.FC<TextoSectionProps> = ({ inputValue, setInputValue }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   return (
@@ -181,8 +101,8 @@ const TextoSection: React.FC = () => {
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
-            value={inputValue}
-            onChangeText={setInputValue}
+            value={inputValue} // Usamos el inputValue del prop
+            onChangeText={setInputValue} // Actualiza el inputValue llamando a setInputValue
             placeholder="Roba una carta, vuela"
           />
           <TouchableOpacity style={styles.inputButton} onPress={() => setModalVisible(true)}>
@@ -280,54 +200,12 @@ const ColoresSection: React.FC = () => {
   );
 };
 
-const PrecioSection: React.FC = () => {
-  const [inputValue, setInputValue] = useState<string>(''); // Estado para el campo de texto
-  const [currentSymbol, setCurrentSymbol] = useState<string>('>'); // Estado para el símbolo
-
-  const toggleSymbol = () => {
-    if (currentSymbol === '>') {
-      setCurrentSymbol('<');
-    } else if (currentSymbol === '<') {
-      setCurrentSymbol('=');
-    } else {
-      setCurrentSymbol('>');
-    }
-  };
-
-  return (
-    <View style={styles.sectionContainer}>
-      <Text style={styles.sectionText}>Precio</Text>
-
-      <View style={styles.row}>
-        <TouchableOpacity style={styles.smallSymbolButton2} onPress={toggleSymbol}>
-          <Text style={styles.symbolText2}>{currentSymbol}</Text>
-        </TouchableOpacity>
-        
-        <TextInput
-          style={styles.textInput2}
-          value={inputValue}
-          onChangeText={setInputValue}
-          placeholder="Precio"
-          placeholderTextColor="#ccc"
-          keyboardType="numeric" // Opcional: para mostrar el teclado numérico
-        />
-
-        <TouchableOpacity style={styles.sideButton}>
-          <Text style={styles.sideButtonText}>Añadir</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-};
-
 const filters = [
   { id: '1', title: 'Legalidades' },
   { id: '2', title: 'Linea de tipo' },
-  { id: '3', title: 'Estadisticas' },
-  { id: '4', title: 'Texto' },
-  { id: '5', title: 'Coste de mana' },
-  { id: '6', title: 'Colores' },
-  { id: '7', title: 'Precio' },
+  { id: '3', title: 'Texto' },
+  { id: '4', title: 'Coste de mana' },
+  { id: '5', title: 'Colores' },
 ];
 
 export default function TabTwoScreen() {
@@ -338,52 +216,71 @@ export default function TabTwoScreen() {
   const [loading, setLoading] = useState(false);
   const [selectedLegality, setSelectedLegality] = useState<string | null>(null);
   const [selectedType, setSelectedType] = useState<string | null>(null);
+  const [inputValue, setInputValue] = useState<string>('');
   const [filter, setFilter] = useState({
-    order: 'name',
-    dir: 'auto',
     colors: [],
     cmc: '',
     power: '',
     toughness: '',
+    loyalty: '',
+    defense: '',
     legality: '',
+    type: '',
+    order: 'name',
+    dir: 'auto',
   });
+
+  const navigation = useNavigation();
 
   const fetchCards = async () => {
     if (searchText.trim() === '') return;
-
+  
     setLoading(true);
-    
+  
+    // Filtros de color
     const colorsQuery = filter.colors.length ? `+color:${filter.colors.join(',')}` : '';
-    const cmcQuery = filter.cmc ? `+cmc=${filter.cmc}` : '';
-    const powerQuery = filter.power ? `+pow=${filter.power}` : '';
-    const toughnessQuery = filter.toughness ? `+tou=${filter.toughness}` : '';
-    const legalityQuery = filter.legality ? `+legal:${filter.legality}` : ''; // Agregar legalidad a la consulta
-    const typeQuery = selectedType ? `+type:${selectedType}` : '';
-
-    const fetchUrl = `https://api.scryfall.com/cards/search?q=${encodeURIComponent(searchText)}${colorsQuery}${cmcQuery}${powerQuery}${toughnessQuery}${legalityQuery}${typeQuery}&order=${filter.order}&dir=${filter.dir}`;
+    
+    // Filtros de estadísticas
+    const cmcQuery = filter.cmc ? `+cmc${filter.cmc}` : ''; // Valor de mana
+    const powerQuery = filter.power ? `+pow${filter.power}` : ''; // Fuerza
+    const toughnessQuery = filter.toughness ? `+tou${filter.toughness}` : ''; // Resistencia
+    const loyaltyQuery = filter.loyalty ? `+loy${filter.loyalty}` : ''; // Lealtad
+    const defenseQuery = filter.defense ? `+def${filter.defense}` : ''; // Defensa (solo si aplica)
+  
+    // Otros filtros
+    const legalityQuery = filter.legality ? `+legal:${filter.legality}` : ''; // Legalidad
+    const typeQuery = selectedType ? `+type:${selectedType}` : ''; // Tipo de carta
+  
+    // Construir la URL de búsqueda con los filtros
+    const fetchUrl = `https://api.scryfall.com/cards/search?q=${encodeURIComponent(searchText)}${colorsQuery}${cmcQuery}${powerQuery}${toughnessQuery}${loyaltyQuery}${defenseQuery}${legalityQuery}${typeQuery}&order=${filter.order}&dir=${filter.dir}`;
     
     console.log('URL de búsqueda:', fetchUrl);
-
+  
     try {
-        const response = await fetch(fetchUrl);
-        const data = await response.json();
-
-        if (data && data.data) {
-            setCardResults(data.data);
-        } else {
-            setCardResults([]);
-        }
-    } catch (error) {
-        console.error('Error al buscar cartas:', error);
+      const response = await fetch(fetchUrl);
+      const data = await response.json();
+  
+      if (data && data.data) {
+        setCardResults(data.data);
+      } else {
         setCardResults([]);
+      }
+    } catch (error) {
+      console.error('Error al buscar cartas:', error);
+      setCardResults([]);
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-};
+  };
+  
 
   useEffect(() => {
     fetchCards(); // Cada vez que se cambie el texto de búsqueda o los filtros, busca cartas
   }, [searchText, filter]);
+
+  const handleCardPress = (imageUrl: string, cardId: string, cardUri: string) => {
+    navigation.navigate('ImageViewScreen', { imageUrl, cardId, cardUri }); // Pasar URL, ID y URI
+  };
 
   // Renderizado de los resultados de búsqueda
   const renderSearchResults = () => (
@@ -397,11 +294,13 @@ export default function TabTwoScreen() {
             {cardResults.map((card) => (
               <View key={card.id} style={styles.cardContainer}>
                 {/* Mostrar la imagen de la carta */}
-                {card.image_uris && (
-                  <Image
-                    source={{ uri: card.image_uris.small }} // Tamaño pequeño de la imagen
-                    style={styles.cardImage}
-                  />
+                {card.image_uris && card.image_uris.small && ( // Verificamos si existe la imagen
+                  <TouchableOpacity onPress={() => handleCardPress(card.image_uris.art_crop, card.id, card.uri)}> {/* Aquí pasas la URL de la imagen normal */}
+                    <Image
+                      source={{ uri: card.image_uris.small }} // Tamaño pequeño de la imagen
+                      style={styles.cardImage}
+                    />
+                  </TouchableOpacity>
                 )}
                 {/* Mostrar el nombre de la carta */}
                 <Text style={styles.cardName}>{card.name}</Text>
@@ -418,6 +317,7 @@ export default function TabTwoScreen() {
       )}
     </View>
   );
+
   
 
   // Lógica para mostrar contenido basado en el texto de búsqueda
@@ -430,16 +330,12 @@ export default function TabTwoScreen() {
             return <LegalidadesSection key={filter.id} showMore={showMore} setShowMore={setShowMore} setFilter={setFilter} selectedLegality={selectedLegality} setSelectedLegality={setSelectedLegality}/>;
           case 'Linea de tipo':
             return <LineaDeTipoSection key={filter.id} selectedType={selectedType} setSelectedType={setSelectedType}/>;
-          case 'Estadisticas':
-            return <EstadisticasSection key={filter.id} />;
           case 'Texto':
-            return <TextoSection key={filter.id} />;
+            return <TextoSection key={filter.id} inputValue={inputValue} setInputValue={setInputValue}/>;
           case 'Coste de mana':
             return <CosteDeManaSection key={filter.id} />;
           case 'Colores':
             return <ColoresSection key={filter.id} />;
-          case 'Precio':
-            return <PrecioSection key={filter.id} />;
           default:
             return null;
         }
@@ -449,7 +345,6 @@ export default function TabTwoScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Área superior con fondo naranja y barra de búsqueda */}
       <View style={styles.orangeSection}>
         <View style={styles.searchBarContainer}>
           <Ionicons name="search" size={20} color="#fff" style={styles.searchIcon} />
@@ -460,7 +355,6 @@ export default function TabTwoScreen() {
             value={searchText}
             onChangeText={setSearchText}
           />
-          {/* Icono de limpiar búsqueda */}
           {searchText.length > 0 && (
             <TouchableOpacity onPress={() => setSearchText('')} style={styles.clearButton}>
               <Icon name="times" size={20} color="#fff" />
@@ -468,8 +362,7 @@ export default function TabTwoScreen() {
           )}
         </View>
       </View>
-  
-      {/* Área inferior con fondo gris claro */}
+
       <ScrollView style={styles.graySection}>
         {searchText.length > 0 ? renderSearchResults() : renderFilters()}
       </ScrollView>
@@ -478,6 +371,12 @@ export default function TabTwoScreen() {
 }
 
 const styles = StyleSheet.create({
+  optionsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around', // Para que los botones se distribuyan de manera uniforme
+    marginBottom: 10, // Un pequeño margen inferior para separación
+  },
   clearButton: {
     paddingHorizontal: 10, // Espaciado horizontal para el ícono
     justifyContent: 'center', // Centrar verticalmente el ícono
@@ -489,6 +388,7 @@ const styles = StyleSheet.create({
   },
   resultsContainer: {
     padding: 16,
+    marginTop: 20
   },
   cardsGrid: {
     flexDirection: 'row',
@@ -791,9 +691,6 @@ const styles = StyleSheet.create({
   dropdownText: {
     color: '#FFFFFF',
     fontSize: 14,
-  },
-  resultsContainer: {
-    marginTop: 20,
   },
   resultsText: {
     fontSize: 18,

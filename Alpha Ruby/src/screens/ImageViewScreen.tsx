@@ -8,6 +8,7 @@ export default function ImageViewScreen({ route }) {
   const { imageUrl, cardId, cardUri } = route.params; // Recibe la URL de la imagen desde los parámetros de la navegación
   const [decks, setDecks] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [cardDetails, setCardDetails] = useState(null);
 
   const fetchDecks = async () => {
     try {
@@ -39,6 +40,22 @@ export default function ImageViewScreen({ route }) {
       console.error('Error al obtener las barajas:', error);
     }
   };
+
+    // Función para obtener los detalles de la carta desde Scryfall
+    const fetchCardDetails = async () => {
+        try {
+          const response = await fetch(`https://api.scryfall.com/cards/${cardId}`);
+          const data = await response.json();
+    
+          if (response.ok) {
+            setCardDetails(data); // Guarda los detalles de la carta en el estado
+          } else {
+            console.error('Error al obtener los detalles de la carta:', data);
+          }
+        } catch (error) {
+          console.error('Error al obtener los detalles de la carta:', error);
+        }
+      };
 
   const handleDeckSelection = async (deckId) => {
     const idcarta = cardId; // Usa el ID de la carta
@@ -81,7 +98,8 @@ export default function ImageViewScreen({ route }) {
   };
 
   useEffect(() => {
-    fetchDecks(); // Llama a la función para obtener las barajas al cargar el componente
+    fetchDecks();
+    fetchCardDetails(); // Llama a la función para obtener las barajas al cargar el componente
   }, []);
 
   return (
@@ -92,24 +110,43 @@ export default function ImageViewScreen({ route }) {
         style={styles.fullImage}
         resizeMode="contain"
       />
-      <Button title="Agregar a mazo" onPress={handleAddToDeck} />
+  
+      {/* Mostrar los detalles de la carta */}
+      {cardDetails && (
+        <View style={styles.cardDetailsContainer}>
+          <Text style={styles.cardTitle}>{cardDetails.name}</Text>
+          <Text style={styles.cardType}>{cardDetails.type_line}</Text>
+          <Text style={styles.cardSet}>{`Set: ${cardDetails.set_name}`}</Text>
+          <Text style={styles.cardText}>{cardDetails.oracle_text}</Text>
+           
+          {/* Mostrar fuerza y resistencia si están disponibles */}
+          {cardDetails.power && cardDetails.toughness && (
+            <Text style={styles.cardStats}>
+              Fuerza: {cardDetails.power} / Resistencia: {cardDetails.toughness}
+            </Text>
+          )}
+        </View>
+      )}
 
+      {/* Botón para agregar a mazo */}
+      <Button title="Agregar a mazo" onPress={handleAddToDeck} />
+  
       {/* Modal para mostrar las barajas */}
       <Modal
         transparent={true}
         visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
+        onRequestClose={closeModal}
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Selecciona una baraja</Text>
             <FlatList
               data={decks}
-              keyExtractor={(item) => item.id.toString()} // Usa el ID como clave
+              keyExtractor={(item) => item.id.toString()}
               renderItem={({ item }) => (
                 <TouchableOpacity
                   style={styles.deckItem}
-                  onPress={() => handleDeckSelection(item.id)} // Llama a la función con el ID del mazo
+                  onPress={() => handleDeckSelection(item.id)}
                 >
                   <Text style={styles.deckItemText}>{item.name}</Text>
                 </TouchableOpacity>
@@ -124,6 +161,11 @@ export default function ImageViewScreen({ route }) {
 }
 
 const styles = StyleSheet.create({
+    cardStats: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginTop: 5,
+      },
     container: {
       flex: 1,
       backgroundColor: '#000', // Fondo negro para destacar la imagen
@@ -133,6 +175,29 @@ const styles = StyleSheet.create({
     fullImage: {
       width: '100%',
       height: '40%', // Cambia esto para ocupar el 40% de la pantalla
+    },
+    cardDetailsContainer: {
+        marginTop: 10,
+        padding: 10,
+        backgroundColor: 'rgba(255, 255, 255, 0.8)', // Fondo blanco semi-transparente
+        borderRadius: 8,
+        alignItems: 'center',
+        marginBottom: 10, // Añade margen inferior
+      },
+    cardTitle: {
+      fontSize: 18,
+      fontWeight: 'bold',
+    },
+    cardType: {
+      fontSize: 16,
+      fontStyle: 'italic',
+    },
+    cardSet: {
+      fontSize: 14,
+    },
+    cardText: {
+      fontSize: 14,
+      textAlign: 'center',
     },
     modalContainer: {
       flex: 1,

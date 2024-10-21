@@ -47,14 +47,8 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
   };
 
   const addCard = () => {
-    if (newCardName.trim() === '') {
-      Alert.alert('Error', 'El nombre de la carta no puede estar vacío.');
-      return;
-    }
-    const newCard = { id: cards.length + 1, name: newCardName };
-    setCards([...cards, newCard]);
-    setNewCardName('');
-    setIsModalVisible(false);
+    // Redirigir a la pantalla de búsqueda
+    navigation.navigate('Buscar', { deckId: deck.id });
   };
 
   const removeCard = (cardId: number) => {
@@ -89,7 +83,8 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
       <View style={styles.cardsContainer}>
         <View style={styles.cardsHeader}>
           <Text style={styles.sectionTitle}>Cartas del Mazo</Text>
-          <TouchableOpacity onPress={() => setIsModalVisible(true)} style={styles.addCardButton}>
+          {/* El botón "+" ahora redirige a la pantalla de búsqueda */}
+          <TouchableOpacity onPress={addCard} style={styles.addCardButton}>
             <Icon name="plus" size={20} color="#FFFFFF" />
           </TouchableOpacity>
         </View>

@@ -289,22 +289,18 @@ export default function TabTwoScreen() {
         <ActivityIndicator size="large" color="#fff" />
       ) : cardResults.length > 0 ? (
         <ScrollView>
-          <View style={styles.cardsGrid}>  {/* Grid de cartas */}
+          <View style={styles.cardsGrid}>
             {cardResults.map((card) => (
               <View key={card.id} style={styles.cardContainer}>
-                {/* Mostrar la imagen de la carta */}
-                {card.image_uris && card.image_uris.small && ( // Verificamos si existe la imagen
-                  <TouchableOpacity onPress={() => handleCardPress(card.image_uris.art_crop, card.id, card.uri)}> {/* Aquí pasas la URL de la imagen normal */}
+                {card.image_uris?.small && (
+                  <TouchableOpacity onPress={() => handleCardPress(card.image_uris.art_crop, card.id, card.uri)}>
                     <Image
-                      source={{ uri: card.image_uris.small }} // Tamaño pequeño de la imagen
+                      source={{ uri: card.image_uris.small }}
                       style={styles.cardImage}
                     />
                   </TouchableOpacity>
                 )}
-                {/* Mostrar el nombre de la carta */}
                 <Text style={styles.cardName}>{card.name}</Text>
-  
-                {/* Mostrar las estadísticas de Power y Toughness si existen */}
                 {card.power && <Text style={styles.cardStats}>Power: {card.power}</Text>}
                 {card.toughness && <Text style={styles.cardStats}>Toughness: {card.toughness}</Text>}
               </View>

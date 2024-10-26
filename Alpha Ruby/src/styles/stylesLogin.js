@@ -6,73 +6,58 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    backgroundColor: '#1E1F28', // Fondo plano oscuro
   },
   title: {
-    fontSize: 40,
+    fontSize: 32,
     fontWeight: 'bold',
     marginBottom: 40,
     textAlign: 'center',
-    color: '#87CEEB',
-    fontFamily: 'serif',
-    textShadowColor: '#000',
-    textShadowOffset: { width: 2, height: 2 },
-    textShadowRadius: 6,
+    color: '#FFFFFF', // Texto blanco
   },
   input: {
     height: 50,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: '#2C2D37', // Fondo gris oscuro para los inputs
     borderWidth: 1,
-    borderColor: '#87CEEB',
+    borderColor: '#D3C298', // Borde dorado suave para los inputs
     marginBottom: 20,
     paddingHorizontal: 20,
     borderRadius: 25,
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontFamily: 'serif',
+    color: '#FFFFFF', // Texto blanco
+    fontSize: 16,
     width: '100%',
-    textShadowColor: '#000',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
   },
   buttonContainer: {
-    marginTop: 40,
-    flexDirection: 'row',  // Asegura que los botones estén en una fila
-    justifyContent: 'space-between',  // Espacio entre los botones
-    alignItems: 'center',  // Asegura la alineación vertical
-    width: '80%',
+    marginTop: 20,
+    alignItems: 'center',
+    width: '100%',
   },
   button: {
-    backgroundColor: 'transparent',  // Fondo transparente
-    paddingVertical: 0,  // Aumentamos la altura del padding para más espacio
-    paddingHorizontal: 20,  // Reducimos el padding horizontal para dar más espacio al texto
-    borderRadius: 0,
-    borderWidth: 0,
-    justifyContent: 'center',
+    backgroundColor: '#D3C298', // Fondo dorado suave para el botón de iniciar sesión
+    paddingVertical: 15,
+    width: '100%', // Botón ocupa todo el ancho
+    borderRadius: 25,
     alignItems: 'center',
-    width: '58%',  // Aumentamos el ancho del botón para evitar que el texto se corte
-    height: 60,  // Aumentamos la altura del botón
+    marginBottom: 15, // Espacio entre los botones
   },
   buttonText: {
-    color: '#FFFFFF', // Texto blanco
-    fontSize: 16,  // Mismo tamaño de letra
+    color: '#1E1F28', // Texto oscuro para contraste en el botón dorado
+    fontSize: 18,
     fontWeight: 'bold',
-    fontFamily: 'serif',  // Fuente serif
-    textShadowColor: '#000',  // Sombra para mejorar la legibilidad
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 3,
-    textAlign: 'center',
+  },
+  signUpButton: {
+    backgroundColor: '#D3C298', // Mismo fondo dorado suave para consistencia
+    paddingVertical: 15,
+    width: '100%', // Botón ocupa todo el ancho
+    borderRadius: 25,
+    alignItems: 'center',
+    marginBottom: 15,
   },
   signUpButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,  // Mismo tamaño de letra
+    color: '#1E1F28', // Mismo texto oscuro para consistencia con el botón de iniciar sesión
+    fontSize: 18, // Tamaño de fuente uniforme
     fontWeight: 'bold',
-    fontFamily: 'serif',
-    textShadowColor: '#000',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 3,
-    textAlign: 'center',
   },
 });
 
-export const placeholderColor = '#87CEEB'; // Placeholder azul suave acorde a los tonos del fondo
+export const placeholderColor = '#D3C298'; // Placeholder dorado suave acorde a los tonos

@@ -50,7 +50,7 @@ export default function RegisterScreen({ navigation }) {
 
   return (
     <ImageBackground
-      source={require('../images/back.jpg')}  // Asegúrate de que esta ruta sea correcta
+      
       style={{ flex: 1, width: '100%', height: '100%' }}  // Ocupa todo el tamaño de la pantalla
       resizeMode="cover"  // Ajusta la imagen a la pantalla
     >

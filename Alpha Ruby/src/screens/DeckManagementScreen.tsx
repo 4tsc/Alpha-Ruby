@@ -31,19 +31,18 @@ const DeckManagementScreen: React.FC = () => {
         });
     
         const data = await response.json();
-        console.log('datos: ', data)
-
+        console.log('datos: ', data);
+    
         if (response.ok) {
-          // Transformamos los datos recibidos para que se ajusten a la interfaz Deck
-          const formattedDecks: Deck[] = data.map((item: { nombre: string }, index: number) => ({
-            id: index + 1,  // Asignamos un ID arbitrario o extraído si lo tienes
-            name: item.nombre,  // Asignamos el nombre desde la respuesta del endpoint
-            cards: [],  // En este punto no hay cartas, por lo que será un array vacío
+          // Asegúrate de utilizar `idbarajas` como ID real
+          const formattedDecks: Deck[] = data.map((item: { idbarajas: number, nombre: string }) => ({
+            id: item.idbarajas,  // Usamos el ID real de la baraja
+            name: item.nombre,    // Nombre de la baraja
+            cards: [],            // Inicializamos el array de cartas vacío
           }));
     
-          // Actualizamos el estado con los mazos formateados
           setDecks(formattedDecks);
-          console.log('Barajas formateadas:', formattedDecks);  // Para depurar
+          console.log('Barajas formateadas:', formattedDecks);  // Para depuración
         } else {
           console.error('Error:', data.error || 'No se encontraron barajas');
         }
@@ -56,7 +55,12 @@ const DeckManagementScreen: React.FC = () => {
     // useEffect para cargar los mazos al montar el componente
     useEffect(() => {
       fetchDecks();
-    }, []);
+      const unsubscribe = navigation.addListener('focus', () => {
+        fetchDecks();
+      });
+
+      return unsubscribe;
+    }, [navigation]);
 
     const addDeck = async () => {
       if (newDeckName.trim() === '') {
@@ -146,7 +150,7 @@ const DeckManagementScreen: React.FC = () => {
           renderItem={({ item }) => (
             <TouchableOpacity
               style={styles.deckItem}
-              onPress={() => navigation.navigate("DeckEditor", { deck: item.id })}
+              onPress={() => navigation.navigate("DeckEditor", { deck: { id: item.id, name: item.name } })}
             >
               <Text style={styles.deckText}>{item.name}</Text>
               {/* Aquí pasamos el nombre del mazo en lugar del ID */}
@@ -192,108 +196,113 @@ const DeckManagementScreen: React.FC = () => {
     );
   };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#3D3D3D', // Fondo gris oscuro
-  },
-  title: {
-    fontSize: 32,
-    marginBottom: 20,
-    fontWeight: 'bold',
-    color: '#FFFFFF', // Texto blanco
-    marginTop: 40,
-  },
-  listContainer: {
-    width: '100%',
-    alignItems: 'center',
-  },
-  deckItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#2C2C2C',
-    padding: 15,
-    marginVertical: 10,
-    width: '90%',
-    borderRadius: 12, // Bordes redondeados
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 5, // Sombra para Android
-  },
-  deckText: {
-    fontSize: 18,
-    flex: 1,
-    color: '#FFFFFF', // Texto blanco
-  },
-  deleteButton: {
-    marginLeft: 10,
-    padding: 10,
-  },
-  input: {
-    height: 40,
-    borderColor: '#666666',
-    borderWidth: 1,
-    marginBottom: 20,
-    paddingHorizontal: 10,
-    width: '90%',
-    borderRadius: 10,
-    backgroundColor: '#2C2C2C', // Fondo gris oscuro para el input
-    color: '#FFFFFF',
-  },
-  addButton: {
-    backgroundColor: '#F77F00', // Naranja vibrante para el botón
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-    width: '90%',
-    marginBottom: 10,
-  },
-  addButtonText: {
-    color: '#FFFFFF', // Texto blanco
-    fontSize: 18,
-  },
-  cancelButton: {
-    backgroundColor: '#666666', // Gris oscuro para el botón de cancelar
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-    width: '90%',
-  },
-  cancelButtonText: {
-    color: '#FFFFFF', // Texto blanco
-    fontSize: 18,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalView: {
-    width: '80%',
-    backgroundColor: '#3D3D3D',
-    padding: 20,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  fab: {
-    position: 'absolute',
-    bottom: 30,
-    right: 30,
-    backgroundColor: '#F77F00', // Naranja vibrante para el FAB
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 5, // Sombra para el botón flotante
-  },
-});
-
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 20,
+      backgroundColor: '#1E1F28', // Fondo plano oscuro
+    },
+    title: {
+      fontSize: 32,
+      fontWeight: 'bold',
+      marginBottom: 40,
+      textAlign: 'center',
+      color: '#FFFFFF', // Texto blanco
+    },
+    listContainer: {
+      width: '100%',
+      alignItems: 'center',
+    },
+    deckItem: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      backgroundColor: '#2C2D37', // Fondo gris oscuro
+      padding: 15,
+      marginVertical: 10,
+      width: '90%',
+      borderRadius: 12, // Bordes redondeados
+      borderWidth: 1,
+      borderColor: '#D3C298', // Borde dorado suave
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.3,
+      shadowRadius: 4,
+      elevation: 5, // Sombra para Android
+    },
+    deckText: {
+      fontSize: 18,
+      flex: 1,
+      color: '#FFFFFF', // Texto blanco
+    },
+    deleteButton: {
+      marginLeft: 10,
+      padding: 10,
+    },
+    input: {
+      height: 50,
+      backgroundColor: '#2C2D37', // Fondo gris oscuro para los inputs
+      borderWidth: 1,
+      borderColor: '#D3C298', // Borde dorado suave
+      marginBottom: 20,
+      paddingHorizontal: 20,
+      borderRadius: 25,
+      color: '#FFFFFF', // Texto blanco
+      fontSize: 16,
+      width: '100%',
+    },
+    addButton: {
+      backgroundColor: '#D3C298', // Fondo dorado suave para el botón
+      paddingVertical: 15,
+      borderRadius: 25,
+      alignItems: 'center',
+      width: '100%',
+      marginBottom: 15,
+    },
+    addButtonText: {
+      color: '#1E1F28', // Texto oscuro para contraste
+      fontSize: 18,
+      fontWeight: 'bold',
+    },
+    cancelButton: {
+      backgroundColor: '#666666', // Gris oscuro para el botón de cancelar
+      paddingVertical: 15,
+      borderRadius: 25,
+      alignItems: 'center',
+      width: '100%',
+    },
+    cancelButtonText: {
+      color: '#FFFFFF', // Texto blanco
+      fontSize: 18,
+    },
+    modalContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalView: {
+      width: '80%',
+      backgroundColor: '#1E1F28',
+      padding: 20,
+      borderRadius: 10,
+      alignItems: 'center',
+    },
+    fab: {
+      position: 'absolute',
+      bottom: 30,
+      right: 30,
+      backgroundColor: '#D3C298', // Naranja suave para el FAB
+      width: 60,
+      height: 60,
+      borderRadius: 30,
+      justifyContent: 'center',
+      alignItems: 'center',
+      elevation: 5, // Sombra para el botón flotante
+    },
+  });
+  
+export const placeholderColor = '#D3C298'; // Placeholder dorado suave
 export default DeckManagementScreen;

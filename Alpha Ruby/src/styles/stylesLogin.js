@@ -1,6 +1,12 @@
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
+  forgotPasswordText: {
+    color: '#007BFF',
+    marginTop: 10,
+    textAlign: 'center',
+    textDecorationLine: 'underline',
+  },
   container: {
     flex: 1,
     justifyContent: 'center',

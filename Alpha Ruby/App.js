@@ -13,6 +13,7 @@ import DeckManagementScreen from './src/screens/DeckManagementScreen';
 import DeckEditorScreen from './src/screens/deckEditorScreen';
 import SearchCard from './src/screens/Buscar';
 import ImageViewScreen from './src/screens/ImageViewScreen';
+import ForgotPassword from './src/screens/ForgotPassword';
 
 import { UserProvider } from './src/screens/UserContext';
 
@@ -70,6 +71,7 @@ const App = () => {
           <Stack.Screen name="Main" component={MainTabNavigator} options={{ headerShown: false }} />
           <Stack.Screen name="DeckEditor" component={DeckEditorScreen} options={{ title: 'Mazos', headerShown: false}} />
           <Stack.Screen name="ImageViewScreen" component={ImageViewScreen} options={{ title: 'Ver Imagen' }} />
+          <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{ headerShown: true }}/>
         </Stack.Navigator>
       </NavigationContainer>
     </UserProvider>

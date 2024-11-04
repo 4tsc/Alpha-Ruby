@@ -14,7 +14,7 @@ const recentlyViewedCards = [
 const newsData = [
   {
     id: '1',
-    title: 'Phantom Golden Pack Sealed - Midweek Magic Event Guide',
+    title: 'Phantom Golden Pack Sealed - Midweek Magic Event Guide', 
     author: 'j2sjosh',
     time: 'Hace 5 horas',
     imageUrl: 'https://link-to-news-image-1',

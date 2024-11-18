@@ -45,7 +45,7 @@ const DeckManagementScreen: React.FC = () => {
           setDecks(formattedDecks);
           console.log('Barajas formateadas:', formattedDecks);  // Para depurar
         } else {
-          console.error('Error:', data.error || 'No se encontraron barajas');
+          // console.error('Error:', data.error || 'No se encontraron barajas');
         }
       } catch (error) {
         console.error('Error al obtener las barajas:', error);

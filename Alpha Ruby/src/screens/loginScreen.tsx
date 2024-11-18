@@ -27,7 +27,7 @@ export default function Login({ navigation }) {
       console.log('Código de respuesta:', response.status);
   
       if (response.ok) {
-        Alert.alert('Login exitoso', 'Sesión iniciada correctamente');
+        // Alert.alert('Login exitoso', 'Sesión iniciada correctamente');
         console.log('ID de usuario:', result.userId);
         const Id = result.userId;
         console.log("almacenando en contexto... ", Id);

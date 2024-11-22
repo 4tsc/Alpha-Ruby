@@ -299,15 +299,19 @@ const DeckManagementScreen: React.FC = () => {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fondo oscuro semitransparente
+      backgroundColor: 'rgba(0, 0, 0, 0.5)', 
     },
     modalView2: {
       width: '80%',
       padding: 20,
-      backgroundColor: '#FFFFFF',
+      backgroundColor: '#2C2D37', // Cambia el color de fondo del modal
       borderRadius: 10,
+      alignItems: 'center',
       shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
       shadowOpacity: 0.25,
       shadowRadius: 4,
       elevation: 5,
@@ -317,17 +321,19 @@ const DeckManagementScreen: React.FC = () => {
       fontWeight: 'bold',
       marginBottom: 15,
       textAlign: 'center',
+      color: '#FFFFFF',
     },
     modalOption2: {
+      width: '100%',
       padding: 15,
-      marginVertical: 10,
-      borderWidth: 1,
-      borderColor: '#D94A26',
+      marginBottom: 10,
+      backgroundColor: '#383A48', // Fondo de cada opción
       borderRadius: 5,
+      alignItems: 'center',
     },
     modalOptionText2: {
       textAlign: 'center',
-      color: '#D94A26',
+      color: '#FFFFFF',
       fontWeight: '600',
     },
       // Contenedor principal del mazo (mantiene las dimensiones y el borde)

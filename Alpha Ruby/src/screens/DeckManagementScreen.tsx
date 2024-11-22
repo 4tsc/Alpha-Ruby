@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TextInput, Alert, StyleSheet, TouchableOpacity, SafeAreaView, Modal } from 'react-native';
+import { View, Text, FlatList, TextInput, Alert, StyleSheet, TouchableOpacity, SafeAreaView, Modal, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { Dimensions } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+
 
 import { useUser } from './UserContext';
+
+const { width } = Dimensions.get('window');
+const itemSize = width * 0.3;  // 25% del ancho de la pantalla
 
 interface Deck {
   id: number;
@@ -19,6 +25,35 @@ const DeckManagementScreen: React.FC = () => {
   const [decks, setDecks] = useState<Deck[]>([]);
   const [newDeckName, setNewDeckName] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
+  const [selectedOption, setSelectedOption] = useState(''); // Estado para el Picker
+  const [selectedFormat, setSelectedFormat] = useState('standard'); // Inicializa con un valor por defecto
+  const [isModalVisible2, setIsModalVisible2] = useState(false); // Controla la visibilidad del modal
+  const [selectedDeck, setSelectedDeck] = useState(null); // Guarda el ítem seleccionado
+  
+
+  const options = [
+    { label: 'Standard', value: 'standard' },
+    { label: 'Modern', value: 'modern' },
+    { label: 'Legacy', value: 'legacy' },
+    { label: 'Vintage', value: 'vintage' },
+    { label: 'Pioneer', value: 'pioneer' },
+    { label: 'Commander', value: 'commander' },
+    { label: 'Brawl', value: 'brawl' },
+    { label: 'Historic', value: 'historic' },
+    { label: 'Pauper', value: 'pauper' },
+    { label: 'Penny Dreadful', value: 'penny_dreadful' },
+    { label: 'Canadian Highlander', value: 'canadian_highlander' },
+    { label: 'Old School', value: 'old_school' },
+    { label: 'Oathbreaker', value: 'oathbreaker' },
+    { label: 'Duel Commander', value: 'duel_commander' },
+    { label: 'Tiny Leaders', value: 'tiny_leaders' },
+    { label: 'Historic Brawl', value: 'historic_brawl' },
+    { label: 'Alchemy', value: 'alchemy' },
+    { label: 'Explorer', value: 'explorer' },
+    { label: 'Premodern', value: 'premodern' },
+    { label: 'Frontier', value: 'frontier' },
+    { label: 'Pauper EDH', value: 'pauper_edh' }
+  ];
 
     // Función para obtener los mazos del usuario
     const fetchDecks = async () => {
@@ -67,7 +102,7 @@ const DeckManagementScreen: React.FC = () => {
         Alert.alert('Error', 'El nombre del mazo no puede estar vacío.');
         return;
       }
-  
+    
       try {
         // Realizar la solicitud POST al endpoint para agregar la baraja
         const response = await fetch('https://magicarduct.online:3000/api/createmazo2', {
@@ -77,24 +112,22 @@ const DeckManagementScreen: React.FC = () => {
           },
           body: JSON.stringify({
             nombre: newDeckName,           // El nuevo nombre del mazo
-            formato: 'test',               // Pasando 'test' como formato
-            descripcion: 'test',           // Pasando 'test' como descripción
+            formato: selectedFormat,       // Formato seleccionado del Picker
+            descripcion: '-',              // Pasando '-' como descripción
             idusuario: userId,             // ID del usuario que está creando el mazo
           }),
         });
-  
+    
         const data = await response.json();
-        console.log('mecago', data);
-  
+        console.log('Respuesta:', data);
+    
         if (response.ok) {
-          // Agregar el nuevo mazo a la lista de mazos (puedes obtener el id de la baraja del backend)
           const newDeck = {
             id: data.baraja.id,
             name: data.baraja.name,
-            cards: [], // En este punto no tienes cartas asignadas al mazo
+            cards: [],
           };
           setDecks([...decks, newDeck]);
-  
           setNewDeckName('');  // Limpiar el nombre del nuevo mazo
           setModalVisible(false);  // Cerrar el modal
         } else {
@@ -150,15 +183,27 @@ const DeckManagementScreen: React.FC = () => {
           renderItem={({ item }) => (
             <TouchableOpacity
               style={styles.deckItem}
-              onPress={() => navigation.navigate("DeckEditor", { deck: { id: item.id, name: item.name } })}
+              onPress={() =>
+                navigation.navigate("DeckEditor", { deck: { id: item.id, name: item.name } })
+              }
+              onLongPress={() => {
+                setSelectedDeck(item); // Establece el ítem seleccionado
+                setIsModalVisible2(true); // Abre el modal
+              }}
             >
-              <Text style={styles.deckText}>{item.name}</Text>
-              {/* Aquí pasamos el nombre del mazo en lugar del ID */}
-              <TouchableOpacity onPress={() => removeDeck(item.name)} style={styles.deleteButton}>
-                <Icon name="times" size={20} color="#D94A26" />
-              </TouchableOpacity>
+              <ImageBackground
+                source={{ uri: 'https://example.com/image.jpg' }} // URL o require() para la imagen
+                style={styles.deckItemBackground}
+                imageStyle={styles.deckImage} // Imagen redondeada con borde visible
+              >
+                <Text style={styles.deckItemTitle}>{item.name}</Text>
+                <TouchableOpacity onPress={() => removeDeck(item.name)} style={styles.deleteButton}>
+                  <Icon name="times" size={20} color="#D94A26" />
+                </TouchableOpacity>
+              </ImageBackground>
             </TouchableOpacity>
           )}
+          numColumns={2} // Aquí especificamos 2 columnas
           contentContainerStyle={styles.listContainer}
         />
     
@@ -178,6 +223,18 @@ const DeckManagementScreen: React.FC = () => {
                 value={newDeckName}
                 onChangeText={setNewDeckName}
               />
+    
+              {/* Picker para opciones adicionales */}
+              <Picker
+                selectedValue={selectedFormat}
+                style={styles.picker}
+                onValueChange={(itemValue) => setSelectedFormat(itemValue)}
+              >
+                {options.map((option) => (
+                  <Picker.Item key={option.value} label={option.label} value={option.value} />
+                ))}
+              </Picker>
+    
               <TouchableOpacity onPress={addDeck} style={styles.addButton}>
                 <Text style={styles.addButtonText}>Agregar Mazo</Text>
               </TouchableOpacity>
@@ -188,15 +245,149 @@ const DeckManagementScreen: React.FC = () => {
           </View>
         </Modal>
     
+        {/* Nuevo Modal para opciones del ítem seleccionado */}
+        {isModalVisible2 && (
+          <Modal
+            transparent={true}
+            animationType="fade"
+            visible={isModalVisible2}
+            onRequestClose={() => setIsModalVisible2(false)}
+          >
+            <View style={styles.modalContainer2}>
+              <View style={styles.modalView2}>
+                <Text style={styles.modalTitle2}>Opciones para {selectedDeck?.name}</Text>
+                <TouchableOpacity
+                  style={styles.modalOption2}
+                  onPress={() => {
+                    setIsModalVisible2(false);
+                    removeDeck(selectedDeck?.id);
+                  }}
+                >
+                  <Text style={styles.modalOptionText2}>Eliminar Mazo</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.modalOption2}
+                  onPress={() => {
+                    setIsModalVisible2(false);
+                    Alert.alert('Opción personalizada', 'Acción futura aquí.');
+                  }}
+                >
+                  <Text style={styles.modalOptionText2}>Otra opción</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.modalOption2}
+                  onPress={() => setIsModalVisible2(false)}
+                >
+                  <Text style={styles.modalOptionText2}>Cancelar</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
+        )}
+    
         {/* Botón flotante para agregar un mazo */}
         <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.fab}>
           <Icon name="plus" size={30} color="#FFFFFF" />
         </TouchableOpacity>
       </SafeAreaView>
     );
+    
   };
 
   const styles = StyleSheet.create({
+    modalContainer2: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fondo oscuro semitransparente
+    },
+    modalView2: {
+      width: '80%',
+      padding: 20,
+      backgroundColor: '#FFFFFF',
+      borderRadius: 10,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5,
+    },
+    modalTitle2: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      marginBottom: 15,
+      textAlign: 'center',
+    },
+    modalOption2: {
+      padding: 15,
+      marginVertical: 10,
+      borderWidth: 1,
+      borderColor: '#D94A26',
+      borderRadius: 5,
+    },
+    modalOptionText2: {
+      textAlign: 'center',
+      color: '#D94A26',
+      fontWeight: '600',
+    },
+      // Contenedor principal del mazo (mantiene las dimensiones y el borde)
+      deckItem: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#2C2D37',
+        margin: 8,
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: '#D3C298',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
+        elevation: 3,
+        overflow: 'hidden',
+        height: itemSize, // Tamaño dinámico
+        width: itemSize,  // Tamaño dinámico
+      },
+
+  // Estilo para `ImageBackground` del mazo
+  deckItemBackground: {
+    flex: 1,
+    justifyContent: 'flex-start', // Coloca el texto en la parte superior
+    alignItems: 'flex-start',
+    padding: 10,
+    borderRadius: 12,
+  },
+  // Estilo de la imagen (mantiene bordes redondeados y borde visible)
+  deckImage: {
+    borderRadius: 12, // Bordes redondeados para la imagen
+  },
+  // Estilo del texto del título del mazo
+  deckItemTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#FFFFFF', // Blanco para contraste
+    marginBottom: 8,
+    textShadowColor: '#000', // Añade un ligero sombreado al texto
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
+  },
+  deleteButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    padding: 5,
+  },
+    picker: {
+      width: '100%',
+      height: 40,
+      backgroundColor: '#1E1F28', // Fondo oscuro del picker
+      borderRadius: 8,
+      borderColor: '#D3C298', // Borde oscuro para unificar con el fondo
+      borderWidth: 1,
+      color: '#FFFFFF', // Color de texto blanco para contraste
+      marginBottom: 15,
+      justifyContent: 'center',
+    },
     container: {
       flex: 1,
       justifyContent: 'center',
@@ -212,34 +403,14 @@ const DeckManagementScreen: React.FC = () => {
       color: '#FFFFFF', // Texto blanco
     },
     listContainer: {
-      width: '100%',
+      justifyContent: 'center',
       alignItems: 'center',
-    },
-    deckItem: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      backgroundColor: '#2C2D37', // Fondo gris oscuro
-      padding: 15,
-      marginVertical: 10,
-      width: '90%',
-      borderRadius: 12, // Bordes redondeados
-      borderWidth: 1,
-      borderColor: '#D3C298', // Borde dorado suave
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.3,
-      shadowRadius: 4,
-      elevation: 5, // Sombra para Android
+      paddingBottom: 20,
     },
     deckText: {
       fontSize: 18,
       flex: 1,
-      color: '#FFFFFF', // Texto blanco
-    },
-    deleteButton: {
-      marginLeft: 10,
-      padding: 10,
+      color: '#FFFFFF',
     },
     input: {
       height: 50,

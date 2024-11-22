@@ -105,9 +105,6 @@ const TextoSection: React.FC<TextoSectionProps> = ({ inputValue, setInputValue }
             onChangeText={setInputValue} // Actualiza el inputValue llamando a setInputValue
             placeholder="Roba una carta, vuela"
           />
-          <TouchableOpacity style={styles.inputButton} onPress={() => setModalVisible(true)}>
-            <Ionicons name="add" size={20} color="white" />
-          </TouchableOpacity>
         </View>
         
         {/* Botón al lado derecho */}

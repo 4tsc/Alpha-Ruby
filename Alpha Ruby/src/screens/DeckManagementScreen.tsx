@@ -260,7 +260,7 @@ const DeckManagementScreen: React.FC = () => {
                   style={styles.modalOption2}
                   onPress={() => {
                     setIsModalVisible2(false);
-                    removeDeck(selectedDeck?.id);
+                    removeDeck(selectedDeck?.name);
                   }}
                 >
                   <Text style={styles.modalOptionText2}>Eliminar Mazo</Text>

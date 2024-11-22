@@ -305,9 +305,7 @@ export default function TabTwoScreen() {
                 {/* Mostrar el nombre de la carta */}
                 <Text style={styles.cardName}>{card.name}</Text>
   
-                {/* Mostrar las estadísticas de Power y Toughness si existen */}
-                {card.power && <Text style={styles.cardStats}>Power: {card.power}</Text>}
-                {card.toughness && <Text style={styles.cardStats}>Toughness: {card.toughness}</Text>}
+                
               </View>
             ))}
           </View>
@@ -394,38 +392,27 @@ const styles = StyleSheet.create({
   },
   cardsGrid: {
     flexDirection: 'row',
-    flexWrap: 'wrap',               // Permitir que las cartas se envuelvan en múltiples filas
-    justifyContent: 'space-between' // Espacio entre las cartas
+    flexWrap: 'wrap',               // Permitir que las cartas se organicen en filas
+    justifyContent: 'space-between', // Espaciado uniforme entre columnas
+    paddingHorizontal: 4,           // Espaciado lateral para evitar que toquen los bordes
   },
   cardContainer: {
-    backgroundColor: '#fff',
-    padding: 10,
-    marginBottom: 16,
-    width: '47%',                   // Ocupa el 47% del ancho para hacer dos columnas
+    marginBottom: 8,                // Espaciado entre filas
+    width: '32%',                   // Cada carta ocupa un tercio del ancho de la pantalla (con márgenes incluidos)
     borderRadius: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    padding: 6,                     // Espaciado interno dentro del contenedor
   },
   cardImage: {
-    width: '100%',                  // La imagen ocupará todo el ancho del contenedor
-    height: 220,                    // Aumentar la altura para evitar que se recorten
-    marginBottom: 8,                // Espacio entre la imagen y el nombre
+    width: '100%',                  // Imagen ocupa todo el ancho del contenedor
+    height: 140,                    // Altura ajustada para que las cartas sean proporcionales
     resizeMode: 'contain',          // Ajustar la imagen sin recortarla
+    marginBottom: 6,                // Espaciado entre la imagen y el texto
   },
   cardName: {
-    fontSize: 14,                  // Reducir el tamaño de la fuente para el nombre
+    fontSize: 12,                   // Tamaño reducido para nombres largos
     fontWeight: 'bold',
-    color: '#333',
-    textAlign: 'center',           // Centrar el nombre debajo de la imagen
-    marginBottom: 4,
-  },
-  cardStats: {
-    fontSize: 12,                  // Reducir el tamaño de las estadísticas
-    color: '#888',
-    textAlign: 'center',           // Centrar las estadísticas
+    color: '#FFFFFF',               // Texto blanco
+    textAlign: 'center',            // Centrar el texto
   },
   noResultsText: {
     fontSize: 16,
@@ -475,13 +462,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   inputButton: {
-    backgroundColor: '#D3C298', // Dorado suave para botón
     padding: 10,
     borderTopRightRadius: 5,
     borderBottomRightRadius: 5,
   },
   sideButton: {
-    backgroundColor: '#D3C298',  // Dorado suave para botón
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 4,

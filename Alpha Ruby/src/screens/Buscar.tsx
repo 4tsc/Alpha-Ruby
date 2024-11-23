@@ -235,7 +235,7 @@ export default function TabTwoScreen() {
   
     // Filtros de color
     const colorsQuery = filter.colors.length ? `+color:${filter.colors.join(',')}` : '';
-    
+  
     // Filtros de estadísticas
     const cmcQuery = filter.cmc ? `+cmc${filter.cmc}` : ''; // Valor de mana
     const powerQuery = filter.power ? `+pow${filter.power}` : ''; // Fuerza
@@ -257,6 +257,7 @@ export default function TabTwoScreen() {
       const data = await response.json();
   
       if (data && data.data) {
+        // Filtrar cartas válidas y establecer los resultados
         setCardResults(data.data);
       } else {
         setCardResults([]);
@@ -269,9 +270,13 @@ export default function TabTwoScreen() {
     }
   };
   
-
   useEffect(() => {
-    fetchCards(); // Cada vez que se cambie el texto de búsqueda o los filtros, busca cartas
+    const handler = setTimeout(() => {
+      fetchCards();
+    }, 1000); // 1 segundo
+  
+    // Limpia el timeout si el usuario sigue escribiendo
+    return () => clearTimeout(handler);
   }, [searchText, filter]);
 
   const handleCardPress = (imageUrl: string, cardId: string, cardUri: string) => {
@@ -287,21 +292,35 @@ export default function TabTwoScreen() {
       ) : cardResults.length > 0 ? (
         <ScrollView>
           <View style={styles.cardsGrid}>
-            {cardResults.map((card) => (
-              <View key={card.id} style={styles.cardContainer}>
-                {card.image_uris?.small && (
-                  <TouchableOpacity onPress={() => handleCardPress(card.image_uris.art_crop, card.id, card.uri)}>
+            {cardResults.map((card) => {
+              // Verifica si es una carta de doble cara según el atributo layout
+              const isDoubleFaced = ['transform', 'modal_dfc', 'double_faced_token'].includes(card.layout);
+              const imageUri = isDoubleFaced
+                ? card.card_faces?.[0]?.image_uris?.small || '../images/G.svg' // Imagen de la primera cara
+                : card.image_uris?.small;
+  
+              return (
+                <View key={card.id} style={styles.cardContainer}>
+                  <TouchableOpacity
+                    onPress={() =>
+                      handleCardPress(
+                        imageUri,
+                        card.id,
+                        card.uri
+                      )
+                    }
+                  >
                     <Image
-                      source={{ uri: card.image_uris.small }}
+                      source={{ uri: imageUri }}
                       style={styles.cardImage}
                     />
                   </TouchableOpacity>
-                )}
-                <Text style={styles.cardName}>{card.name}</Text>
-                {card.power && <Text style={styles.cardStats}>Power: {card.power}</Text>}
-                {card.toughness && <Text style={styles.cardStats}>Toughness: {card.toughness}</Text>}
-              </View>
-            ))}
+                  <Text style={styles.cardName}>{card.name}</Text>
+                  {card.power && <Text style={styles.cardStats}>Power: {card.power}</Text>}
+                  {card.toughness && <Text style={styles.cardStats}>Toughness: {card.toughness}</Text>}
+                </View>
+              );
+            })}
           </View>
         </ScrollView>
       ) : (
@@ -309,6 +328,7 @@ export default function TabTwoScreen() {
       )}
     </View>
   );
+  
 
   
 
@@ -339,8 +359,13 @@ export default function TabTwoScreen() {
     <View style={styles.container}>
       <View style={styles.orangeSection}>
         <View style={styles.searchBarContainer}>
-          <TouchableOpacity onPress={() => setSearchInitiated(true)}>
-            <Ionicons name="search" size={20} color="#fff" style={styles.searchIcon} />
+          <TouchableOpacity onPress={() => setSearchInitiated((prevState) => !prevState)}>
+            <Ionicons
+              name={searchInitiated ? "arrow-back" : "search"} // Cambia entre "arrow-back" y "search"
+              size={20}
+              color="#fff"
+              style={styles.searchIcon}
+            />
           </TouchableOpacity>
           <TextInput
             style={styles.searchBar}

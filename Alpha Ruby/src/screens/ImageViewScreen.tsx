@@ -9,6 +9,7 @@ export default function ImageViewScreen({ route }) {
   const [decks, setDecks] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [cardDetails, setCardDetails] = useState(null);
+  const [currentFaceIndex, setCurrentFaceIndex] = useState(0); // Índice para alternar entre caras
 
   const fetchDecks = async () => {
     try {
@@ -18,21 +19,19 @@ export default function ImageViewScreen({ route }) {
           'Content-Type': 'application/json',
         },
       });
-  
+
       const data = await response.json();
       console.log('datos: ', data);
-  
+
       if (response.ok) {
-        // Usa 'idbarajas' en lugar de 'id'
         const formattedDecks = data.map((item) => ({
-          id: item.idbarajas, // Ajustamos para que tome el ID correcto
-          name: item.nombre, // Asignamos el nombre desde la respuesta del endpoint
-          cards: [], // En este punto no hay cartas, por lo que será un array vacío
+          id: item.idbarajas,
+          name: item.nombre,
+          cards: [],
         }));
-  
-        // Actualizamos el estado con los mazos formateados
+
         setDecks(formattedDecks);
-        console.log('Barajas formateadas:', formattedDecks); // Para depurar
+        console.log('Barajas formateadas:', formattedDecks);
       } else {
         console.error('Error:', data.error || 'No se encontraron barajas');
       }
@@ -41,25 +40,25 @@ export default function ImageViewScreen({ route }) {
     }
   };
 
-    // Función para obtener los detalles de la carta desde Scryfall
-    const fetchCardDetails = async () => {
-        try {
-          const response = await fetch(`https://api.scryfall.com/cards/${cardId}`);
-          const data = await response.json();
-    
-          if (response.ok) {
-            setCardDetails(data); // Guarda los detalles de la carta en el estado
-          } else {
-            console.error('Error al obtener los detalles de la carta:', data);
-          }
-        } catch (error) {
-          console.error('Error al obtener los detalles de la carta:', error);
-        }
-      };
+  const fetchCardDetails = async () => {
+    try {
+      const response = await fetch(`https://api.scryfall.com/cards/${cardId}`);
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log('Detalles de la carta:', data);
+        setCardDetails(data);
+      } else {
+        console.error('Error al obtener los detalles de la carta:', data);
+      }
+    } catch (error) {
+      console.error('Error al obtener los detalles de la carta:', error);
+    }
+  };
 
   const handleDeckSelection = async (deckId) => {
-    const idcarta = cardId; // Usa el ID de la carta
-    const cantidad = 1; // La cantidad es 1 por defecto
+    const idcarta = cardId;
+    const cantidad = 1;
 
     try {
       const response = await fetch('https://magicarduct.online:3000/api/mazocartas', {
@@ -69,7 +68,7 @@ export default function ImageViewScreen({ route }) {
         },
         body: JSON.stringify({
           idmazo: deckId,
-          idcarta: idcarta, // Aquí puedes usar el ID de la carta
+          idcarta: idcarta,
           cantidad: cantidad,
         }),
       });
@@ -85,53 +84,78 @@ export default function ImageViewScreen({ route }) {
       console.error('Error al agregar carta al mazo:', error);
       Alert.alert('Error', 'Hubo un problema al agregar la carta al mazo.');
     } finally {
-      setModalVisible(false); // Cerrar el modal
+      setModalVisible(false);
     }
   };
 
   const handleAddToDeck = () => {
-    setModalVisible(true); // Mostrar el modal
+    setModalVisible(true);
   };
 
   const closeModal = () => {
-    setModalVisible(false); // Cerrar el modal
+    setModalVisible(false);
+  };
+
+  const toggleCardFace = () => {
+    if (cardDetails?.card_faces) {
+      setCurrentFaceIndex((prevIndex) => (prevIndex === 0 ? 1 : 0));
+    }
   };
 
   useEffect(() => {
     fetchDecks();
-    fetchCardDetails(); // Llama a la función para obtener las barajas al cargar el componente
+    fetchCardDetails();
   }, []);
+
+  const renderCardDetails = () => {
+    if (!cardDetails) return null;
+
+    if (cardDetails.card_faces) {
+      const currentFace = cardDetails.card_faces[currentFaceIndex];
+      return (
+        <View style={styles.cardDetailsContainer}>
+          <Text style={styles.cardTitle}>{currentFace.name}</Text>
+          <Text style={styles.cardType}>{currentFace.type_line}</Text>
+          <Text style={styles.cardText}>{currentFace.oracle_text}</Text>
+        </View>
+      );
+    }
+
+    return (
+      <View style={styles.cardDetailsContainer}>
+        <Text style={styles.cardTitle}>{cardDetails.name}</Text>
+        <Text style={styles.cardType}>{cardDetails.type_line}</Text>
+        <Text style={styles.cardSet}>{`Set: ${cardDetails.set_name}`}</Text>
+        <Text style={styles.cardText}>{cardDetails.oracle_text}</Text>
+        {cardDetails.power && cardDetails.toughness && (
+          <Text style={styles.cardStats}>
+            Fuerza: {cardDetails.power} / Resistencia: {cardDetails.toughness}
+          </Text>
+        )}
+      </View>
+    );
+  };
 
   return (
     <View style={styles.container}>
-      {/* Mostrar la imagen en pantalla completa */}
       <Image
-        source={{ uri: imageUrl }}
+        source={{
+          uri: cardDetails?.card_faces
+            ? cardDetails.card_faces[currentFaceIndex]?.image_uris?.large
+            : imageUrl,
+        }}
         style={styles.fullImage}
         resizeMode="contain"
       />
-  
-      {/* Mostrar los detalles de la carta */}
-      {cardDetails && (
-        <View style={styles.cardDetailsContainer}>
-          <Text style={styles.cardTitle}>{cardDetails.name}</Text>
-          <Text style={styles.cardType}>{cardDetails.type_line}</Text>
-          <Text style={styles.cardSet}>{`Set: ${cardDetails.set_name}`}</Text>
-          <Text style={styles.cardText}>{cardDetails.oracle_text}</Text>
-           
-          {/* Mostrar fuerza y resistencia si están disponibles */}
-          {cardDetails.power && cardDetails.toughness && (
-            <Text style={styles.cardStats}>
-              Fuerza: {cardDetails.power} / Resistencia: {cardDetails.toughness}
-            </Text>
-          )}
-        </View>
+
+      {renderCardDetails()}
+
+      {cardDetails?.card_faces && (
+        <Button title="Alternar cara" onPress={toggleCardFace} />
       )}
 
-      {/* Botón para agregar a mazo */}
       <Button title="Agregar a mazo" onPress={handleAddToDeck} />
-  
-      {/* Modal para mostrar las barajas */}
+
       <Modal
         transparent={true}
         visible={modalVisible}

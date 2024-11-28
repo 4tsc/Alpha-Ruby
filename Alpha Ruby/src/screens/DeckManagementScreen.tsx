@@ -222,6 +222,40 @@ const DeckManagementScreen: React.FC = () => {
       }
     };
     
+    const handleCardSelection = async (deckId, imageUuid) => {
+      try {
+        console.log('Intentando actualizar la imagen del mazo...');
+        console.log('Datos enviados:', { deckId, imageUuid });
+    
+        const response = await fetch('https://magicarduct.online:3000/update-deck-image', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            deckId, // ID del mazo
+            imageUuid, // UUID de la imagen
+          }),
+        });
+    
+        console.log('Respuesta del servidor recibida:', response);
+    
+        const data = await response.json();
+    
+        console.log('Datos recibidos (parsed JSON):', data);
+    
+        if (response.ok) {
+          Alert.alert('Éxito', 'La imagen del mazo fue actualizada correctamente.');
+          console.log('Actualización exitosa:', data);
+        } else {
+          Alert.alert('Error', data.error || 'No se pudo actualizar la imagen del mazo.');
+          console.error('Error devuelto por el servidor:', data.error);
+        }
+      } catch (error) {
+        console.error('Error al intentar actualizar la imagen del mazo:', error);
+        Alert.alert('Error', 'No se pudo completar la solicitud.');
+      }
+    };
 
     return (
       <SafeAreaView style={styles.container}>
@@ -336,61 +370,65 @@ const DeckManagementScreen: React.FC = () => {
           
         )}
 
-          <Modal
-            visible={isChangeImageModalVisible}
-            animationType="slide"
-            transparent={true}
-            onRequestClose={() => setIsChangeImageModalVisible(false)}
-          >
-            <View style={styles.modalContainer}>
-              {isLoading ? (
-                <ActivityIndicator size="large" color="#D3C298" />
-              ) : error ? (
-                <Text style={styles.errorText}>{error}</Text>
-              ) : (
-                <>
-                  {console.log('Cards recibidos:', cards)}
+<Modal
+  visible={isChangeImageModalVisible}
+  animationType="slide"
+  transparent={true}
+  onRequestClose={() => setIsChangeImageModalVisible(false)}
+>
+  <View style={styles.modalContainer}>
+    {isLoading ? (
+      <ActivityIndicator size="large" color="#D3C298" />
+    ) : error ? (
+      <Text style={styles.errorText}>{error}</Text>
+    ) : cards?.length > 0 ? (
+      <FlatList
+        data={cards}
+        keyExtractor={(item) => item.id?.toString() || Math.random().toString()}
+        renderItem={({ item }) => (
+<TouchableOpacity
+  style={styles.cardItem}
+  onPress={() => {
+    // Obtén el ID del mazo seleccionado (esto depende de cómo estés manejando el mazo actual)
+    const selectedDeckId = selectedDeck.id;  // Asegúrate de que 'selectedDeck' contenga el ID del mazo
+    const selectedImageUuid = item.id;  // Obtén el UUID de la imagen de la carta seleccionada
 
-                  <FlatList
-                    data={cards}
-                    keyExtractor={(item) => item.id}
-                    renderItem={({ item }) => (
-                      <TouchableOpacity
-                        style={styles.cardItem}
-                        onPress={() => {
-                         // Verificación de que 'fullImage' esté definido antes de usarlo
-                          if (item.fullImage) {
-                            console.log('Nueva imagen seleccionada:', item.fullImage);
-                            setIsChangeImageModalVisible(false);
-                          } else {
-                            console.log('Imagen no disponible para esta carta');
-                          }
-                        }}
-                      >
-                        {item.fullImage ? (
-                          <Image
-                            source={{ uri: item.fullImage }}
-                            style={styles.cardImage}
-                          />
-                        ) : (
-                          <Text>Imagen no disponible</Text> // Si la imagen no está disponible, mostramos un texto
-                        )}
-                      </TouchableOpacity>
-                    )}
-                    contentContainerStyle={styles.cardsList}
-                    numColumns={3} // Agregar esta propiedad para mostrar 3 columnas
-                  />
-                </>
-              )}
+    console.log("ID del mazo:", selectedDeckId);  // Verificación del ID del mazo
+    console.log("UUID de la imagen:", selectedImageUuid);  // Verificación del UUID de la imagen
 
-              <TouchableOpacity
-                style={styles.closeButton}
-                onPress={() => setIsChangeImageModalVisible(false)}
-              >
-                <Text style={styles.closeButtonText}>Cerrar</Text>
-              </TouchableOpacity>
-            </View>
-        </Modal>
+    // Llama a handleCardSelection con los valores correctos
+    handleCardSelection(selectedDeckId, selectedImageUuid);
+  }}
+  accessibilityLabel={`Seleccionar carta ${item.name || "desconocida"}`}
+  accessible
+>
+  {item.fullImage ? (
+    <Image
+      source={{ uri: item.fullImage }}
+      style={styles.cardImage}
+    />
+  ) : (
+    <Text style={styles.imageUnavailableText}>Imagen no disponible</Text>
+  )}
+</TouchableOpacity>
+        )}
+        contentContainerStyle={styles.cardsList}
+        numColumns={3}
+      />
+    ) : (
+      <Text style={styles.noCardsText}>No hay cartas disponibles para mostrar.</Text>
+    )}
+
+    <TouchableOpacity
+      style={styles.closeButton}
+      onPress={() => setIsChangeImageModalVisible(false)}
+      accessibilityLabel="Cerrar modal de cambio de imagen"
+      accessible
+    >
+      <Text style={styles.closeButtonText}>Cerrar</Text>
+    </TouchableOpacity>
+  </View>
+</Modal>
     
         {/* Botón flotante para agregar un mazo */}
         <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.fab}>
@@ -402,6 +440,17 @@ const DeckManagementScreen: React.FC = () => {
   };
 
   const styles = StyleSheet.create({
+    imageUnavailableText: {
+      color: 'gray',
+      fontSize: 14,
+      textAlign: 'center',
+    },
+    noCardsText: {
+      fontSize: 16,
+      color: '#444',
+      textAlign: 'center',
+      marginVertical: 20,
+    },
     cardItem: {
       margin: 10,
       alignItems: 'center',

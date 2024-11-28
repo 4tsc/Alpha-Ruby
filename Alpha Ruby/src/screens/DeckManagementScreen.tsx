@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TextInput, Alert, StyleSheet, TouchableOpacity, SafeAreaView, Modal, ImageBackground } from 'react-native';
+import { View, Text, FlatList, TextInput, Alert, StyleSheet, TouchableOpacity, SafeAreaView, Modal, ImageBackground, ActivityIndicator, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Dimensions } from 'react-native';
@@ -29,7 +29,12 @@ const DeckManagementScreen: React.FC = () => {
   const [selectedFormat, setSelectedFormat] = useState('standard'); // Inicializa con un valor por defecto
   const [isModalVisible2, setIsModalVisible2] = useState(false); // Controla la visibilidad del modal
   const [selectedDeck, setSelectedDeck] = useState(null); // Guarda el ítem seleccionado
-  
+  const [isModalVisible3, setIsModalVisible3] = useState(false); // Modal de opciones
+  const [isChangeImageModalVisible, setIsChangeImageModalVisible] = useState(false); // Modal para cambiar imagen
+  const [cards, setCards] = useState([]); // Cartas del mazo seleccionado
+  const [isLoading, setLoading] = useState(false); // Indicador de carga
+  const [error, setError] = useState(null); // Manejo de errores
+
 
   const options = [
     { label: 'Standard', value: 'standard' },
@@ -54,6 +59,50 @@ const DeckManagementScreen: React.FC = () => {
     { label: 'Frontier', value: 'frontier' },
     { label: 'Pauper EDH', value: 'pauper_edh' }
   ];
+
+  const fetchDeckCards = async (deckId) => {
+    setLoading(true);
+    setError(null);
+  
+    try {
+      console.log('Iniciando la solicitud para obtener las cartas del mazo:', deckId);
+  
+      const response = await fetch(`https://magicarduct.online:3000/api/mazocartas/${deckId}`);
+      if (!response.ok) {
+        throw new Error('No se pudieron obtener las cartas del mazo');
+      }
+  
+      const data = await response.json();
+      console.log('Cartas recibidas desde la API:', data);
+  
+      const scryfallRequests = data.map(async (card) => {
+        const scryfallResponse = await fetch(`https://api.scryfall.com/cards/${card.IDcarta}`);
+        if (!scryfallResponse.ok) {
+          throw new Error(`No se pudo obtener la información de la carta con ID ${card.IDcarta}`);
+        }
+        return scryfallResponse.json();
+      });
+  
+      const cardsData = await Promise.all(scryfallRequests);
+      console.log('Información detallada de las cartas desde Scryfall:', cardsData);
+  
+      // Mapeamos para dos usos diferentes
+      const formattedCards = cardsData.map((card) => ({
+        id: card.id,
+        name: card.name,
+        fullImage: card.image_uris.normal, // Imagen completa para visualizar
+        artCrop: card.image_uris.art_crop, // Imagen representativa para mazo
+      }));
+  
+      setCards(formattedCards);
+    } catch (error) {
+      console.error('Error al obtener las cartas del mazo:', error.message);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
 
     // Función para obtener los mazos del usuario
     const fetchDecks = async () => {
@@ -196,10 +245,10 @@ const DeckManagementScreen: React.FC = () => {
                 style={styles.deckItemBackground}
                 imageStyle={styles.deckImage} // Imagen redondeada con borde visible
               >
-                <Text style={styles.deckItemTitle}>{item.name}</Text>
-                <TouchableOpacity onPress={() => removeDeck(item.name)} style={styles.deleteButton}>
-                  <Icon name="times" size={20} color="#D94A26" />
-                </TouchableOpacity>
+                {/* Contenedor para el título */}
+                <View style={styles.titleContainer}>
+                  <Text style={styles.deckItemTitle}>{item.name}</Text>
+                </View>
               </ImageBackground>
             </TouchableOpacity>
           )}
@@ -268,11 +317,12 @@ const DeckManagementScreen: React.FC = () => {
                 <TouchableOpacity
                   style={styles.modalOption2}
                   onPress={() => {
-                    setIsModalVisible2(false);
-                    Alert.alert('Opción personalizada', 'Acción futura aquí.');
+                    setIsModalVisible2(false); // Cierra el modal actual
+                    fetchDeckCards(selectedDeck.id); // Carga las cartas del mazo seleccionado
+                    setIsChangeImageModalVisible(true); // Abre el modal de cambio de imagen
                   }}
                 >
-                  <Text style={styles.modalOptionText2}>Otra opción</Text>
+                  <Text style={styles.modalOptionText2}>Cambiar imagen</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.modalOption2}
@@ -283,7 +333,64 @@ const DeckManagementScreen: React.FC = () => {
               </View>
             </View>
           </Modal>
+          
         )}
+
+          <Modal
+            visible={isChangeImageModalVisible}
+            animationType="slide"
+            transparent={true}
+            onRequestClose={() => setIsChangeImageModalVisible(false)}
+          >
+            <View style={styles.modalContainer}>
+              {isLoading ? (
+                <ActivityIndicator size="large" color="#D3C298" />
+              ) : error ? (
+                <Text style={styles.errorText}>{error}</Text>
+              ) : (
+                <>
+                  {console.log('Cards recibidos:', cards)}
+
+                  <FlatList
+                    data={cards}
+                    keyExtractor={(item) => item.id}
+                    renderItem={({ item }) => (
+                      <TouchableOpacity
+                        style={styles.cardItem}
+                        onPress={() => {
+                         // Verificación de que 'fullImage' esté definido antes de usarlo
+                          if (item.fullImage) {
+                            console.log('Nueva imagen seleccionada:', item.fullImage);
+                            setIsChangeImageModalVisible(false);
+                          } else {
+                            console.log('Imagen no disponible para esta carta');
+                          }
+                        }}
+                      >
+                        {item.fullImage ? (
+                          <Image
+                            source={{ uri: item.fullImage }}
+                            style={styles.cardImage}
+                          />
+                        ) : (
+                          <Text>Imagen no disponible</Text> // Si la imagen no está disponible, mostramos un texto
+                        )}
+                      </TouchableOpacity>
+                    )}
+                    contentContainerStyle={styles.cardsList}
+                    numColumns={3} // Agregar esta propiedad para mostrar 3 columnas
+                  />
+                </>
+              )}
+
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setIsChangeImageModalVisible(false)}
+              >
+                <Text style={styles.closeButtonText}>Cerrar</Text>
+              </TouchableOpacity>
+            </View>
+        </Modal>
     
         {/* Botón flotante para agregar un mazo */}
         <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.fab}>
@@ -295,6 +402,80 @@ const DeckManagementScreen: React.FC = () => {
   };
 
   const styles = StyleSheet.create({
+    cardItem: {
+      margin: 10,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: '#2C2D37',
+      borderRadius: 10,
+      overflow: 'hidden',
+    },
+    cardImage: {
+      width: 100,
+      height: 150,
+      borderRadius: 10,
+    },
+    cardsList: {
+      alignItems: 'center',
+      padding: 10,
+    },
+    closeButton: {
+      marginTop: 20,
+      backgroundColor: '#D3C298',
+      padding: 10,
+      borderRadius: 5,
+      alignItems: 'center',
+    },
+    closeButtonText: {
+      color: '#2C2D37',
+      fontWeight: 'bold',
+    },
+    errorText: {
+      color: 'red',
+      fontWeight: 'bold',
+      textAlign: 'center',
+      marginVertical: 20,
+    },
+    modalContainer3: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContent: {
+      width: '80%',
+      backgroundColor: '#fff',
+      padding: 20,
+      borderRadius: 10,
+      alignItems: 'center',
+    },
+    modalTitle: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      marginBottom: 20,
+    },
+    modalButton: {
+      backgroundColor: '#2C2D37',
+      padding: 10,
+      borderRadius: 8,
+      marginTop: 10,
+      width: '100%',
+      alignItems: 'center',
+    },
+    modalButtonText: {
+      color: '#fff',
+      fontSize: 16,
+      fontWeight: 'bold',
+    },
+    titleContainer: {
+      position: 'absolute',
+      top: 0,
+      width: '100%',
+      height: '15%', // Ocupa el 15% de la altura del contenedor
+      backgroundColor: '#000000', // Fondo negro sólido
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
     modalContainer2: {
       flex: 1,
       justifyContent: 'center',
@@ -336,32 +517,28 @@ const DeckManagementScreen: React.FC = () => {
       color: '#FFFFFF',
       fontWeight: '600',
     },
-      // Contenedor principal del mazo (mantiene las dimensiones y el borde)
-      deckItem: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#2C2D37',
-        margin: 8,
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: '#D3C298',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.2,
-        shadowRadius: 3,
-        elevation: 3,
-        overflow: 'hidden',
-        height: itemSize, // Tamaño dinámico
-        width: itemSize,  // Tamaño dinámico
-      },
-
+    deckItem: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: '#2C2D37',
+      margin: 8,
+      borderRadius: 10,
+      borderWidth: 1,
+      borderColor: '#D3C298',
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.2,
+      shadowRadius: 3,
+      elevation: 3,
+      overflow: 'hidden',
+      height: itemSize, // Tamaño dinámico
+      width: itemSize,  // Tamaño dinámico
+    },
   // Estilo para `ImageBackground` del mazo
   deckItemBackground: {
     flex: 1,
     justifyContent: 'flex-start', // Coloca el texto en la parte superior
     alignItems: 'flex-start',
-    padding: 10,
-    borderRadius: 12,
   },
   // Estilo de la imagen (mantiene bordes redondeados y borde visible)
   deckImage: {
@@ -369,19 +546,12 @@ const DeckManagementScreen: React.FC = () => {
   },
   // Estilo del texto del título del mazo
   deckItemTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#FFFFFF', // Blanco para contraste
-    marginBottom: 8,
-    textShadowColor: '#000', // Añade un ligero sombreado al texto
+    textShadowColor: '#000', // Sombra ligera
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 3,
-  },
-  deleteButton: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    padding: 5,
   },
     picker: {
       width: '100%',

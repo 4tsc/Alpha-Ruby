@@ -89,50 +89,6 @@ interface TextoSectionProps {
   setInputValue: (value: string) => void; // Función para actualizar el valor del input
 }
 
-const TextoSection: React.FC<TextoSectionProps> = ({ inputValue, setInputValue }) => {
-  const [modalVisible, setModalVisible] = useState(false);
-
-  return (
-    <View style={styles.sectionContainer}>
-      <Text style={styles.sectionText}>Texto de la carta</Text>
-      
-      <View style={styles.inputWrapper}>
-        {/* Contenedor de Input y Botón dentro del mismo */}
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            value={inputValue} // Usamos el inputValue del prop
-            onChangeText={setInputValue} // Actualiza el inputValue llamando a setInputValue
-            placeholder="Roba una carta, vuela"
-          />
-        </View>
-        
-        {/* Botón al lado derecho */}
-        <TouchableOpacity style={styles.sideButton}>
-          <Text style={styles.sideButtonText}>Añadir</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Modal */}
-      <Modal
-        visible={modalVisible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalText}>Contenido del Modal</Text>
-            <TouchableOpacity style={styles.modalButton} onPress={() => setModalVisible(false)}>
-              <Text style={styles.modalButtonText}>Cerrar</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-    </View>
-  );
-};
-
 const CosteDeManaSection: React.FC = () => {
   const [inputValue, setInputValue] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
@@ -226,6 +182,68 @@ export default function TabTwoScreen() {
     dir: 'auto',
   });
 
+  const TextoSection: React.FC<TextoSectionProps> = ({ inputValue, setInputValue }) => {
+    const [modalVisible, setModalVisible] = useState(false);
+    const [tempInputValue, setTempInputValue] = useState(inputValue); // Estado temporal para el input
+  
+    // Función para manejar el presionar el botón "Añadir"
+    const handleAddClick = () => {
+      // Solo actualiza el estado externo de inputValue cuando se presiona el botón
+      setInputValue(tempInputValue); // Actualiza el inputValue real
+      fetchCards(tempInputValue); // Llama a fetchCards con el valor temporal del input
+    };
+  
+    // Función que simula la búsqueda de cartas (fetchCards)
+    const fetchCards = (searchText: string) => {
+      if (searchText.trim() === '') return;
+      // Lógica de fetchCards aquí (ya proporcionada en el código original)
+      console.log('Buscando cartas con:', searchText);
+    };
+  
+    return (
+      <View style={styles.sectionContainer}>
+        <Text style={styles.sectionText}>Texto de la carta</Text>
+  
+        <View style={styles.inputWrapper}>
+          {/* Contenedor de Input y Botón dentro del mismo */}
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              value={tempInputValue} // Usamos el estado temporal
+              onChangeText={setTempInputValue} // Actualiza el estado temporal
+              placeholder="Roba una carta, vuela"
+            />
+          </View>
+  
+          {/* Botón al lado derecho */}
+          <TouchableOpacity
+            style={styles.sideButton}
+            onPress={handleAddClick} // Al presionar, ejecutamos la búsqueda y actualizamos el input real
+          >
+            <Text style={styles.sideButtonText}>Añadir</Text>
+          </TouchableOpacity>
+        </View>
+  
+        {/* Modal */}
+        <Modal
+          visible={modalVisible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalText}>Contenido del Modal</Text>
+              <TouchableOpacity style={styles.modalButton} onPress={() => setModalVisible(false)}>
+                <Text style={styles.modalButtonText}>Cerrar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+      </View>
+    );
+  };
+
   const navigation = useNavigation();
 
   const fetchCards = async () => {
@@ -247,8 +265,11 @@ export default function TabTwoScreen() {
     const legalityQuery = filter.legality ? `+legal:${filter.legality}` : ''; // Legalidad
     const typeQuery = selectedType ? `+type:${selectedType}` : ''; // Tipo de carta
   
+    // Filtro por texto de la descripción (oracle_text)
+    const oracleTextQuery = inputValue.trim() ? `+oracle_text:${encodeURIComponent(inputValue.trim())}` : ''; // El valor del campo de texto
+    
     // Construir la URL de búsqueda con los filtros
-    const fetchUrl = `https://api.scryfall.com/cards/search?q=${encodeURIComponent(searchText)}${colorsQuery}${cmcQuery}${powerQuery}${toughnessQuery}${loyaltyQuery}${defenseQuery}${legalityQuery}${typeQuery}&order=${filter.order}&dir=${filter.dir}`;
+    const fetchUrl = `https://api.scryfall.com/cards/search?q=${encodeURIComponent(searchText)}${colorsQuery}${cmcQuery}${powerQuery}${toughnessQuery}${loyaltyQuery}${defenseQuery}${legalityQuery}${typeQuery}${oracleTextQuery}&order=${filter.order}&dir=${filter.dir}`;
     
     console.log('URL de búsqueda:', fetchUrl);
   
@@ -269,6 +290,7 @@ export default function TabTwoScreen() {
       setLoading(false);
     }
   };
+  
   
   useEffect(() => {
     const handler = setTimeout(() => {

@@ -14,6 +14,7 @@ const itemSize = width * 0.3;  // 25% del ancho de la pantalla
 interface Deck {
   id: number;
   name: string;
+  image: string; // UUID de la imagen asociado a la baraja
   cards?: { id: number; name: string }[];
 }
 
@@ -107,6 +108,8 @@ const DeckManagementScreen: React.FC = () => {
     // Función para obtener los mazos del usuario
     const fetchDecks = async () => {
       try {
+        console.log(`Solicitud enviada a: https://magicarduct.online:3000/api/barajasdeusuaio2/${userId}`);
+        
         const response = await fetch(`https://magicarduct.online:3000/api/barajasdeusuaio2/${userId}`, {
           method: 'GET',
           headers: {
@@ -114,26 +117,30 @@ const DeckManagementScreen: React.FC = () => {
           },
         });
     
+        console.log('Estado de la respuesta:', response.status); // Código de estado de la respuesta
+    
         const data = await response.json();
-        console.log('datos: ', data);
+        console.log('Datos recibidos del servidor:', data);
     
         if (response.ok) {
           // Asegúrate de utilizar `idbarajas` como ID real
-          const formattedDecks: Deck[] = data.map((item: { idbarajas: number, nombre: string }) => ({
+          const formattedDecks: Deck[] = data.map((item: { idbarajas: number, nombre: string, imagen: string }) => ({
             id: item.idbarajas,  // Usamos el ID real de la baraja
-            name: item.nombre,    // Nombre de la baraja
-            cards: [],            // Inicializamos el array de cartas vacío
+            name: item.nombre,   // Nombre de la baraja
+            image: item.imagen,  // URL de la imagen de la baraja
+            cards: [],           // Inicializamos el array de cartas vacío
           }));
     
           setDecks(formattedDecks);
           console.log('Barajas formateadas:', formattedDecks);  // Para depuración
         } else {
-          console.error('Error:', data.error || 'No se encontraron barajas');
+          console.error('Error en la respuesta:', data.error || 'No se encontraron barajas');
         }
       } catch (error) {
         console.error('Error al obtener las barajas:', error);
       }
     };
+    
     
   
     // useEffect para cargar los mazos al montar el componente
@@ -160,10 +167,10 @@ const DeckManagementScreen: React.FC = () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            nombre: newDeckName,           // El nuevo nombre del mazo
-            formato: selectedFormat,       // Formato seleccionado del Picker
-            descripcion: '-',              // Pasando '-' como descripción
-            idusuario: userId,             // ID del usuario que está creando el mazo
+            nombre: newDeckName,       // El nuevo nombre del mazo
+            formato: selectedFormat,   // Formato seleccionado del Picker
+            descripcion: '-',          // Pasando '-' como descripción
+            idusuario: userId,         // ID del usuario que está creando el mazo
           }),
         });
     
@@ -172,13 +179,15 @@ const DeckManagementScreen: React.FC = () => {
     
         if (response.ok) {
           const newDeck = {
-            id: data.baraja.id,
-            name: data.baraja.name,
-            cards: [],
+            id: data.baraja.id,        // ID de la baraja recién creada
+            name: data.baraja.name,    // Nombre de la baraja recién creada
+            image: null,               // Imagen por defecto es null
+            cards: [],                 // Inicializamos el array de cartas vacío
           };
-          setDecks([...decks, newDeck]);
-          setNewDeckName('');  // Limpiar el nombre del nuevo mazo
-          setModalVisible(false);  // Cerrar el modal
+    
+          setDecks([...decks, newDeck]); // Agregar la nueva baraja a la lista
+          setNewDeckName('');           // Limpiar el nombre del nuevo mazo
+          setModalVisible(false);       // Cerrar el modal
         } else {
           Alert.alert('Error', data.error || 'No se pudo crear el mazo');
         }
@@ -261,34 +270,51 @@ const DeckManagementScreen: React.FC = () => {
       <SafeAreaView style={styles.container}>
         <Text style={styles.title}>Mis Mazos</Text>
         <FlatList
-          data={decks}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              style={styles.deckItem}
-              onPress={() =>
-                navigation.navigate("DeckEditor", { deck: { id: item.id, name: item.name } })
-              }
-              onLongPress={() => {
-                setSelectedDeck(item); // Establece el ítem seleccionado
-                setIsModalVisible2(true); // Abre el modal
-              }}
-            >
-              <ImageBackground
-                source={{ uri: 'https://example.com/image.jpg' }} // URL o require() para la imagen
-                style={styles.deckItemBackground}
-                imageStyle={styles.deckImage} // Imagen redondeada con borde visible
-              >
-                {/* Contenedor para el título */}
-                <View style={styles.titleContainer}>
-                  <Text style={styles.deckItemTitle}>{item.name}</Text>
-                </View>
-              </ImageBackground>
-            </TouchableOpacity>
+  data={decks}
+  keyExtractor={(item) => item.id.toString()}
+  renderItem={({ item }) => {
+    console.log('ID del mazo:', item.id, 'Imagen del mazo:', item.image);
+
+    const imageUrl = item.image
+      ? `https://api.scryfall.com/cards/${item.image}?format=image&face=front&version=art_crop`
+      : null;
+
+    return (
+      <TouchableOpacity
+        style={styles.deckItem}
+        onPress={() =>
+          navigation.navigate("DeckEditor", { deck: { id: item.id, name: item.name } })
+        }
+        onLongPress={() => {
+          setSelectedDeck(item);
+          setIsModalVisible2(true);
+        }}
+      >
+        <View style={styles.deckItemContent}>
+          {imageUrl ? (
+            <Image
+              source={{ uri: imageUrl }}
+              style={styles.deckItemBackground}
+            />
+          ) : (
+            <View style={[styles.deckItemBackground, { backgroundColor: '#ccc' }]}>
+              {/* Contenedor para el texto */}
+            </View>
           )}
-          numColumns={2} // Aquí especificamos 2 columnas
-          contentContainerStyle={styles.listContainer}
-        />
+
+          {/* Aquí aseguramos que el texto esté visible encima de la imagen */}
+          <View style={styles.textOverlay}>
+            <Text style={styles.deckItemTitle}>{item.name}</Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  }}
+  numColumns={2} // Número de columnas
+  contentContainerStyle={styles.listContainer}
+/>
+
+
     
         {/* Modal para agregar un nuevo mazo */}
         <Modal
@@ -440,6 +466,23 @@ const DeckManagementScreen: React.FC = () => {
   };
 
   const styles = StyleSheet.create({
+    deckItemContent: {
+      position: 'relative', // Necesario para colocar el texto encima de la imagen
+      width: '100%',
+      height: '100%', // Se asegura de usar el 100% del contenedor
+      justifyContent: 'flex-start', // Ajustamos para que el texto esté arriba
+      alignItems: 'center',
+      borderRadius: 10,
+      overflow: 'hidden',
+    },
+    textOverlay: {
+      position: 'absolute', // Hace que el texto esté encima de la imagen
+      top: 10, // Le da un margen desde el borde superior
+      left: 10, // Agrega un pequeño margen a la izquierda
+      right: 10, // Agrega un margen a la derecha
+      zIndex: 1,  // Asegura que el texto esté por encima de la imagen
+      paddingHorizontal: 5, // Asegura que el texto no toque los bordes
+    },
     imageUnavailableText: {
       color: 'gray',
       fontSize: 14,
@@ -585,9 +628,9 @@ const DeckManagementScreen: React.FC = () => {
     },
   // Estilo para `ImageBackground` del mazo
   deckItemBackground: {
-    flex: 1,
-    justifyContent: 'flex-start', // Coloca el texto en la parte superior
-    alignItems: 'flex-start',
+    width: '100%',
+    height: '100%', // La imagen ocupa todo el contenedor
+    borderRadius: 10,
   },
   // Estilo de la imagen (mantiene bordes redondeados y borde visible)
   deckImage: {
@@ -597,10 +640,11 @@ const DeckManagementScreen: React.FC = () => {
   deckItemTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#FFFFFF', // Blanco para contraste
-    textShadowColor: '#000', // Sombra ligera
+    color: '#FFFFFF', // Blanco para el texto
+    textShadowColor: '#000',
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 3,
+    marginTop: 5,  // Añade espacio en la parte superior del texto si es necesario
   },
     picker: {
       width: '100%',

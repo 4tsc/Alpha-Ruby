@@ -60,4 +60,4 @@ export const styles = StyleSheet.create({
   },
 });
 
-export const placeholderColor = '#D3C298'; // Placeholder dorado suave acorde a los tonos
+

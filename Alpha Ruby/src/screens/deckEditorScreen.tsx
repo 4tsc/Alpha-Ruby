@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Alert, StyleSheet, TouchableOpacity, SafeAreaView, Modal } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, Alert, StyleSheet, TouchableOpacity, ActivityIndicator, SafeAreaView, Modal, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Importar iconos
 
 import { useUser } from './UserContext';
@@ -7,7 +7,14 @@ import { useUser } from './UserContext';
 interface Deck {
   id: number;
   name: string;
-  cards?: { id: number; name: string }[];
+  cards?: {
+    IDcarta: number;
+    name: string;
+    image_uris: {
+      small: string; // URL de la imagen en tamaño pequeño
+    };
+    type_line: string; // Tipo de la carta
+  }[];
 }
 
 interface DeckEditorScreenProps {
@@ -32,6 +39,61 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
   const [isEditingName, setIsEditingName] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [newCardName, setNewCardName] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const [isEditing, setIsEditing] = useState(false); // Estado para controlar el modo de edición
+  const [newDeckName, setNewDeckName] = useState(deck.name);
+
+  useEffect(() => {
+    const fetchDeckCards = async () => {
+      try {
+        console.log('Iniciando la solicitud para obtener las cartas del mazo:', deck); // Log para verificar el ID del mazo
+        const response = await fetch(`https://magicarduct.online:3000/api/mazocartas/${deck.id}`);
+      
+        if (!response.ok) {
+          throw new Error('No se pudieron obtener las cartas del mazo');
+        }
+      
+        const data = await response.json();
+        console.log('Cartas recibidas desde la API:', data); // Log para mostrar las cartas recibidas
+      
+        // Solicitar la información de cada carta en Scryfall
+        const scryfallRequests = data.map(async (card) => {
+          const scryfallResponse = await fetch(`https://api.scryfall.com/cards/${card.IDcarta}`);
+          
+          if (!scryfallResponse.ok) {
+            throw new Error(`No se pudo obtener la información de la carta con ID ${card.IDcarta}`);
+          }
+          
+          return scryfallResponse.json();
+        });
+        
+        // Esperar a que todas las solicitudes a Scryfall terminen
+        const cardsData = await Promise.all(scryfallRequests);
+        console.log('Información detallada de las cartas desde Scryfall:', cardsData);
+        
+        // Almacenar los detalles completos de las cartas en el estado
+        setCards(cardsData);
+      } catch (error) {
+        console.error('Error al obtener las cartas del mazo:', error.message);
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+
+    fetchDeckCards();
+  }, [deck.id]);
+
+  if (loading) {
+    return <ActivityIndicator size="large" color="#0000ff" />;
+  }
+
+  if (error) {
+    return <Text>Error: {error}</Text>;
+  }
 
   const saveDeckChanges = () => {
     if (deckName.trim() === '') {
@@ -42,9 +104,43 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
     navigation.goBack();
   };
 
-  const toggleEditName = () => {
-    setIsEditingName(!isEditingName);
+  const toggleEditName = async () => {
+    if (isEditing) {
+      // Si está editando, guarda el nuevo nombre
+      deck.name = newDeckName; // Actualiza el nombre en el objeto deck
+      console.log('enviando: ', newDeckName);
+      // Llama a la función para actualizar el nombre del mazo en la API
+      await updateDeckName();
+    }
+    setIsEditing(!isEditing); // Alterna el modo de edición
   };
+
+  // Función para actualizar el nombre del mazo
+const updateDeckName = async () => {
+  try {
+    console.log('Iniciando la solicitud para actualizar el nombre del mazo:', deck.id); // Log para verificar el ID del mazo
+    console.log('empleando nombre:', deck.name);
+    const response = await fetch(`https://magicarduct.online:3000/api/deldeck/${deck.id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ deckId: deck.id, nombre: newDeckName }), // Aquí envías el nuevo nombre del mazo
+    });
+
+    if (!response.ok) {
+      throw new Error('No se pudo actualizar el nombre del mazo');
+    }
+
+    const data = await response.json();
+    console.log('Respuesta de la API al actualizar el nombre del mazo:', data); // Log para mostrar la respuesta
+
+    // Aquí puedes manejar el éxito, como mostrar un mensaje al usuario
+  } catch (error) {
+    console.error('Error al actualizar el nombre del mazo:', error.message);
+    // Manejo de errores, como mostrar un mensaje de error al usuario
+  }
+};
 
   const addCard = () => {
     // Redirigir a la pantalla de búsqueda
@@ -52,53 +148,50 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
   };
 
   const removeCard = (cardId: number) => {
-    setCards(cards.filter(card => card.id !== cardId));
+    setCards(cards.filter(card => card.IDcarta !== cardId));
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Título de la pantalla */}
-      <Text style={styles.title}>Editar Mazo</Text>
-      
-      {/* Contenedor del nombre del mazo */}
-      <View style={styles.nameContainer}>
-        {isEditingName ? (
+      {/* Título de la pantalla con el nombre del mazo y el ícono de lápiz al lado */}
+      <View style={styles.titleContainer}>
+        {isEditing ? (
           <TextInput
-            style={styles.input}
-            placeholder="Nombre del mazo"
-            value={deckName}
-            onChangeText={setDeckName}
-            onBlur={toggleEditName}
+            style={styles.titleInput} // Asegúrate de definir estilos para el TextInput
+            value={newDeckName}
+            onChangeText={setNewDeckName}
+            onSubmitEditing={toggleEditName} // Cambia al modo no editado al enviar
+            autoFocus // Enfoca el TextInput al activar el modo de edición
           />
         ) : (
-          <>
-            <Text style={styles.deckName}>{deckName}</Text>
-            <TouchableOpacity onPress={toggleEditName}>
-              <Icon name="pencil" size={20} color="#FFFFFF" />
-            </TouchableOpacity>
-          </>
+          <Text style={styles.title}>{deck.name}</Text>
         )}
+        <TouchableOpacity onPress={toggleEditName} style={styles.editIconContainer}>
+          <Icon name="pencil" size={20} color="#FFFFFF" />
+        </TouchableOpacity>
       </View>
 
       <View style={styles.cardsContainer}>
         <View style={styles.cardsHeader}>
           <Text style={styles.sectionTitle}>Cartas del Mazo</Text>
-          {/* El botón "+" ahora redirige a la pantalla de búsqueda */}
           <TouchableOpacity onPress={addCard} style={styles.addCardButton}>
             <Icon name="plus" size={20} color="#FFFFFF" />
           </TouchableOpacity>
         </View>
-        {cards.map((card) => (
-          <View key={card.id} style={styles.cardItem}>
-            <Text style={styles.cardText}>{card.name}</Text>
-            <TouchableOpacity onPress={() => removeCard(card.id)} style={styles.deleteButton}>
-              <Icon name="times" size={20} color="#D94A26" />
-            </TouchableOpacity>
-          </View>
-        ))}
+        {cards.map((card, index) => {
+          return (
+            <View key={card.IDcarta || index} style={styles.cardItem}>
+              <Image source={{ uri: card.image_uris.small }} style={styles.cardImage} />
+              <Text style={styles.cardName}>{card.name}</Text>
+              <Text style={styles.cardType}>{card.type_line}</Text>
+              <TouchableOpacity onPress={() => removeCard(card.IDcarta)} style={styles.deleteButton}>
+                <Icon name="times" size={20} color="#D94A26" />
+              </TouchableOpacity>
+            </View>
+          );
+        })}
       </View>
 
-      {/* Modal para agregar una nueva carta */}
       <Modal
         animationType="fade"
         transparent={true}
@@ -125,7 +218,6 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
         </View>
       </Modal>
 
-      {/* Botón de guardar cambios */}
       <TouchableOpacity onPress={saveDeckChanges} style={styles.saveButton}>
         <Text style={styles.saveButtonText}>Guardar Cambios</Text>
       </TouchableOpacity>
@@ -134,17 +226,68 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
 };
 
 const styles = StyleSheet.create({
+  titleInput: {
+    fontSize: 24, // Ajusta según lo necesario
+    color: '#FFFFFF', // Color del texto
+    borderBottomWidth: 1, // Agrega un borde inferior para indicar que es un campo editable
+    borderBottomColor: '#FFFFFF', // Color del borde
+    marginRight: 5, // Margen a la derecha para separarlo del ícono
+    width: '70%', // Ajusta el ancho como sea necesario
+  },
+  titleContainer: {
+    flexDirection: 'row', // Coloca el texto y el ícono en fila
+    alignItems: 'center', // Alinea verticalmente el ícono y el texto
+    justifyContent: 'center', // Centra el contenido dentro del contenedor
+    marginVertical: 20, // Espaciado vertical opcional
+  },
+  editIconContainer: {
+    marginLeft: 5, // Espaciado a la izquierda del ícono, ajústalo según sea necesario
+  },
+  cardItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#CCCCCC',
+  },
+  cardImage: {
+    width: 50,
+    height: 70,
+    marginRight: 10,
+  },
+  cardName: {
+    flex: 1,
+    fontSize: 16,
+    color: '#333333',
+  },
+  cardType: {
+    fontSize: 14,
+    color: '#888888',
+    marginLeft: 'auto',
+    marginRight: 10,
+  },
+  deleteButton: {
+    paddingHorizontal: 5,
+  },
+  deckNameContainer: {
+    flexDirection: 'row', // Para alinear los elementos en fila
+    alignItems: 'center', // Centra verticalmente los elementos
+    justifyContent: 'space-between', // Espacia el texto y el icono
+    width: '100%', // Ocupa todo el ancho disponible
+    padding: 10, // Espaciado alrededor
+    backgroundColor: '#333', // Fondo oscuro, cambia según tu tema
+    borderRadius: 5, // Bordes redondeados
+    marginBottom: 15, // Espaciado inferior para separar de otros elementos
+  },
   container: {
     flex: 1,
     padding: 20,  // Ya tienes un padding general de 20
     backgroundColor: '#1E1F28',
   },
   title: {
-    fontSize: 32,
-    marginBottom: 20,
-    fontWeight: 'bold',
-    color: '#FFFFFF', // Texto blanco
-    textAlign: 'center',
+    fontSize: 24, // Ajusta el tamaño de fuente según lo necesario
+    color: '#FFFFFF', // Color del texto
   },
   nameContainer: {
     flexDirection: 'row',
@@ -194,21 +337,9 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 8,
   },
-  cardItem: {
-    backgroundColor: '#2C2D37', // Fondo gris oscuro
-    padding: 15,
-    borderRadius: 12,
-    marginBottom: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
   cardText: {
     color: '#FFFFFF',
     fontSize: 18,
-  },
-  deleteButton: {
-    padding: 5,
   },
   saveButton: {
     backgroundColor: '#D3C298', // Botón dorado suave

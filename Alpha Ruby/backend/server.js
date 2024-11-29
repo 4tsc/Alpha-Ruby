@@ -157,6 +157,37 @@ app.post('/logout', (req, res) => {
     res.status(200).json({ message: 'SesiÃ³n cerrada exitosamente' });
   });
 });
+
+app.post('/update-deck-image', (req, res) => {
+    const { deckId, imageUuid } = req.body; // Recibir los datos del cliente
+
+    // Validar que se reciban todos los par�metros requeridos
+    if (!deckId || !imageUuid) {
+        return res.status(400).json({ error: 'Se requieren deckId e imageUuid.' });
+    }
+
+    // Consulta SQL para actualizar la imagen asociada al mazo
+    const query = `
+        UPDATE barajas
+        SET imagen = ?
+        WHERE idbarajas = ?
+    `;
+
+    db.query(query, [imageUuid, deckId], (err, result) => {
+        if (err) {
+            console.error('Error al actualizar la imagen del mazo:', err);
+            return res.status(500).json({ error: 'Error al actualizar la imagen del mazo' });
+        }
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Mazo no encontrado' });
+        }
+
+        // Respuesta exitosa
+        res.status(200).json({ message: 'Imagen del mazo actualizada exitosamente' });
+    });
+});
+
 app.post('/register', (req, res) => {
   console.log('Datos recibidos:', req.body); // Imprime los datos recibidos
   const { nombre, correo, clave } = req.body;
@@ -232,6 +263,7 @@ app.get('/obtener-usuario', (req, res) => {
     }
   });
 });
+
 app.get('/usuario', isAuthenticated, (req, res) => {
   const userId = req.session.userId;
   
@@ -754,6 +786,35 @@ app.get('/api/cartasfavoritas/:idusuario', (req, res) => {
 
     // Respuesta exitosa con las cartas favoritas
     res.status(200).json(results); // Devuelve los resultados
+  });
+});
+
+// DELETE: Elimina una carta favorita
+app.delete('/api/cartasfavoritas/:idusuario/:idcarta', (req, res) => {
+  const { idusuario, idcarta } = req.params;
+
+  if (!idusuario || !idcarta) {
+    console.log('Faltan datos del formulario'); // Mensaje cuando faltan datos
+    return res.status(400).json({ error: 'Faltan datos del formulario' });
+  }
+
+  // Consulta para eliminar la carta favorita
+  const deleteQuery = 'DELETE FROM cartas_favoritas WHERE IDusuario = ? AND IDcarta = ?';
+  db.query(deleteQuery, [idusuario, idcarta], (err, result) => {
+    if (err) {
+      console.error('Error al eliminar carta:', err); // Mensaje de error
+      return res.status(500).json({ error: 'Error al eliminar carta' });
+    }
+
+    // Verificar si alguna fila fue afectada (es decir, si la carta existía y fue eliminada)
+    if (result.affectedRows === 0) {
+      console.log('La carta no se encontró en la lista de favoritas'); // Mensaje en la consola
+      return res.status(404).json({ error: 'La carta no se encontró en la lista de favoritas' });
+    }
+    return res.status(200).json({ message: 'Carta eliminada exitosamente' });
+
+    console.log('Carta eliminada exitosamente'); // Mensaje en la consola
+
   });
 });
 

@@ -103,7 +103,7 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#1E1F28" />
+      <StatusBar barStyle="light-content" backgroundColor="#121212" />
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.header}>
           <Text style={styles.headerText}>¡Bienvenido, {userName}!</Text>
@@ -141,6 +141,7 @@ export default function HomeScreen() {
                     <TouchableOpacity onPress={() => handlePress(article.link)}>
                       <Image source={{ uri: article.imgUrl }} style={styles.newsImage} />
                     </TouchableOpacity>
+                    <Text style={styles.newsAuthor}>{article.author} - {article.time}</Text>
                   </View>
                 ))
               ) : (
@@ -157,24 +158,26 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1E1F28', // Fondo plano oscuro
+    backgroundColor: '#121212',
+    paddingHorizontal: 16,
+    paddingTop: 16,
   },
   scrollContainer: {
-    padding: 20,
+    paddingBottom: 20,
   },
   header: {
-    backgroundColor: '#2C2D37', // Color gris oscuro para el encabezado
+    backgroundColor: '#1E1E1E',
     padding: 10,
     height: height * 0.15,
     justifyContent: 'center',
     alignItems: 'center',
-    borderColor: '#D3C298', // Dorado suave para los bordes
+    borderColor: '#D3C298',
     borderWidth: 2,
     borderRadius: 20,
   },
   headerText: {
-    color: '#F1E6C8', // Dorado suave para el texto del encabezado
-    fontSize: width * 0.09, // Ajusta el tamaño del texto de manera responsiva
+    color: '#F1E6C8',
+    fontSize: width * 0.09,
     fontWeight: 'bold',
   },
   content: {
@@ -185,17 +188,18 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   sectionTitle: {
-    color: '#F1E6C8', // Texto dorado suave para los títulos de las secciones
-    fontSize: width * 0.06,
+    color: 'white',
+    fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
   },
   cardsContainer: {
     flexDirection: 'row',
+    paddingVertical: 10,
   },
   card: {
-    backgroundColor: '#2C2D37', // Fondo gris oscuro para las cartas
-    marginHorizontal: 5,
+    backgroundColor: '#1E1E1E',
+    marginRight: 10,
     padding: 10,
     alignItems: 'center',
     justifyContent: 'center',
@@ -207,12 +211,13 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   cardImage: {
-    width: 100,
-    height: 140,
+    width: width * 0.35,
+    height: width * 0.5,
+    borderRadius: 8,
     marginBottom: 10,
   },
   cardText: {
-    color: '#FFFFFF', // Texto blanco para contraste
+    color: 'white',
     textAlign: 'center',
     fontWeight: 'bold',
     fontSize: 14,
@@ -222,28 +227,28 @@ const styles = StyleSheet.create({
   },
   newsContainer: {
     marginTop: 10,
-    marginHorizontal: 20, // Añadimos margen horizontal para evitar que las news estén pegadas a los bordes
   },
   newsItem: {
-    backgroundColor: '#2C2D37', // Fondo gris oscuro para las noticias
+    flexDirection: 'row',
+    backgroundColor: '#1E1E1E',
+    padding: 10,
+    borderRadius: 8,
     marginBottom: 10,
-    padding: 15,
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 6,
-    elevation: 6,
   },
   newsText: {
-    color: '#FFFFFF', // Texto blanco para las noticias
+    color: 'white',
     textAlign: 'center',
     fontWeight: 'bold',
   },
   newsImage: {
-    width: '100%',
-    height: 200,
-    marginTop: 10,
-    borderRadius: 10,
+    width: 60,
+    height: 60,
+    borderRadius: 8,
+    marginRight: 10,
+  },
+  newsAuthor: {
+    fontSize: 14,
+    color: '#B0B0B0',
+    marginTop: 5,
   },
 });

@@ -13,6 +13,8 @@ import DeckManagementScreen from './src/screens/DeckManagementScreen';
 import DeckEditorScreen from './src/screens/deckEditorScreen';
 import SearchCard from './src/screens/Buscar';
 import ImageViewScreen from './src/screens/ImageViewScreen';
+import ForgotPassword from './src/screens/ForgotPassword';
+import ConfigurationScreen from './src/screens/ConfigurationScreen';
 
 import { UserProvider, useUser } from './src/screens/UserContext';
 
@@ -61,7 +63,7 @@ function MainTabNavigator() {
             iconName = 'home';
           } else if (route.name === 'Mazos') {
             iconName = 'list';
-          } else if (route.name === 'Settings') {
+          } else if (route.name === 'Configuración') {
             iconName = 'cog';
           } else if (route.name === 'Buscar') {
             iconName = 'search';
@@ -89,7 +91,7 @@ function MainTabNavigator() {
       <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
       <Tab.Screen name="Buscar" component={SearchCard} options={{ headerShown: false }} />
       <Tab.Screen name="Mazos" component={DeckManagementScreen} options={{ headerShown: false }} />
-      <Tab.Screen name="Cerrar Sesión" component={LogoutButton} options={{ headerShown: false }} />
+      <Tab.Screen name="Configuración" component={ConfigurationScreen} options={{ headerShown: false }} />
     </Tab.Navigator>
   );
 }
@@ -102,8 +104,9 @@ const App = () => {
           <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
           <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
           <Stack.Screen name="Main" component={MainTabNavigator} options={{ headerShown: false }} />
-          <Stack.Screen name="DeckEditor" component={DeckEditorScreen} options={{ title: 'Mazos', headerStyle: { backgroundColor: '#3D3D3D' }, headerTintColor: '#fff' }} />
-          <Stack.Screen name="ImageViewScreen" component={ImageViewScreen} options={{ title: 'Ver Imagen' }} />
+          <Stack.Screen name="DeckEditor" component={DeckEditorScreen} options={{ title: 'Mazos', headerStyle: { backgroundColor: '#3D3D3D' }, headerTintColor: '#fff' , headerShown: false}} />
+          <Stack.Screen name="ImageViewScreen" component={ImageViewScreen} options={{ title: 'Ver Imagen', headerShown: false }} />
+          <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{ headerShown: false }}/>
         </Stack.Navigator>
       </NavigationContainer>
     </UserProvider>

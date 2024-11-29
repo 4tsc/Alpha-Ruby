@@ -211,6 +211,7 @@ const DeckManagementScreen: React.FC = () => {
     listContainer: {
       width: '100%',
       alignItems: 'center',
+      paddingHorizontal: 20, // Espacio de 20px en los laterales
       paddingVertical: 10, // Espaciado adicional en la lista
     },
     deckItem: {
@@ -220,6 +221,7 @@ const DeckManagementScreen: React.FC = () => {
       backgroundColor: '#1E1E1E', // Fondo negro para los mazos
       padding: 15,
       marginVertical: 10,
+      paddingHorizontal: 50,
       width: '95%', // Ancho casi completo, dejando un pequeño margen lateral
       borderWidth: 1, // Borde sutil para separar los elementos
       borderColor: '#444444', // Borde gris oscuro
@@ -228,7 +230,8 @@ const DeckManagementScreen: React.FC = () => {
       shadowOpacity: 0.2, // Sombra ligera para dar algo de profundidad
       shadowRadius: 2,
       elevation: 2, // Sombra para Android
-      borderRadius: 8
+      borderRadius: 8,
+      alignSelf: 'center',
     },
     deckText: {
       fontSize: 18,

@@ -448,7 +448,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#333333', 
+    borderColor: '#444444', 
     borderRadius: 5,
     flex: 1,
     marginRight: 10,
@@ -460,6 +460,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#333333', // Gris oscuro
     color: '#FFFFFF', // Texto blanco
     borderRadius: 5,
+    borderColor: '#444444'
   },
   inputButton: {
     padding: 10,
@@ -540,6 +541,7 @@ const styles = StyleSheet.create({
     height: 35,
     fontSize: 18,
     width: screenWidth, 
+    borderColor: '#444444'
   },
   textInput2: {
     backgroundColor: '#333333',
@@ -550,6 +552,7 @@ const styles = StyleSheet.create({
     height: 35,
     fontSize: 18,
     width: screenWidth / 2, 
+    borderColor: '#444444'
   },
   orangeSection: {
     flex: 0.22,
@@ -649,7 +652,7 @@ const styles = StyleSheet.create({
   },
   smallTextInput: {
     height: 40,
-    borderColor: '#ddd',
+    borderColor: '#444444',
     borderWidth: 1,
     borderRadius: 5,
     paddingHorizontal: 10,

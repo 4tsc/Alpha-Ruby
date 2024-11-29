@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     height: 40,
-    borderColor: '#D3C298', // Borde dorado suave
+    borderColor: '#444444',
     borderWidth: 1,
     paddingHorizontal: 10,
     borderRadius: 10,
@@ -245,7 +245,7 @@ const styles = StyleSheet.create({
   },
   modalInput: {
     height: 40,
-    borderColor: '#666666',
+    borderColor: '#444444',
     borderWidth: 1,
     paddingHorizontal: 10,
     borderRadius: 8,

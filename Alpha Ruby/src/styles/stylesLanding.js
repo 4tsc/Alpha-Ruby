@@ -6,7 +6,7 @@ export const styles = StyleSheet.create({
     backgroundColor: '#3D3D3D', // Fondo gris oscuro moderno
   },
   header: {
-    backgroundColor: '#F77F00', // Naranja vibrante para el encabezado
+    backgroundColor: '#44444', // Naranja vibrante para el encabezado
     paddingVertical: 10,
     height: 120, 
     justifyContent: 'flex-end',

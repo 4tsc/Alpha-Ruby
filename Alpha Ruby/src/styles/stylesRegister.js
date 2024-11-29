@@ -19,7 +19,7 @@ export const styles = StyleSheet.create({
     height: 50,
     backgroundColor: '#2C2D37', // Fondo gris oscuro para los inputs
     borderWidth: 1,
-    borderColor: '#D3C298', // Borde dorado suave
+    borderColor: '#444444',
     marginBottom: 20,
     paddingHorizontal: 20,
     borderRadius: 25,

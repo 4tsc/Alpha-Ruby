@@ -222,7 +222,7 @@ const DeckManagementScreen: React.FC = () => {
       marginVertical: 10,
       width: '95%', // Ancho casi completo, dejando un pequeño margen lateral
       borderWidth: 1, // Borde sutil para separar los elementos
-      borderColor: '#333333', // Borde gris oscuro
+      borderColor: '#444444', // Borde gris oscuro
       shadowColor: '#000',
       shadowOffset: { width: 0, height: 1 },
       shadowOpacity: 0.2, // Sombra ligera para dar algo de profundidad

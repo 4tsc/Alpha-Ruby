@@ -25,6 +25,7 @@ export const styles = StyleSheet.create({
     color: '#FFFFFF', // Texto blanco
     fontSize: 16,
     width: '100%',
+    borderColor: '#444444'
   },
   buttonContainer: {
     marginTop: 20,

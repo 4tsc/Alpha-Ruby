@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
   cardName: {
     flex: 1,
     fontSize: 16,
-    color: '#333333',
+    color: '#FFF',
   },
   cardType: {
     fontSize: 14,

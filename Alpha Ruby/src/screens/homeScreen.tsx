@@ -96,16 +96,17 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121212',
+    backgroundColor: '#1E1F28',
     paddingHorizontal: 16,
     paddingTop: 16,
   },
   title: {
-    fontSize: 24,
+    fontSize: 32,
     fontWeight: 'bold',
-    color: 'white',
-    marginBottom: 20,
-    alignSelf: 'center',
+    marginTop: 20, // Ajuste superior para evitar que quede muy arriba
+    marginBottom: 30,
+    textAlign: 'center',
+    color: '#FFFFFF', // Texto blanco
   },
   sectionTitle: {
     fontSize: 18,

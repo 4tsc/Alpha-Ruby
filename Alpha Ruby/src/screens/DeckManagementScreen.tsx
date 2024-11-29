@@ -198,74 +198,81 @@ const DeckManagementScreen: React.FC = () => {
       justifyContent: 'center',
       alignItems: 'center',
       padding: 20,
-      backgroundColor: '#1E1F28', // Fondo plano oscuro
+      backgroundColor: '#1E1F28', // Fondo oscuro principal
     },
     title: {
       fontSize: 32,
       fontWeight: 'bold',
-      marginBottom: 40,
+      marginTop: 20, // Ajuste superior para evitar que quede muy arriba
+      marginBottom: 30,
       textAlign: 'center',
       color: '#FFFFFF', // Texto blanco
     },
     listContainer: {
       width: '100%',
       alignItems: 'center',
+      paddingVertical: 10, // Espaciado adicional en la lista
     },
     deckItem: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      backgroundColor: '#2C2D37', // Fondo gris oscuro
+      backgroundColor: '#1E1E1E', // Fondo negro para los mazos
       padding: 15,
       marginVertical: 10,
-      width: '90%',
-      borderRadius: 12, // Bordes redondeados
-      borderWidth: 1,
-      borderColor: '#D3C298', // Borde dorado suave
+      width: '95%', // Ancho casi completo, dejando un pequeño margen lateral
+      borderWidth: 1, // Borde sutil para separar los elementos
+      borderColor: '#333333', // Borde gris oscuro
       shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.3,
-      shadowRadius: 4,
-      elevation: 5, // Sombra para Android
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.2, // Sombra ligera para dar algo de profundidad
+      shadowRadius: 2,
+      elevation: 2, // Sombra para Android
+      borderRadius: 8
     },
     deckText: {
       fontSize: 18,
       flex: 1,
+      fontWeight: '500', // Negrita ligera para destacar
       color: '#FFFFFF', // Texto blanco
+      paddingHorizontal: 5, // Espaciado interno
     },
     deleteButton: {
       marginLeft: 10,
-      padding: 10,
+      padding: 8,
+      backgroundColor: '#333333', // Fondo gris oscuro para el botón
+      borderRadius: 2, // Bordes rectos
     },
     input: {
       height: 50,
       backgroundColor: '#2C2D37', // Fondo gris oscuro para los inputs
       borderWidth: 1,
-      borderColor: '#D3C298', // Borde dorado suave
+      borderColor: '#444444', // Borde gris oscuro
       marginBottom: 20,
       paddingHorizontal: 20,
-      borderRadius: 25,
+      borderRadius: 8, // Bordes rectos
       color: '#FFFFFF', // Texto blanco
       fontSize: 16,
       width: '100%',
     },
     addButton: {
-      backgroundColor: '#D3C298', // Fondo dorado suave para el botón
+      backgroundColor: '#444444', // Fondo gris neutro para el botón
       paddingVertical: 15,
-      borderRadius: 25,
+      borderRadius: 15, // Bordes rectos
       alignItems: 'center',
       width: '100%',
       marginBottom: 15,
     },
     addButtonText: {
-      color: '#1E1F28', // Texto oscuro para contraste
+      color: '#FFFFFF', // Texto blanco para el botón
       fontSize: 18,
       fontWeight: 'bold',
+      borderRadius: 8
     },
     cancelButton: {
       backgroundColor: '#666666', // Gris oscuro para el botón de cancelar
       paddingVertical: 15,
-      borderRadius: 25,
+      borderRadius: 8, // Bordes rectos
       alignItems: 'center',
       width: '100%',
     },
@@ -283,22 +290,23 @@ const DeckManagementScreen: React.FC = () => {
       width: '80%',
       backgroundColor: '#1E1F28',
       padding: 20,
-      borderRadius: 10,
+      borderRadius: 2, // Bordes rectos
       alignItems: 'center',
     },
     fab: {
       position: 'absolute',
       bottom: 30,
       right: 30,
-      backgroundColor: '#D3C298', // Naranja suave para el FAB
+      backgroundColor: '#444444', // Gris neutro para el FAB
       width: 60,
       height: 60,
-      borderRadius: 30,
+      borderRadius: 15, // Bordes rectos
       justifyContent: 'center',
       alignItems: 'center',
-      elevation: 5, // Sombra para el botón flotante
+      elevation: 3, // Sombra ligera para Android
     },
   });
   
-export const placeholderColor = '#D3C298'; // Placeholder dorado suave
-export default DeckManagementScreen;
+  export const placeholderColor = '#666666'; // Placeholder gris oscuro
+  export default DeckManagementScreen;
+  

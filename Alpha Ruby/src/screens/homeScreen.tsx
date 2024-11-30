@@ -105,9 +105,6 @@ export default function HomeScreen() {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#1E1F28" />
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.header}>
-          <Text style={styles.headerText}>¡Bienvenido, {userName}!</Text>
-        </View>
         <View style={styles.content}>
           {/* Sección de cartas */}
           <View style={styles.cardsSection}>
@@ -136,10 +133,10 @@ export default function HomeScreen() {
                 news.map((article, index) => (
                   <View key={index} style={styles.newsItem}>
                     <TouchableOpacity onPress={() => handlePress(article.link)}>
-                      <Text style={styles.newsText}>{article.title}</Text>
+                      <Image source={{ uri: article.imgUrl }} style={styles.newsImage} />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => handlePress(article.link)}>
-                      <Image source={{ uri: article.imgUrl }} style={styles.newsImage} />
+                      <Text style={styles.newsText} numberOfLines={3}>{article.title}</Text>
                     </TouchableOpacity>
                   </View>
                 ))
@@ -148,6 +145,7 @@ export default function HomeScreen() {
               )}
             </View>
           </View>
+          {/* hasta aqui la seccion de noticias */}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -155,26 +153,22 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#1E1F28', // Fondo plano oscuro
-  },
   scrollContainer: {
-    padding: 20,
+    paddingBottom: 20,
   },
   header: {
-    backgroundColor: '#2C2D37', // Color gris oscuro para el encabezado
+    backgroundColor: '#1E1E1E',
     padding: 10,
     height: height * 0.15,
     justifyContent: 'center',
     alignItems: 'center',
-    borderColor: '#D3C298', // Dorado suave para los bordes
+    borderColor: '#D3C298',
     borderWidth: 2,
     borderRadius: 20,
   },
   headerText: {
-    color: '#F1E6C8', // Dorado suave para el texto del encabezado
-    fontSize: width * 0.09, // Ajusta el tamaño del texto de manera responsiva
+    color: '#F1E6C8',
+    fontSize: width * 0.09,
     fontWeight: 'bold',
   },
   content: {
@@ -184,18 +178,13 @@ const styles = StyleSheet.create({
   cardsSection: {
     marginBottom: 20,
   },
-  sectionTitle: {
-    color: '#F1E6C8', // Texto dorado suave para los títulos de las secciones
-    fontSize: width * 0.06,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
   cardsContainer: {
     flexDirection: 'row',
+    paddingVertical: 10,
   },
   card: {
-    backgroundColor: '#2C2D37', // Fondo gris oscuro para las cartas
-    marginHorizontal: 5,
+    backgroundColor: '#1E1E1E',
+    marginRight: 10,
     padding: 10,
     alignItems: 'center',
     justifyContent: 'center',
@@ -206,13 +195,8 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 6,
   },
-  cardImage: {
-    width: 100,
-    height: 140,
-    marginBottom: 10,
-  },
   cardText: {
-    color: '#FFFFFF', // Texto blanco para contraste
+    color: 'white',
     textAlign: 'center',
     fontWeight: 'bold',
     fontSize: 14,
@@ -222,28 +206,88 @@ const styles = StyleSheet.create({
   },
   newsContainer: {
     marginTop: 10,
-    marginHorizontal: 20, // Añadimos margen horizontal para evitar que las news estén pegadas a los bordes
-  },
-  newsItem: {
-    backgroundColor: '#2C2D37', // Fondo gris oscuro para las noticias
-    marginBottom: 10,
-    padding: 15,
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 6,
-    elevation: 6,
   },
   newsText: {
-    color: '#FFFFFF', // Texto blanco para las noticias
-    textAlign: 'center',
+    color: 'white',
     fontWeight: 'bold',
+    flexWrap: 'wrap', // Permite que el texto se ajuste en varias líneas si es necesario
+    width: '40%', // Se asegura de que el texto no desborde el contenedor
   },
-  newsImage: {
+  newsItem: {
+    flexDirection: 'row',
+    backgroundColor: '#1E1E1E',
+  padding: 10,
+    borderRadius: 8,
+    marginBottom: 10,
     width: '100%',
-    height: 200,
-    marginTop: 10,
-    borderRadius: 10,
+  },
+  //disenio jose
+  container: {
+    flex: 1,
+    backgroundColor: '#121212',
+    paddingHorizontal: 20,
+    paddingTop: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: 20,
+    alignSelf: 'center',
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: 10,
+  },
+  flatListContainer: {
+    paddingVertical: 10,
+  },
+  cardContainer: {
+    marginRight: 10, // Espacio entre cartas
+  },
+  cardImage: {
+    width: width * 0.35, // Tamaño más pequeño de las cartas
+    height: width * 0.5,
+    borderRadius: 8,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: 20,
+  },
+  button: {
+    flex: 1,
+    backgroundColor: '#5C4033',
+    paddingVertical: 12,
+    marginHorizontal: 5,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+
+  newsImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 8,
+    marginRight: 10,
+  },
+  newsTextContainer: {
+    flex: 1,
+  },
+  newsTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  newsAuthor: {
+    fontSize: 14,
+    color: '#B0B0B0',
+    marginTop: 5,
   },
 });

@@ -5,7 +5,8 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const nodemailer = require('nodemailer');
-
+const crypto = require('crypto'); // Importar el m�dulo crypto
+const path = require('path');
 
 const https = require('https');
 const fs = require('fs');
@@ -14,21 +15,24 @@ const transporter = nodemailer.createTransport({
   service: 'gmail', // Puedes usar otro servicio SMTP
   auth: {
     user: 'magicarduct@gmail.com',
-    pass: 'DoYouPayThe1',   
+    pass: 'afyoddcenvpjrdbq',   
   },
 });
 
 const sendPasswordResetEmail = async (email, resetLink) => {
   try {
     await transporter.sendMail({
-      from: '"Soporte de Magicarduct" <tucorreo@gmail.com>',
+      from: '"Soporte de Magicarduct" <magicarduct@gmail.com>',
       to: email,
       subject: 'Recuperación de Contraseña',
       html: `<p>Hola,</p>
              <p>Parece que solicitaste un cambio de contraseña.</p>
              <p>Puedes restablecer tu contraseña haciendo clic en el siguiente enlace:</p>
              <a href="${resetLink}">Restablecer Contraseña</a>
-             <p>Si no solicitaste esto, ignora este mensaje.</p>`,
+             <p>Si no solicitaste este cambio ignora el mensaje.</p>
+             <p>Si no puedes ver acceder desde el hipervinculo accede desde este link:</p>
+             <p>${resetLink}</p>
+             `,
     });
     console.log('Correo de recuperación enviado');
   } catch (error) {
@@ -206,12 +210,12 @@ app.post('/register', (req, res) => {
     }
 
     if (results.length > 0) {
-      console.log('El correo ya estÃ¡ registrado'); // Mensaje de correo repetido
-      return res.status(400).json({ error: 'El correo ya estÃ¡ registrado' });
+      console.log('El correo ya está registrado'); // Mensaje de correo repetido
+      return res.status(400).json({ error: 'El correo ya está registrado' });
     }
 
-    // Insertar el nuevo usuario si el correo no estÃ¡ repetido
-    const query = 'INSERT INTO usuario (nombre, correo, clave, foto) VALUES (?, ?, ?, 1)';
+    // Insertar el nuevo usuario si el correo no está repetido
+    const query = 'INSERT INTO usuario (nombre, correo, clave, foto) VALUES (?, ?, ?, "default-avatar-id")';
     db.query(query, [nombre, correo, clave], (err, result) => {
       if (err) {
         console.error('Error al registrar el usuario:', err); // Mensaje de error
@@ -228,22 +232,104 @@ app.post('/forgot-password', async (req, res) => {
 
   try {
     // Generación del token de recuperación
-    const resetToken = "algúnTokenGenerado"; // Aquí debes generar un token seguro
-    const resetLink = `https://tuaplicacion.com/reset-password?token=${resetToken}`;
+    const resetToken = crypto.randomBytes(32).toString('hex'); // Generar un token seguro
+    const resetLink = `https://magicarduct.online/reset-password?token=${resetToken}`;
     
-    // Envía el correo al usuario
-    await sendPasswordResetEmail(email, resetLink);
-    res.status(200).json({ message: 'Correo de recuperación enviado.' });
+    // Guardar el token en la base de datos asociado al usuario
+    const query = 'UPDATE usuario SET reset_token = ? WHERE correo = ?';
+    db.query(query, [resetToken, email], async (err, result) => {
+      if (err) {
+        console.error('Error al guardar el token de recuperación:', err);
+        return res.status(500).json({ message: 'Error al guardar el token de recuperación.' });
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: 'Correo no encontrado.' });
+      }
+
+      // Envía el correo al usuario
+      await sendPasswordResetEmail(email, resetLink);
+      res.status(200).json({ message: 'Correo de recuperación enviado.' });
+    });
   } catch (error) {
     console.error('Error en /forgot-password:', error);
     res.status(500).json({ message: 'Error enviando correo de recuperación.' });
   }
 });
+// Ruta para servir la página de restablecimiento
+app.get('/reset-password', (req, res) => {
+  res.sendFile(path.join(__dirname, 'reset-password.html'));
+});
 
+app.post('/reset-password', (req, res) => {
+  const { token, newPassword } = req.body;
+
+  // Verificar que se proporcionen el token y la nueva contraseña
+  if (!token || !newPassword) {
+    return res.status(400).json({ message: 'Token y nueva contraseña son requeridos.' });
+  }
+
+  // Consulta para verificar el token y actualizar la contraseña
+  const query = 'UPDATE usuario SET clave = ? WHERE reset_token = ?';
+  db.query(query, [newPassword, token], (err, result) => {
+    if (err) {
+      console.error('Error al restablecer la contraseña:', err);
+      return res.status(500).json({ message: 'Error al restablecer la contraseña.' });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(400).json({ message: 'Token inválido o expirado.' });
+    }
+
+    // Limpiar el token de restablecimiento después de usarlo
+    const clearTokenQuery = 'UPDATE usuario SET reset_token = NULL WHERE reset_token = ?';
+    db.query(clearTokenQuery, [token], (err) => {
+      if (err) {
+        console.error('Error al limpiar el token de restablecimiento:', err);
+        return res.status(500).json({ message: 'Error al limpiar el token de restablecimiento.' });
+      }
+
+      res.status(200).json({ message: 'Contraseña restablecida exitosamente.' });
+    });
+  });
+});
+// Ruta para cambiar la contraseña
+app.post('/api/cambiar-contrasena', (req, res) => {
+  const { userId, currentPassword, newPassword } = req.body;
+
+  // Verificar que se proporcionen todos los datos necesarios
+  if (!userId || !currentPassword || !newPassword) {
+    return res.status(400).json({ message: 'Todos los campos son requeridos.' });
+  }
+
+  // Consulta para verificar la contraseña actual
+  const verifyQuery = 'SELECT clave FROM usuario WHERE idusuario = ?';
+  db.query(verifyQuery, [userId], (err, results) => {
+    if (err) {
+      console.error('Error al verificar la contraseña actual:', err);
+      return res.status(500).json({ message: 'Error al verificar la contraseña actual.' });
+    }
+
+    if (results.length === 0 || results[0].clave !== currentPassword) {
+      return res.status(401).json({ message: 'Contraseña actual incorrecta.' });
+    }
+
+    // Consulta para actualizar la contraseña
+    const updateQuery = 'UPDATE usuario SET clave = ? WHERE idusuario = ?';
+    db.query(updateQuery, [newPassword, userId], (err, result) => {
+      if (err) {
+        console.error('Error al actualizar la contraseña:', err);
+        return res.status(500).json({ message: 'Error al actualizar la contraseña.' });
+      }
+
+      res.status(200).json({ message: 'Contraseña cambiada exitosamente.' });
+    });
+  });
+});
 
 //Obtener datos de usuario
 app.get('/obtener-usuario', (req, res) => {
-  const userId = req.query.userId; // ObtÃ©n el userId de los parÃ¡metros de consulta
+  const userId = req.query.userId; // Obtiene el userId de los parámetros de consulta
 
   // Consulta a la base de datos
   const query = 'SELECT nombre, correo, foto FROM usuario WHERE idusuario = ?';
@@ -255,8 +341,7 @@ app.get('/obtener-usuario', (req, res) => {
     }
 
     if (results.length > 0) {
-      const usuario = results[0]; // Asumiendo que solo habrÃ¡ un resultado
-      // AsegÃºrate de devolver el correo correctamente
+      const usuario = results[0]; // Asumiendo que solo habrá un resultado
       res.json({ userName: usuario.nombre, email: usuario.correo, image: usuario.foto });
     } else {
       res.status(404).json({ message: 'Usuario no encontrado' });
@@ -313,8 +398,9 @@ app.get('/api/barajasdeusuaio2/:IDusuario', async (req, res) => {
   const { IDusuario } = req.params;
 
   // Consulta cruzada (JOIN) para obtener los nombres y el id de las barajas asociadas al usuario
+  // EL QUE TOQUE LA IMAGEN LO MATO.
   const query = `
-    SELECT b.idbarajas, b.nombre 
+    SELECT b.idbarajas, b.nombre, b.imagen
     FROM barajas_de_usuario bu
     JOIN barajas b ON bu.idbarajas_de_usuario = b.idbarajas
     WHERE bu.id_usuario = ?
@@ -682,16 +768,16 @@ app.delete('/api/eliminarmazocarta/:idmazo/:idcarta', (req, res) => {
 });
 
 app.put('/api/usuario/:id', (req, res) => {
-  const userId = req.params.id; // Obtiene el ID del usuario de los parÃ¡metros
-  const { nombre, imageNumber } = req.body; // Obtiene el nombre del cuerpo de la solicitud
+  const userId = req.params.id;
+  const { nombre, correo, imageNumber } = req.body;
 
-  if (!nombre || !imageNumber) {
+  if (!nombre || !correo || !imageNumber) {
     return res.status(400).json({ error: 'datos incompletos' });
   }
 
-  const query = 'UPDATE usuario SET nombre = ?, foto = ? WHERE idusuario = ?';
+  const query = 'UPDATE usuario SET nombre = ?, correo = ?, foto = ? WHERE idusuario = ?';
   
-  db.query(query, [nombre, imageNumber, userId], (err, result) => {
+  db.query(query, [nombre, correo, imageNumber, userId], (err, result) => {
     if (err) {
       console.error('Error al actualizar el usuario:', err);
       return res.status(500).json({ error: 'Error al actualizar el usuario' });

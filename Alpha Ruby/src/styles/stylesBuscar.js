@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     },
     container: {
       flex: 1,
-      backgroundColor: '#1E1F28', // Fondo oscuro unificado
+      backgroundColor: '#121212', // Fondo oscuro unificado
     },
     inputWrapper: {
       flexDirection: 'row',
@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
     },
     orangeSection: {
       flex: 0.22,
-      backgroundColor: '#1E1F28', // Fondo oscuro en vez de naranja
+      backgroundColor: '#121212', // Fondo oscuro en vez de naranja
       justifyContent: 'center',
       paddingHorizontal: 20,
     },
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
     },
     graySection: {
       flex: 1,
-      backgroundColor: '#1E1F28', 
+      backgroundColor: '#121212', 
       padding: 20,
     },
     filtersContainer: {

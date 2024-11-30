@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { View, Text, Alert } from 'react-native';
-import { NavigationContainer, useNavigation } from '@react-navigation/native'; // Importar useNavigation
+import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import * as Linking from 'expo-linking';
 
 // Import your screens
 import LoginScreen from './src/screens/loginScreen';
@@ -15,44 +15,26 @@ import SearchCard from './src/screens/Buscar';
 import ImageViewScreen from './src/screens/ImageViewScreen';
 import ForgotPassword from './src/screens/ForgotPassword';
 import ConfigurationScreen from './src/screens/ConfigurationScreen';
+import profileScreen from './src/screens/profileScreen';
+import ResetPasswordScreen from './src/screens/ResetPasswordScreen';
+import CustomHeader from './src/extras/CustomHeader';
 
-import { UserProvider, useUser } from './src/screens/UserContext';
+import { UserProvider } from './src/screens/UserContext';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const LogoutButton = () => {
-  const { setUserId } = useUser();
-  const navigation = useNavigation(); // Definir useNavigation
-
-  const handleLogout = async () => {
-    try {
-      const response = await fetch('https://magicarduct.online:3000/logout', {
-        method: 'POST',
-        credentials: 'include',
-      });
-
-      if (response.ok) {
-        setUserId(null);
-        navigation.replace('Login');
-      } else {
-        Alert.alert('Error de logout', 'No se pudo cerrar la sesión');
-      }
-    } catch (error) {
-      Alert.alert('Error', 'Hubo un problema con el servidor.');
-      console.error('Error en el fetch:', error);
-    }
-  };
-
-  React.useEffect(() => {
-    handleLogout();
-  }, []);
-
-  return null;
+// Configuración de deep linking
+const linking = {
+  prefixes: ['magicarduct://'], // Esquema de la app
+  config: {
+    screens: {
+      ResetPassword: 'reset-password', // Ruta para capturar ?token=XYZ
+    },
+  },
 };
 
-// Tab Navigator with improved visual elements
-function MainTabNavigator() {
+const MainTabNavigator = () => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -68,45 +50,44 @@ function MainTabNavigator() {
           } else if (route.name === 'Buscar') {
             iconName = 'search';
           }
-          else if (route.name === 'Cerrar Sesión') {
-            iconName = 'sign-out';
-          }
 
           return <Icon name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: '#D3C298', // Bright orange for active tab
-        tabBarInactiveTintColor: '#E0DCC3', // White for inactive tabs
+        tabBarActiveTintColor: '#D3C298',
+        tabBarInactiveTintColor: '#E0DCC3',
         tabBarStyle: {
-          backgroundColor: '#0A0B1E', // Dark background for the tab bar
-          borderTopWidth: 0, // Remove top border for a sleek look
-          height: 60, // Increase height for better spacing
-          paddingBottom: 10, // Add padding for better touch interaction
+          backgroundColor: '#0A0B1E',
+          borderTopWidth: 0,
+          height: 60,
+          paddingBottom: 10,
         },
         tabBarLabelStyle: {
-          fontSize: 12, // Adjust font size for clarity
-          paddingBottom: 5, // Add padding to the text
+          fontSize: 12,
+          paddingBottom: 5,
         },
       })}
     >
-      <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
-      <Tab.Screen name="Buscar" component={SearchCard} options={{ headerShown: false }} />
-      <Tab.Screen name="Mazos" component={DeckManagementScreen} options={{ headerShown: false }} />
+      <Tab.Screen name="Home" component={HomeScreen} options={{ header: () => <CustomHeader /> }} />
+      <Tab.Screen name="Buscar" component={SearchCard} options={{ header: () => <CustomHeader /> }} />
+      <Tab.Screen name="Mazos" component={DeckManagementScreen} options={{ header: () => <CustomHeader /> }} />
       <Tab.Screen name="Configuración" component={ConfigurationScreen} options={{ headerShown: false }} />
     </Tab.Navigator>
   );
-}
+};
 
 const App = () => {
   return (
     <UserProvider>
-      <NavigationContainer>
+      <NavigationContainer linking={linking}>
         <Stack.Navigator initialRouteName="Login">
           <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
           <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
           <Stack.Screen name="Main" component={MainTabNavigator} options={{ headerShown: false }} />
-          <Stack.Screen name="DeckEditor" component={DeckEditorScreen} options={{ title: 'Mazos', headerStyle: { backgroundColor: '#3D3D3D' }, headerTintColor: '#fff' , headerShown: false}} />
-          <Stack.Screen name="ImageViewScreen" component={ImageViewScreen} options={{ title: 'Ver Imagen', headerShown: false }} />
-          <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{ headerShown: false }}/>
+          <Stack.Screen name="DeckEditor" component={DeckEditorScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="ImageViewScreen" component={ImageViewScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{ headerShown: false }} />
+          <Stack.Screen name="Profile" component={profileScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} options={{ headerShown: false }} />
         </Stack.Navigator>
       </NavigationContainer>
     </UserProvider>

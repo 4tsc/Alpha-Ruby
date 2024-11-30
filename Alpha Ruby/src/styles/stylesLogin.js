@@ -57,6 +57,12 @@ export const styles = StyleSheet.create({
     fontSize: 18, // Tamaño de fuente uniforme
     fontWeight: 'bold',
   },
+  forgotPasswordText: { // Texto para el enlace de "Olvidé mi contraseña"
+    color: '#FFFFFF', // Texto blanco
+    textAlign: 'center',
+    fontSize: 16,
+    marginTop: 20,
+  },
 });
 
 

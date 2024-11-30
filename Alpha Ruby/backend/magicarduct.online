@@ -1,0 +1,45 @@
+server {
+    server_name magicarduct.online;
+
+    # Configuración para servir el archivo HTML para reset-password
+    location = /reset-password {
+        root /var/www/reset; # Directorio base donde está el archivo
+        default_type text/html; # Asegura que se sirva como HTML
+        try_files /reset-password.html =404; # Busca específicamente el archivo HTML
+    }
+
+    # Configuración principal para el sitio existente
+    root /var/www/integraproject/build;
+    index index.html;
+
+    location / {
+        try_files $uri /index.html;
+    }
+
+    # Redirección del tráfico de API al servidor Node.js
+    location /api/ {
+        proxy_pass http://127.0.0.1:3000; # Servidor Node.js
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    # Configuración SSL
+    listen 443 ssl;
+    ssl_certificate /etc/letsencrypt/live/magicarduct.online/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/magicarduct.online/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+}
+
+server {
+    if ($host = magicarduct.online) {
+        return 301 https://$host$request_uri;
+    }
+
+    listen 80;
+    server_name magicarduct.online;
+    return 404;
+}

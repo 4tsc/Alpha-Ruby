@@ -735,7 +735,7 @@ const DeckManagementScreen: React.FC = () => {
       borderRadius: 15, // Bordes rectos
       justifyContent: 'center',
       alignItems: 'center',
-      elevation: 3, // Sombra ligera para Android
+      elevation: 5, // Sombra ligera para Android
 
     },
   });

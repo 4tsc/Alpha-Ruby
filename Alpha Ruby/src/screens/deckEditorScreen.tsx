@@ -292,13 +292,16 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
   return (
     <SafeAreaView style={styles.container}>
       {/* Contenedor de pestañas */}
-      <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+      <View style={{ flexDirection: 'row', justifyContent: 'center',  marginTop: 10  }}>
         <TouchableOpacity onPress={() => setActiveTab('cards')}>
           <Text style={activeTab === 'cards' ? styles.activeTab : styles.tab}>Cartas</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => setActiveTab('stats')}>
           <Text style={activeTab === 'stats' ? styles.activeTab : styles.tab}>Estadísticas</Text>
         </TouchableOpacity>
+        <TouchableOpacity onPress={addCard}>
+            <Text style={activeTab === 'add' ? styles.activeTab : styles.tab}>Agregar Carta</Text>
+          </TouchableOpacity>
       </View>
   
       {/* Contenido dinámico basado en la pestaña activa */}
@@ -359,9 +362,7 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
           <TouchableOpacity onPress={saveDeckChanges} style={styles.saveButton}>
             <Text style={styles.saveButtonText}>Guardar Cambios</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={addCard} style={styles.floatingButton}>
-            <Icon name="plus" size={30} color="#fff" />
-          </TouchableOpacity>
+          
         </>
       ) : (
         <ScrollView
@@ -378,7 +379,7 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
           style={{
             width: width * 0.9,
             minHeight: height * 0.4,
-            backgroundColor: '#f0f0f0',
+            backgroundColor: '#1E1F28',
             borderRadius: 8,
             padding: 16,
             justifyContent: 'center',
@@ -386,7 +387,7 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
             marginBottom: 20,
           }}
         >
-          <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Distribución de Costes de Maná</Text>
+          <Text style={{ fontSize: 18, fontWeight: 'bold',color: '#FFF' }}>Distribución de Costes de Maná</Text>
           <ManaCostChart cards={cards} />
         </View>
     
@@ -394,7 +395,7 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
           style={{
             width: width * 0.9,
             minHeight: height * 0.4,
-            backgroundColor: '#d1e7dd',
+            backgroundColor: '#1E1F28',
             borderRadius: 8,
             padding: 16,
             justifyContent: 'center',
@@ -402,7 +403,7 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
             marginBottom: 20,
           }}
         >
-          <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Distribución de Colores</Text>
+          <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#FFF' }}>Distribución de Colores</Text>
           <ManaColorPieChart cards={cards} />
         </View>
       </ScrollView>
@@ -413,57 +414,24 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
 
   const styles = StyleSheet.create({
   activeTab: {
-    color: '#ffffff', // Texto blanco
-    backgroundColor: '#007bff', // Fondo azul
+    color: '#2C3E50', // Texto blanco
+    backgroundColor: '#D3C298', // Fondo blanco
     paddingVertical: 10, // Espaciado vertical
     paddingHorizontal: 20, // Espaciado horizontal
     borderRadius: 8, // Bordes redondeados
     fontWeight: 'bold', // Texto en negrita
     textAlign: 'center', // Centrado del texto
     marginHorizontal: 5, // Margen entre pestañas
+
   },
   tab: {
     color: '#000000', // Texto negro
-    backgroundColor: '#e0e0e0', // Fondo gris claro
+    backgroundColor: '#D3C298', // Fondo gris claro
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 8,
     textAlign: 'center',
     marginHorizontal: 5,
-  },
-  statsContainer: {
-    margin: 10,
-    padding: 10,
-    backgroundColor: '#2C3E50',
-    borderRadius: 10,
-  },
-  statsTitle: {
-    fontSize: 20,
-    color: '#FFF',
-    marginBottom: 10,
-  },
-  statsText: {
-    fontSize: 16,
-    color: '#555555', // Texto gris medio
-    lineHeight: 24, // Espaciado entre líneas
-    textAlign: 'center',
-  },
-  
-  floatingButton: {
-    position: 'absolute',
-    bottom: 785,
-    right: 30,
-    backgroundColor: '#444444', // Gris neutro
-    borderRadius: 15, 
-    width: 50,
-    height: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000', // Agregar sombra
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 1,
-    //elevation: 5, // Sombra para Android
   },
   loadingText: {
     color: '#FFFFFF',

@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Alert, StyleSheet, TouchableOpacity, Dimensions, ActivityIndicator, SafeAreaView, Modal, Image, ScrollView, FlatList } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Importar iconos
+import { LineChart } from 'react-native-chart-kit';
 const { width, height } = Dimensions.get('window');
+
+interface CardFace {
+  name: string;
+  image_uris: {
+    small: string;
+    normal: string;
+  };
+}
 
 interface Deck {
   id: number;
@@ -9,11 +18,13 @@ interface Deck {
   cards?: {
     id: number;
     name: string;
+    layout: string;
+    card_faces?: CardFace[]; // Aquí agregamos card_faces
     image_uris: {
-      small: string; // URL de la imagen en tamaño pequeño
+      small: string;
       normal: string;
     };
-    type_line: string; // Tipo de la carta
+    type_line: string;
   }[];
 }
 
@@ -37,43 +48,42 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
   const [cards, setCards] = useState(deck.cards || []);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [manaCosts, setManaCosts] = useState([]);
 
   const [isEditing, setIsEditing] = useState(false); // Estado para controlar el modo de edición
   const [newDeckName, setNewDeckName] = useState(deck.name);
 
   const [activeTab, setActiveTab] = useState('cards'); // 'cards' o 'stats'
 
-
   useEffect(() => {
     const fetchDeckCards = async () => {
       setLoading(true);
-    
+
       try {
         console.log('Iniciando la solicitud para obtener las cartas del mazo:', deck);
-    
+
         const response = await fetch(`https://magicarduct.online:3000/api/mazocartas/${deck.id}`);
         const data = await response.json();
         console.log('Cartas recibidas desde la API:', data);
-    
+
         // Solicitar la información de cada carta en Scryfall
         const scryfallRequests = data.map(async (card) => {
           const scryfallResponse = await fetch(`https://api.scryfall.com/cards/${card.IDcarta}`);
           return scryfallResponse.ok ? scryfallResponse.json() : null;
         });
-    
+
         // Esperar a que todas las solicitudes a Scryfall terminen
         const cardsData = await Promise.all(scryfallRequests);
         const validCards = cardsData.filter((card) => card !== null); // Ignorar cartas inválidas
-    
+
         console.log('Información detallada de las cartas desde Scryfall:', validCards);
-    
+
+
         setCards(validCards);
       } finally {
         setLoading(false);
       }
     };
-    
-    
 
     fetchDeckCards();
   }, [deck.id]);
@@ -203,29 +213,39 @@ const updateDeckName = async () => {
           </View>
   
           <View style={styles.emptyContainer}>
-            {loading ? (
-              <Text style={styles.loadingText}>Cargando cartas...</Text>
-            ) : error ? (
-              <Text style={styles.errorText}>Error: {error}</Text>
-            ) : (
-              <FlatList
-                data={cards}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => (
-                  <View style={styles.cardItem}>
-                    <TouchableOpacity onPress={() => handleCardPress(item.id, item.image_uris?.normal)} style={styles.cardItem}>
-                      <Image source={{ uri: item.image_uris?.small }} style={styles.cardImage} />
-                      <Text style={styles.cardName}>{item.name}</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => removeCard(deck.id, item.id)} style={styles.removeButton}>
-                      <Icon name="times" size={24} color="red" />
-                    </TouchableOpacity>
-                  </View>
-                )}
-                contentContainerStyle={{ height: height * 0.6 }}
-              />
-            )}
+  {loading ? (
+    <Text style={styles.loadingText}>Cargando cartas...</Text>
+  ) : error ? (
+    <Text style={styles.errorText}>Error: {error}</Text>
+  ) : (
+    <FlatList
+      data={cards}
+      keyExtractor={(item) => item.id.toString()}
+      renderItem={({ item }) => {
+        const isDoubleFaced = ['transform', 'modal_dfc', 'double_faced_token'].includes(item.layout || '');
+        const imageUri = isDoubleFaced
+          ? item.card_faces?.[0]?.image_uris?.small || item.image_uris?.small // Imagen de la primera cara
+          : item.image_uris?.small;
+
+        const cardName = isDoubleFaced ? item.card_faces?.[0]?.name || item.name : item.name;
+
+        return (
+          <View style={styles.cardItem}>
+            <TouchableOpacity onPress={() => handleCardPress(item.id, imageUri)} style={styles.cardItem}>
+              <Image source={{ uri: imageUri }} style={styles.cardImage} />
+              <Text style={styles.cardName}>{cardName}</Text> {/* Mostrar solo el nombre de la primera cara */}
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => removeCard(deck.id, item.id)} style={styles.removeButton}>
+              <Icon name="times" size={24} color="red" />
+            </TouchableOpacity>
           </View>
+        );
+      }}
+      contentContainerStyle={{ height: height * 0.6 }}
+    />
+  )}
+</View>
+
   
           <TouchableOpacity onPress={saveDeckChanges} style={styles.saveButton}>
             <Text style={styles.saveButtonText}>Guardar Cambios</Text>
@@ -236,11 +256,10 @@ const updateDeckName = async () => {
         </>
       ) : (
         <View style={styles.statsContainer}>
-          <Text style={styles.statsTitle}>Estadísticas del Mazo</Text>
-          {/* Agrega aquí las estadísticas del mazo */}
-          <Text style={styles.statsText}>Total de Cartas: {cards.length}</Text>
-          {/* Más estadísticas según las necesidades */}
-        </View>
+        <Text style={styles.statsTitle}>Estadísticas del Mazo</Text>
+        <Text style={styles.statsText}>Total de Cartas: {cards.length}</Text>
+
+      </View>
       )}
     </SafeAreaView>
   );

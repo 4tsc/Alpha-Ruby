@@ -1,12 +1,6 @@
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
-  forgotPasswordText: {
-    color: '#FFF',
-    marginTop: 10,
-    textAlign: 'center',
-    textDecorationLine: 'underline',
-  },
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -25,7 +19,6 @@ export const styles = StyleSheet.create({
     height: 50,
     backgroundColor: '#2C2D37', // Fondo gris oscuro para los inputs
     borderWidth: 1,
-    borderColor: '#D3C298', // Borde dorado suave para los inputs
     marginBottom: 20,
     paddingHorizontal: 20,
     borderRadius: 25,
@@ -52,7 +45,7 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   signUpButton: {
-    backgroundColor: '#D3C298', // Mismo fondo dorado suave para consistencia
+    
     paddingVertical: 15,
     width: '100%', // Botón ocupa todo el ancho
     borderRadius: 25,
@@ -64,6 +57,12 @@ export const styles = StyleSheet.create({
     fontSize: 18, // Tamaño de fuente uniforme
     fontWeight: 'bold',
   },
+  forgotPasswordText: { // Texto para el enlace de "Olvidé mi contraseña"
+    color: '#FFFFFF', // Texto blanco
+    textAlign: 'center',
+    fontSize: 16,
+    marginTop: 20,
+  },
 });
 
-export const placeholderColor = '#D3C298'; // Placeholder dorado suave acorde a los tonos
+

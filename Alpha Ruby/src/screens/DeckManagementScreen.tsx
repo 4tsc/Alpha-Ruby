@@ -657,7 +657,8 @@ const DeckManagementScreen: React.FC = () => {
     title: {
       fontSize: 32,
       fontWeight: 'bold',
-      marginBottom: 40,
+      marginTop: 20, // Ajuste superior para evitar que quede muy arriba
+      marginBottom: 30,
       textAlign: 'center',
       color: '#FFFFFF', // Texto blanco
     },
@@ -670,36 +671,40 @@ const DeckManagementScreen: React.FC = () => {
       fontSize: 18,
       flex: 1,
       color: '#FFFFFF',
+      fontWeight: '500',
+      paddingHorizontal: 5, // Espaciado interno
+
     },
     input: {
       height: 50,
       backgroundColor: '#2C2D37', // Fondo gris oscuro para los inputs
       borderWidth: 1,
-      borderColor: '#D3C298', // Borde dorado suave
+      borderColor: '#444444', // Borde gris oscuro
       marginBottom: 20,
       paddingHorizontal: 20,
-      borderRadius: 25,
+      borderRadius: 8,
       color: '#FFFFFF', // Texto blanco
       fontSize: 16,
       width: '100%',
     },
     addButton: {
-      backgroundColor: '#D3C298', // Fondo dorado suave para el botón
+      backgroundColor: '#444444', // Fondo gris neutro para el botón
       paddingVertical: 15,
-      borderRadius: 25,
+      borderRadius: 8, // Bordes rectos
       alignItems: 'center',
       width: '100%',
       marginBottom: 15,
     },
     addButtonText: {
-      color: '#1E1F28', // Texto oscuro para contraste
+      color: '#FFFFFF', // Texto blanco para el botón
       fontSize: 18,
       fontWeight: 'bold',
+      borderRadius: 8
     },
     cancelButton: {
       backgroundColor: '#666666', // Gris oscuro para el botón de cancelar
       paddingVertical: 15,
-      borderRadius: 25,
+      borderRadius: 8, // Bordes rectos
       alignItems: 'center',
       width: '100%',
     },
@@ -724,13 +729,14 @@ const DeckManagementScreen: React.FC = () => {
       position: 'absolute',
       bottom: 30,
       right: 30,
-      backgroundColor: '#D3C298', // Naranja suave para el FAB
+      backgroundColor: '#444444', // Gris neutro para el FAB
       width: 60,
       height: 60,
-      borderRadius: 30,
+      borderRadius: 15, // Bordes rectos
       justifyContent: 'center',
       alignItems: 'center',
-      elevation: 5, // Sombra para el botón flotante
+      elevation: 3, // Sombra ligera para Android
+
     },
   });
   

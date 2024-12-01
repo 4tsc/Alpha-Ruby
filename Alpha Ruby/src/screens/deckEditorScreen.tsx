@@ -343,7 +343,7 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
                   const cardName = isDoubleFaced ? item.card_faces?.[0]?.name || item.name : item.name;
   
                   return (
-                    <View style={styles.cardItem}>
+                    <View style={styles.cardContainer}>
                       <TouchableOpacity onPress={() => handleCardPress(item.id, imageUri)} style={styles.cardItem}>
                         <Image source={{ uri: imageUri }} style={styles.cardImage} />
                         <Text style={styles.cardName}>{cardName}</Text> {/* Mostrar solo el nombre de la primera cara */}
@@ -445,8 +445,25 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
     textAlign: 'center',
     marginTop: 20,
   },
+  cardContainer: {
+    backgroundColor: '#25262F', // Igual al color original
+    borderRadius: 8,
+    marginVertical: 8,
+    marginHorizontal: 20,
+    padding: 12,
+    flexDirection: 'row', // Elementos en fila
+    alignItems: 'center', // Centrado vertical
+    justifyContent: 'space-between', // Separación entre contenido y botón
+    elevation: 2,
+    maxWidth: 400, // Limita el ancho máximo
+    height: 100, // Igualar la altura mínima de `cardItem`
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
   cardItem: {
-    // backgroundColor: '#2C2C2C',
+    backgroundColor: '#25262F',
     borderRadius: 8,
     marginVertical: 8,
     marginHorizontal: 20,
@@ -454,12 +471,13 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
+    //shadowColor: '#000000',
+    //shadowOffset: { width: 0, height: 2 },
+    //shadowOpacity: 0.2,
+    //shadowRadius: 4,
     elevation: 2,
     maxWidth: 400, // Define un ancho máximo para el contenedor
+
   },
   cardName: {
     color: '#FFFFFF',
@@ -475,6 +493,10 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
     height: 70, // Ajusta según el tamaño de la carta
     borderRadius: 4,  // Bordes redondeados para la imagen
     marginRight: 12,  // Espacio entre la imagen y el nombre de la carta
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
   removeButton: {
     width: 30, // Ancho fijo para la "X"
@@ -483,6 +505,7 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
     alignItems: 'center',
     // marginLeft: 10,  // Espacio para separar la "X" del contenido de la carta
     padding: 5,
+    marginRight: 10
   },
   emptyContainer: {
     flex: 1,

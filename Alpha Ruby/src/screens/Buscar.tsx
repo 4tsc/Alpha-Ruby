@@ -53,7 +53,7 @@ const LegalidadesSection: React.FC<LegalidadesSectionProps> = ({ showMore, setSh
         );
       })}
       <TouchableOpacity onPress={() => setShowMore(!showMore)} style={[styles.button, styles.toggleButton]}>
-        <Text style={styles.buttonText}>{showMore ? '-' : '+'}</Text>
+        <Text style={styles.buttonText}>{showMore ? 'less' : 'more'}</Text>
       </TouchableOpacity>
     </View>
   </View>
@@ -105,6 +105,9 @@ const CosteDeManaSection: React.FC = () => {
             onChangeText={setInputValue}
             placeholder="2{G}{W}"
           />
+          <TouchableOpacity style={styles.inputButton} onPress={() => setModalVisible(true)}>
+            <Ionicons name="add" size={20} color="white" />
+          </TouchableOpacity>
         </View>
         
         {/* Botón al lado derecho */}
@@ -112,6 +115,23 @@ const CosteDeManaSection: React.FC = () => {
           <Text style={styles.sideButtonText}>Añadir</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Modal */}
+      <Modal
+        visible={modalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>Contenido del Modal</Text>
+            <TouchableOpacity style={styles.modalButton} onPress={() => setModalVisible(false)}>
+              <Text style={styles.modalButtonText}>Cerrar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };

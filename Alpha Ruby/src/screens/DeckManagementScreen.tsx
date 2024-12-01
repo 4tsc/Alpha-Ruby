@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Picker } from '@react-native-picker/picker';
 import styles from '../styles/stylesDeckManagements';
+import AddDeckModal from '../extras/addDeckModal'; // Importa el nuevo componente
 
 import { useUser } from './UserContext';
 
@@ -392,65 +393,16 @@ const DeckManagementScreen: React.FC = () => {
           
         )}
 
-<Modal
-  visible={isChangeImageModalVisible}
-  animationType="slide"
-  transparent={true}
-  onRequestClose={() => setIsChangeImageModalVisible(false)}
->
-  <View style={styles.modalContainer}>
-    {isLoading ? (
-      <ActivityIndicator size="large" color="#D3C298" />
-    ) : error ? (
-      <Text style={styles.errorText}>{error}</Text>
-    ) : cards?.length > 0 ? (
-      <FlatList
-        data={cards}
-        keyExtractor={(item) => item.id?.toString() || Math.random().toString()}
-        renderItem={({ item }) => (
-<TouchableOpacity
-  style={styles.cardItem}
-  onPress={() => {
-    // Obtén el ID del mazo seleccionado (esto depende de cómo estés manejando el mazo actual)
-    const selectedDeckId = selectedDeck.id;  // Asegúrate de que 'selectedDeck' contenga el ID del mazo
-    const selectedImageUuid = item.id;  // Obtén el UUID de la imagen de la carta seleccionada
-
-    console.log("ID del mazo:", selectedDeckId);  // Verificación del ID del mazo
-    console.log("UUID de la imagen:", selectedImageUuid);  // Verificación del UUID de la imagen
-
-    // Llama a handleCardSelection con los valores correctos
-    handleCardSelection(selectedDeckId, selectedImageUuid);
-  }}
-  accessibilityLabel={`Seleccionar carta ${item.name || "desconocida"}`}
-  accessible
->
-  {item.fullImage ? (
-    <Image
-      source={{ uri: item.fullImage }}
-      style={styles.cardImage}
-    />
-  ) : (
-    <Text style={styles.imageUnavailableText}>Imagen no disponible</Text>
-  )}
-</TouchableOpacity>
-        )}
-        contentContainerStyle={styles.cardsList}
-        numColumns={3}
+    <AddDeckModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        onAdd={addDeck}
+        newDeckName={newDeckName}
+        setNewDeckName={setNewDeckName}
+        selectedFormat={selectedFormat}
+        setSelectedFormat={setSelectedFormat}
+        options={options}
       />
-    ) : (
-      <Text style={styles.noCardsText}>No hay cartas disponibles para mostrar.</Text>
-    )}
-
-    <TouchableOpacity
-      style={styles.closeButton}
-      onPress={() => setIsChangeImageModalVisible(false)}
-      accessibilityLabel="Cerrar modal de cambio de imagen"
-      accessible
-    >
-      <Text style={styles.closeButtonText}>Cerrar</Text>
-    </TouchableOpacity>
-  </View>
-</Modal>
     
         {/* Botón flotante para agregar un mazo */}
         <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.fab}>

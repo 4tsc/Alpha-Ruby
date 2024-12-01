@@ -16,7 +16,7 @@ interface Deck {
 
 const DeckManagementScreen: React.FC = () => {
   const navigation = useNavigation();
-  
+  const [refreshTrigger, setRefreshTrigger] = useState(0); // Estado de dependencia para refrescar la pantalla
   const { userId } = useUser();
 
   const [decks, setDecks] = useState<Deck[]>([]);
@@ -88,6 +88,9 @@ const DeckManagementScreen: React.FC = () => {
       setLoading(false);
     }
   };
+  useEffect(() => {
+    fetchDecks();
+  }, [refreshTrigger]);
   
   
 
@@ -181,6 +184,7 @@ const DeckManagementScreen: React.FC = () => {
         console.error('Error al agregar el mazo:', error);
         Alert.alert('Error', 'No se pudo agregar el mazo');
       }
+      setRefreshTrigger(refreshTrigger + 1);
     };
   
     const removeDeck = async (deckName: string) => {
@@ -207,7 +211,6 @@ const DeckManagementScreen: React.FC = () => {
     
           // Después de actualizar el estado
           console.log("Decks después de eliminar:", updatedDecks);
-          Alert.alert("Mazo eliminado correctamente.");
         } else {
           Alert.alert("Error al eliminar el mazo.");
         }
@@ -215,6 +218,7 @@ const DeckManagementScreen: React.FC = () => {
         console.error("Error al eliminar el mazo:", error);
         Alert.alert("Error de red. No se pudo eliminar el mazo.");
       }
+      setRefreshTrigger(refreshTrigger + 1);
     };
     
     const handleCardSelection = async (deckId, imageUuid) => {
@@ -240,7 +244,9 @@ const DeckManagementScreen: React.FC = () => {
         console.log('Datos recibidos (parsed JSON):', data);
     
         if (response.ok) {
-          Alert.alert('Éxito', 'La imagen del mazo fue actualizada correctamente.');
+          // Alert.alert('Éxito', 'La imagen del mazo fue actualizada correctamente.');
+          setRefreshTrigger((prev) => prev + 1); // Actualiza la pantalla
+        setIsChangeImageModalVisible(false); // Cierra el modal de cambio de imagen
           console.log('Actualización exitosa:', data);
         } else {
           Alert.alert('Error', data.error || 'No se pudo actualizar la imagen del mazo.');
@@ -250,6 +256,7 @@ const DeckManagementScreen: React.FC = () => {
         console.error('Error al intentar actualizar la imagen del mazo:', error);
         Alert.alert('Error', 'No se pudo completar la solicitud.');
       }
+      setRefreshTrigger(refreshTrigger + 1);
     };
 
     return (

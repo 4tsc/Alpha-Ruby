@@ -1,7 +1,7 @@
 import { StyleSheet, View, Text, SafeAreaView, Dimensions, Image, ScrollView, TouchableOpacity, Linking, StatusBar } from 'react-native';
 import React, { useCallback, useState } from 'react';
 import { useUser } from './UserContext';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window');
 
@@ -10,7 +10,7 @@ export default function HomeScreen() {
   const [userName, setUserName] = useState(''); // Estado para almacenar el nombre del usuario
   const [lastSearchedCards, setLastSearchedCards] = useState([]); // Estado para almacenar las últimas cartas buscadas
   const [news, setNews] = useState([]); // Estado para almacenar las noticias
-
+  const navigation = useNavigation(); // Obtén el objeto de navegación
   useFocusEffect(
     useCallback(() => {
       // console.log('ID de usuario recibido desde el contexto:', userId);
@@ -100,27 +100,30 @@ export default function HomeScreen() {
       console.log('URL no definida');
     }
   };
+  const handleCardPress = (imageUrl, cardId, cardUri) => {
+    navigation.navigate('ImageViewScreen', { imageUrl, cardId, cardUri }); // Navega a la pantalla de detalles de la carta
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#1E1F28" />
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.content}>
-          {/* Sección de cartas */}
-          <View style={styles.cardsSection}>
-            <Text style={styles.sectionTitle}>Últimas cartas buscadas</Text>
-            <ScrollView horizontal>
-              <View style={styles.cardsContainer}>
-                {lastSearchedCards.map((card, index) => (
-                  <View key={index} style={styles.card}>
-                    {card.image_uris && card.image_uris.small ? (
-                      <Image source={{ uri: card.image_uris.small }} style={styles.cardImage} />
-                    ) : (
-                      <Text style={styles.cardText}>Imagen no disponible</Text>
-                    )}
-                    <Text style={styles.cardText}>{card.name}</Text>
-                  </View>
-                ))}
+{/* Sección de cartas */}
+            <View style={styles.cardsSection}>
+                <Text style={styles.sectionTitle}>Últimas cartas buscadas</Text>
+                <ScrollView horizontal>
+                  <View style={styles.cardsContainer}>
+                    {lastSearchedCards.map((card, index) => (
+                      <TouchableOpacity key={index} style={styles.card} onPress={() => handleCardPress(card.image_uris.small, card.id, card.uri)}>
+                        {card.image_uris && card.image_uris.small ? (
+                          <Image source={{ uri: card.image_uris.small }} style={styles.cardImage} />
+                        ) : (
+                          <Text style={styles.cardText}>Imagen no disponible</Text>
+                        )}
+                        <Text style={styles.cardText}>{card.name}</Text>
+                      </TouchableOpacity>
+                    ))}
               </View>
             </ScrollView>
           </View>

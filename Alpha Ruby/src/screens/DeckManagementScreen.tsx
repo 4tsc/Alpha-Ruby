@@ -636,17 +636,18 @@ const DeckManagementScreen: React.FC = () => {
     textShadowRadius: 3,
     marginTop: 5,  // Añade espacio en la parte superior del texto si es necesario
   },
-    picker: {
-      width: '100%',
-      height: 40,
-      backgroundColor: '#1E1F28', // Fondo oscuro del picker
-      borderRadius: 8,
-      borderColor: '#D3C298', // Borde oscuro para unificar con el fondo
-      borderWidth: 1,
-      color: '#FFFFFF', // Color de texto blanco para contraste
-      marginBottom: 15,
-      justifyContent: 'center',
-    },
+  picker: {
+    width: '100%',
+    height: 30,            // Asegúrate de que la altura sea pequeña
+    backgroundColor: '#1E1F28',
+    borderRadius: 8,
+    borderColor: '#D3C298',
+    borderWidth: 1,
+    color: '#FFFFFF',
+    marginBottom: 15,
+    fontSize: 12,          // Reducción del tamaño de fuente
+    paddingVertical: 5,
+  },
     container: {
       flex: 1,
       justifyContent: 'center',
@@ -719,11 +720,10 @@ const DeckManagementScreen: React.FC = () => {
       backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
     modalView: {
-      width: '80%',
+      width: '80%',          // Ajusta el ancho del modal
       backgroundColor: '#1E1F28',
       padding: 20,
       borderRadius: 10,
-      alignItems: 'center',
     },
     fab: {
       position: 'absolute',

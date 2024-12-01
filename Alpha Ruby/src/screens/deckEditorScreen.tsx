@@ -1,32 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Alert, StyleSheet, TouchableOpacity, Dimensions, ActivityIndicator, SafeAreaView, Modal, Image, ScrollView, FlatList } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Importar iconos
-import { LineChart } from 'react-native-chart-kit';
+import { PieChart, BarChart } from 'react-native-chart-kit';
 const { width, height } = Dimensions.get('window');
 
-interface CardFace {
-  name: string;
-  image_uris: {
-    small: string;
-    normal: string;
-  };
-}
-
-interface Deck {
-  id: number;
-  name: string;
-  cards?: {
-    id: number;
+  interface CardFace {
     name: string;
-    layout: string;
-    card_faces?: CardFace[]; // Aquí agregamos card_faces
     image_uris: {
       small: string;
       normal: string;
     };
-    type_line: string;
-  }[];
-}
+  }
+
+  interface Deck {
+    id: number;
+    name: string;
+    cards?: {
+      id: number;
+      name: string;
+      layout: string;
+      card_faces?: CardFace[]; // Aquí agregamos card_faces
+      image_uris: {
+        small: string;
+        normal: string;
+      };
+      type_line: string;
+    }[];
+  }
 
 interface DeckEditorScreenProps {
   route: {
@@ -105,6 +105,115 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
     navigation.goBack();
   };
 
+  const ManaCostChart = ({ cards }) => {
+    const manaCosts = cards.map(card => Math.floor(card.cmc || 0)); // Usar Math.floor para redondear hacia abajo
+    
+    // Crear un array de frecuencias de cada coste de maná
+    const manaCostFrequencies = Array(11).fill(0); // Cambiar a 11 para incluir el 10+
+    manaCosts.forEach(cost => {
+      const adjustedCost = cost >= 10 ? 10 : cost; // Agrupar 10 y mayores en la última categoría
+      manaCostFrequencies[adjustedCost] += 1;
+    });
+  
+    return (
+      <BarChart
+        data={{
+          labels: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10+'],
+          datasets: [
+            {
+              data: manaCostFrequencies,
+            },
+          ],
+        }}
+        width={320}
+        height={220}
+        chartConfig={{
+          backgroundColor: '#1E1F28',
+          backgroundGradientFrom: '#1E1F28',
+          backgroundGradientTo: '#1E1F28',
+          color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+          labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+          style: {
+            borderRadius: 16,
+          },
+          propsForDots: {
+            r: '6',
+            strokeWidth: '2',
+            stroke: '#ffa726',
+          },
+          decimalPlaces: 0, // No decimales
+        }}
+        fromZero={true}
+        yAxisLabel=""
+        yAxisSuffix=""
+      />
+    );
+  };
+  
+  const ManaColorPieChart = ({ cards }) => {
+    // Mapear el coste de maná y el color de cada carta
+    const colorManaCosts = cards.map(card => ({
+      colors: card.colors, // Obtener el array de colores
+      cost: Math.floor(card.cmc || 0), // Coste de maná
+    }));
+  
+    // Contar cuántas cartas hay por color y coste
+    const colorCounts = {};
+    colorManaCosts.forEach(({ colors, cost }) => {
+      if (Array.isArray(colors)) {  // Verificar si colors es un array
+        colors.forEach(color => {
+          if (!colorCounts[color]) colorCounts[color] = Array(11).fill(0);
+          const adjustedCost = cost >= 10 ? 10 : cost;
+          colorCounts[color][adjustedCost] += 1;
+        });
+      }
+    });
+  
+    // Crear los datos para el gráfico
+    const chartData = Object.keys(colorCounts).map(color => {
+      let colorCode;
+      let colorName;  // Variable para el nombre completo del color
+      switch(color) {
+        case 'W': colorCode = '#FFFFFF'; colorName = 'Blanco'; break;
+        case 'U': colorCode = '#0000FF'; colorName = 'Azul'; break;
+        case 'B': colorCode = '#000000'; colorName = 'Negro'; break;
+        case 'R': colorCode = '#FF0000'; colorName = 'Rojo'; break;
+        case 'G': colorCode = '#00FF00'; colorName = 'Verde'; break;
+        default: colorCode = '#A9A9A9'; colorName = 'Otro'; break; // Gris para colores no reconocidos
+      }
+  
+      return {
+        name: colorName,  // Usar el nombre completo aquí
+        population: colorCounts[color].reduce((sum, count) => sum + count, 0),
+        color: colorCode,
+        legendFontColor: '#7F7F7F',
+        legendFontSize: 15,
+      };
+    });
+  
+    return (
+      <PieChart
+        data={chartData}
+        width={320}
+        height={220}
+        chartConfig={{
+          backgroundColor: '#1E1F28',
+          backgroundGradientFrom: '#1E1F28',
+          backgroundGradientTo: '#1E1F28',
+          color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+          labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+          style: { borderRadius: 16 },
+        }}
+        accessor="population"
+        backgroundColor="transparent"
+        paddingLeft="15"
+      />
+    );
+  };
+  
+  
+  
+
   const toggleEditName = async () => {
     if (isEditing) {
       // Si está editando, guarda el nuevo nombre
@@ -117,31 +226,31 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
   };
 
   // Función para actualizar el nombre del mazo
-const updateDeckName = async () => {
-  try {
-    console.log('Iniciando la solicitud para actualizar el nombre del mazo:', deck.id); // Log para verificar el ID del mazo
-    console.log('empleando nombre:', deck.name);
-    const response = await fetch(`https://magicarduct.online:3000/api/deldeck/${deck.id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ deckId: deck.id, nombre: newDeckName }), // Aquí envías el nuevo nombre del mazo
-    });
+  const updateDeckName = async () => {
+    try {
+      console.log('Iniciando la solicitud para actualizar el nombre del mazo:', deck.id); // Log para verificar el ID del mazo
+      console.log('empleando nombre:', deck.name);
+      const response = await fetch(`https://magicarduct.online:3000/api/deldeck/${deck.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ deckId: deck.id, nombre: newDeckName }), // Aquí envías el nuevo nombre del mazo
+      });
 
-    if (!response.ok) {
-      throw new Error('No se pudo actualizar el nombre del mazo');
+      if (!response.ok) {
+        throw new Error('No se pudo actualizar el nombre del mazo');
+      }
+
+      const data = await response.json();
+      console.log('Respuesta de la API al actualizar el nombre del mazo:', data); // Log para mostrar la respuesta
+
+      // Aquí puedes manejar el éxito, como mostrar un mensaje al usuario
+    } catch (error) {
+      console.error('Error al actualizar el nombre del mazo:', error.message);
+      // Manejo de errores, como mostrar un mensaje de error al usuario
     }
-
-    const data = await response.json();
-    console.log('Respuesta de la API al actualizar el nombre del mazo:', data); // Log para mostrar la respuesta
-
-    // Aquí puedes manejar el éxito, como mostrar un mensaje al usuario
-  } catch (error) {
-    console.error('Error al actualizar el nombre del mazo:', error.message);
-    // Manejo de errores, como mostrar un mensaje de error al usuario
-  }
-};
+  };
 
   const addCard = () => {
     // Redirigir a la pantalla de búsqueda
@@ -171,6 +280,7 @@ const updateDeckName = async () => {
       alert('Error al eliminar la carta');
     }
   };
+
   const handleCardPress = (cardId, imageUrl) => {
     // Navegar a ImageViewScreen y pasar los parámetros necesarios
     navigation.navigate('ImageViewScreen', {
@@ -213,39 +323,38 @@ const updateDeckName = async () => {
           </View>
   
           <View style={styles.emptyContainer}>
-  {loading ? (
-    <Text style={styles.loadingText}>Cargando cartas...</Text>
-  ) : error ? (
-    <Text style={styles.errorText}>Error: {error}</Text>
-  ) : (
-    <FlatList
-      data={cards}
-      keyExtractor={(item) => item.id.toString()}
-      renderItem={({ item }) => {
-        const isDoubleFaced = ['transform', 'modal_dfc', 'double_faced_token'].includes(item.layout || '');
-        const imageUri = isDoubleFaced
-          ? item.card_faces?.[0]?.image_uris?.small || item.image_uris?.small // Imagen de la primera cara
-          : item.image_uris?.small;
-
-        const cardName = isDoubleFaced ? item.card_faces?.[0]?.name || item.name : item.name;
-
-        return (
-          <View style={styles.cardItem}>
-            <TouchableOpacity onPress={() => handleCardPress(item.id, imageUri)} style={styles.cardItem}>
-              <Image source={{ uri: imageUri }} style={styles.cardImage} />
-              <Text style={styles.cardName}>{cardName}</Text> {/* Mostrar solo el nombre de la primera cara */}
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => removeCard(deck.id, item.id)} style={styles.removeButton}>
-              <Icon name="times" size={24} color="red" />
-            </TouchableOpacity>
+            {loading ? (
+              <Text style={styles.loadingText}>Cargando cartas...</Text>
+            ) : error ? (
+              <Text style={styles.errorText}>Error: {error}</Text>
+            ) : (
+              <FlatList
+                data={cards}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => {
+                  const isDoubleFaced = ['transform', 'modal_dfc', 'double_faced_token'].includes(item.layout || '');
+                  const imageUri = isDoubleFaced
+                    ? item.card_faces?.[0]?.image_uris?.small || item.image_uris?.small // Imagen de la primera cara
+                    : item.image_uris?.small;
+  
+                  const cardName = isDoubleFaced ? item.card_faces?.[0]?.name || item.name : item.name;
+  
+                  return (
+                    <View style={styles.cardItem}>
+                      <TouchableOpacity onPress={() => handleCardPress(item.id, imageUri)} style={styles.cardItem}>
+                        <Image source={{ uri: imageUri }} style={styles.cardImage} />
+                        <Text style={styles.cardName}>{cardName}</Text> {/* Mostrar solo el nombre de la primera cara */}
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => removeCard(deck.id, item.id)} style={styles.removeButton}>
+                        <Icon name="times" size={24} color="red" />
+                      </TouchableOpacity>
+                    </View>
+                  );
+                }}
+                contentContainerStyle={{ height: height * 0.6 }}
+              />
+            )}
           </View>
-        );
-      }}
-      contentContainerStyle={{ height: height * 0.6 }}
-    />
-  )}
-</View>
-
   
           <TouchableOpacity onPress={saveDeckChanges} style={styles.saveButton}>
             <Text style={styles.saveButtonText}>Guardar Cambios</Text>
@@ -255,17 +364,54 @@ const updateDeckName = async () => {
           </TouchableOpacity>
         </>
       ) : (
-        <View style={styles.statsContainer}>
-        <Text style={styles.statsTitle}>Estadísticas del Mazo</Text>
-        <Text style={styles.statsText}>Total de Cartas: {cards.length}</Text>
-
-      </View>
+        <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{
+          flexGrow: 1,
+          paddingBottom: 100,
+          alignItems: 'center',
+        }}
+        showsVerticalScrollIndicator={true}
+        scrollEnabled={true}
+      >
+        <View
+          style={{
+            width: width * 0.9,
+            minHeight: height * 0.4,
+            backgroundColor: '#f0f0f0',
+            borderRadius: 8,
+            padding: 16,
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginBottom: 20,
+          }}
+        >
+          <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Distribución de Costes de Maná</Text>
+          <ManaCostChart cards={cards} />
+        </View>
+    
+        <View
+          style={{
+            width: width * 0.9,
+            minHeight: height * 0.4,
+            backgroundColor: '#d1e7dd',
+            borderRadius: 8,
+            padding: 16,
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginBottom: 20,
+          }}
+        >
+          <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Distribución de Colores</Text>
+          <ManaColorPieChart cards={cards} />
+        </View>
+      </ScrollView>
       )}
     </SafeAreaView>
-  );
+  ); 
 };
 
-const styles = StyleSheet.create({
+  const styles = StyleSheet.create({
   activeTab: {
     color: '#ffffff', // Texto blanco
     backgroundColor: '#007bff', // Fondo azul
@@ -286,23 +432,15 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   statsContainer: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#f9f9f9', // Fondo gris claro
+    margin: 10,
+    padding: 10,
+    backgroundColor: '#2C3E50',
     borderRadius: 10,
-    marginVertical: 10,
-    shadowColor: '#000', // Sombra para dar profundidad
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 3, // Sombra para Android
   },
   statsTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333333', // Texto gris oscuro
+    fontSize: 20,
+    color: '#FFF',
     marginBottom: 10,
-    textAlign: 'center',
   },
   statsText: {
     fontSize: 16,

@@ -35,6 +35,7 @@ const DeckManagementScreen: React.FC = () => {
   const [cards, setCards] = useState([]); // Cartas del mazo seleccionado
   const [isLoading, setLoading] = useState(false); // Indicador de carga
   const [error, setError] = useState(null); // Manejo de errores
+  
 
 
   const options = [
@@ -63,46 +64,35 @@ const DeckManagementScreen: React.FC = () => {
 
   const fetchDeckCards = async (deckId) => {
     setLoading(true);
-    setError(null);
   
     try {
       console.log('Iniciando la solicitud para obtener las cartas del mazo:', deckId);
   
       const response = await fetch(`https://magicarduct.online:3000/api/mazocartas/${deckId}`);
-      if (!response.ok) {
-        throw new Error('No se pudieron obtener las cartas del mazo');
-      }
-  
       const data = await response.json();
       console.log('Cartas recibidas desde la API:', data);
   
       const scryfallRequests = data.map(async (card) => {
         const scryfallResponse = await fetch(`https://api.scryfall.com/cards/${card.IDcarta}`);
-        if (!scryfallResponse.ok) {
-          throw new Error(`No se pudo obtener la información de la carta con ID ${card.IDcarta}`);
-        }
-        return scryfallResponse.json();
+        return scryfallResponse.ok ? scryfallResponse.json() : null;
       });
   
       const cardsData = await Promise.all(scryfallRequests);
-      console.log('Información detallada de las cartas desde Scryfall:', cardsData);
+      const validCards = cardsData.filter((card) => card !== null); // Ignorar cartas inválidas sin error explícito
   
-      // Mapeamos para dos usos diferentes
-      const formattedCards = cardsData.map((card) => ({
+      const formattedCards = validCards.map((card) => ({
         id: card.id,
         name: card.name,
-        fullImage: card.image_uris.normal, // Imagen completa para visualizar
-        artCrop: card.image_uris.art_crop, // Imagen representativa para mazo
+        fullImage: card.image_uris.normal,
+        artCrop: card.image_uris.art_crop,
       }));
   
       setCards(formattedCards);
-    } catch (error) {
-      console.error('Error al obtener las cartas del mazo:', error.message);
-      setError(error.message);
     } finally {
       setLoading(false);
     }
   };
+  
   
 
     // Función para obtener los mazos del usuario
@@ -638,7 +628,7 @@ const DeckManagementScreen: React.FC = () => {
   },
   // Estilo del texto del título del mazo
   deckItemTitle: {
-    fontSize: 16,
+    fontSize: 12,
     fontWeight: 'bold',
     color: '#FFFFFF', // Blanco para el texto
     textShadowColor: '#000',

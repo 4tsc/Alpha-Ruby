@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Alert, FlatList, Modal, TouchableOpacity, View, Text, Image, StyleSheet, Button } from 'react-native';
-
 import { useUser } from './UserContext';
 
 export default function ImageViewScreen({ route }) {
@@ -132,6 +131,23 @@ export default function ImageViewScreen({ route }) {
             Fuerza: {cardDetails.power} / Resistencia: {cardDetails.toughness}
           </Text>
         )}
+        {cardDetails.prices && (
+          <View style={styles.priceContainer}>
+            <Text style={styles.priceText}>Precio:</Text>
+            {cardDetails.prices.usd && (
+              <Text style={styles.priceText}>USD: ${cardDetails.prices.usd}</Text>
+            )}
+            {cardDetails.prices.usd_foil && (
+              <Text style={styles.priceText}>USD (Foil): ${cardDetails.prices.usd_foil}</Text>
+            )}
+            {cardDetails.prices.eur && (
+              <Text style={styles.priceText}>EUR: €{cardDetails.prices.eur}</Text>
+            )}
+            {cardDetails.prices.tix && (
+              <Text style={styles.priceText}>TIX: {cardDetails.prices.tix}</Text>
+            )}
+          </View>
+        )}
       </View>
     );
   };
@@ -185,67 +201,82 @@ export default function ImageViewScreen({ route }) {
 }
 
 const styles = StyleSheet.create({
-    cardStats: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        marginTop: 5,
-      },
-    container: {
-      flex: 1,
-      backgroundColor: '#000', // Fondo negro para destacar la imagen
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    fullImage: {
-      width: '100%',
-      height: '40%', // Cambia esto para ocupar el 40% de la pantalla
-    },
-    cardDetailsContainer: {
-        marginTop: 10,
-        padding: 10,
-        backgroundColor: 'rgba(255, 255, 255, 0.8)', // Fondo blanco semi-transparente
-        borderRadius: 8,
-        alignItems: 'center',
-        marginBottom: 10, // Añade margen inferior
-      },
-    cardTitle: {
-      fontSize: 18,
-      fontWeight: 'bold',
-    },
-    cardType: {
-      fontSize: 16,
-      fontStyle: 'italic',
-    },
-    cardSet: {
-      fontSize: 14,
-    },
-    cardText: {
-      fontSize: 14,
-      textAlign: 'center',
-    },
-    modalContainer: {
-      flex: 1,
-      backgroundColor: 'rgba(0, 0, 0, 0.8)', // Fondo semi-transparente
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    modalContent: {
-      width: '80%',
-      backgroundColor: '#fff',
-      borderRadius: 10,
-      padding: 20,
-    },
-    modalTitle: {
-      fontSize: 18,
-      fontWeight: 'bold',
-      marginBottom: 10,
-    },
-    deckItem: {
-      padding: 10,
-      borderBottomWidth: 1,
-      borderBottomColor: '#ccc',
-    },
-    deckItemText: {
-      fontSize: 16,
-    },
-  });
+  cardStats: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginTop: 5,
+  },
+  priceContainer: {
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)', // Fondo blanco semi-transparente
+    borderRadius: 8,
+    flexDirection: 'row',  // Alineación horizontal
+    flexWrap: 'wrap',      // Asegura que se ajusten
+    marginBottom: 10,
+    justifyContent: 'center',  // Centra los precios
+  },
+  priceText: {
+    fontSize: 16,
+    marginHorizontal: 10,  // Espaciado horizontal entre precios
+    marginVertical: 5,
+  },
+  container: {
+    flex: 1,
+    backgroundColor: '#000', // Fondo negro para destacar la imagen
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  fullImage: {
+    width: '100%',
+    height: '40%', // Cambia esto para ocupar el 40% de la pantalla
+  },
+  cardDetailsContainer: {
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)', // Fondo blanco semi-transparente
+    borderRadius: 8,
+    alignItems: 'center',
+    marginBottom: 10, // Añade margen inferior
+  },
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  cardType: {
+    fontSize: 16,
+    fontStyle: 'italic',
+  },
+  cardSet: {
+    fontSize: 14,
+  },
+  cardText: {
+    fontSize: 14,
+    textAlign: 'center',
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)', // Fondo semi-transparente
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    width: '80%',
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 20,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  deckItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  deckItemText: {
+    fontSize: 16,
+  },
+});

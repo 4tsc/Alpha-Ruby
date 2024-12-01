@@ -491,12 +491,16 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 2,
+    maxWidth: 400, // Define un ancho máximo para el contenedor
   },
   cardName: {
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: 'bold',
-    flex: 1,
+    textAlign: 'left', // Alineación del texto
+    maxWidth: 150, // Limita el ancho del contenedor al 70% (ajústalo según sea necesario)
+    flexWrap: 'wrap', // Permite que el texto se divida en varias líneas
+    
   },
   cardImage: {
     width: 50,  // Tamaño adecuado para la imagen

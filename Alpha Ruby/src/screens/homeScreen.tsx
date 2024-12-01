@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
   //disenio jose
   container: {
     flex: 1,
-    backgroundColor: '#121212',
+    backgroundColor: '#1E1F28',
     paddingHorizontal: 20,
     paddingTop: 20,
   },

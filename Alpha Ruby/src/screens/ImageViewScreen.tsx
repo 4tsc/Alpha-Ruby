@@ -167,10 +167,15 @@ export default function ImageViewScreen({ route }) {
       {renderCardDetails()}
 
       {cardDetails?.card_faces && (
-        <Button title="Alternar cara" onPress={toggleCardFace} />
+        <TouchableOpacity style={styles.altButton} onPress={toggleCardFace}>
+          <Text style={styles.altButtonText}>Alternar Cara</Text>
+        </TouchableOpacity>
+        
       )}
 
-      <Button title="Agregar a mazo" onPress={handleAddToDeck} />
+      <TouchableOpacity style={styles.addButton} onPress={handleAddToDeck}>
+        <Text style={styles.addButtonText}>Agregar a mazo</Text>
+      </TouchableOpacity>
 
       <Modal
         transparent={true}
@@ -192,7 +197,10 @@ export default function ImageViewScreen({ route }) {
                 </TouchableOpacity>
               )}
             />
-            <Button title="Cerrar" onPress={closeModal} />
+            <TouchableOpacity style={styles.clsButton} onPress={closeModal}>
+              <Text style={styles.clsButtonText}>Cerrar</Text>
+            </TouchableOpacity>
+            
           </View>
         </View>
       </Modal>
@@ -279,4 +287,66 @@ const styles = StyleSheet.create({
   deckItemText: {
     fontSize: 16,
   },
+  addButton: {
+    backgroundColor: '#444444', // Cambia el color de fondo al que prefieras
+    borderRadius: 8, // Bordes redondeados
+    paddingVertical: 12, // Espaciado vertical
+    paddingHorizontal: 20, // Espaciado horizontal
+    alignItems: 'center', // Centrar el texto horizontalmente
+    marginVertical: 10, // Margen para separar el botón de otros elementos
+    shadowColor: '#000', // Sombra para dar profundidad
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.5,
+    elevation: 5, // Sombra para Android
+  },
+  
+  addButtonText: {
+    color: '#FFFFFF', // Color del texto
+    fontSize: 16, // Tamaño de letra
+    fontWeight: 'bold', // Texto en negrita
+    },
+
+  altButton: {
+    backgroundColor: '#444444', // Cambia el color de fondo al que prefieras
+    borderRadius: 8, // Bordes redondeados
+    paddingVertical: 12, // Espaciado vertical
+    paddingHorizontal: 20, // Espaciado horizontal
+    alignItems: 'center', // Centrar el texto horizontalmente
+    marginVertical: 10, // Margen para separar el botón de otros elementos
+    shadowColor: '#000', // Sombra para dar profundidad
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.5,
+    elevation: 5, // Sombra para Android
+  },
+  
+  altButtonText: {
+    color: '#FFFFFF', // Color del texto
+    fontSize: 16, // Tamaño de letra
+    fontWeight: 'bold', // Texto en negrita
+    },
+
+  clsButton: {
+    backgroundColor: '#444444', // Cambia el color de fondo al que prefieras
+    borderRadius: 8, // Bordes redondeados
+    paddingVertical: 12, // Espaciado vertical
+    paddingHorizontal: 20, // Espaciado horizontal
+    alignItems: 'center', // Centrar el texto horizontalmente
+    marginVertical: 10, // Margen para separar el botón de otros elementos
+    shadowColor: '#000', // Sombra para dar profundidad
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.5,
+    elevation: 5, // Sombra para Android
+  },
+  
+  clsButtonText: {
+    color: '#FFFFFF', // Color del texto
+    fontSize: 16, // Tamaño de letra
+    fontWeight: 'bold', // Texto en negrita
+    }
 });
+    
+    
+

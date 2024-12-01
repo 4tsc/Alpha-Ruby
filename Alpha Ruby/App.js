@@ -40,8 +40,8 @@ function MainTabNavigator() {
 
           return <Icon name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: '#D3C298', // Bright orange for active tab
-        tabBarInactiveTintColor: '#E0DCC3', // White for inactive tabs
+        tabBarActiveTintColor: '#FFF', 
+        tabBarInactiveTintColor: '#9E9E9E',
         tabBarStyle: {
           backgroundColor: '#0A0B1E', // Dark background for the tab bar
           borderTopWidth: 0, // Remove top border for a sleek look
@@ -70,7 +70,7 @@ const App = () => {
           <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
           <Stack.Screen name="Main" component={MainTabNavigator} options={{ headerShown: false }} />
           <Stack.Screen name="DeckEditor" component={DeckEditorScreen} options={{ title: 'Mazos', headerStyle: { backgroundColor: '#3D3D3D' }, headerTintColor: '#fff' }} />
-          <Stack.Screen name="ImageViewScreen" component={ImageViewScreen} options={{ title: 'Ver Imagen' }} />
+          <Stack.Screen name="ImageViewScreen" component={ImageViewScreen} options={{ title: 'Volver', headerStyle: { backgroundColor: '#3D3D3D' }, headerTintColor: '#fff'  }} />
           <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{ headerShown: true }}/>
         </Stack.Navigator>
       </NavigationContainer>

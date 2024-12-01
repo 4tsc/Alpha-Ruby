@@ -313,19 +313,19 @@ const styles = StyleSheet.create({
   
   floatingButton: {
     position: 'absolute',
-    bottom: 20,
-    right: 20,
-    backgroundColor: '#ff5733', // Color de fondo del botón
-    borderRadius: 30, // Hacer el botón redondo
-    width: 60,
-    height: 60,
+    bottom: 785,
+    right: 30,
+    backgroundColor: '#444444', // Gris neutro
+    borderRadius: 15, 
+    width: 50,
+    height: 50,
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000', // Agregar sombra
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
-    shadowRadius: 2,
-    elevation: 5, // Sombra para Android
+    shadowRadius: 1,
+    //elevation: 5, // Sombra para Android
   },
   loadingText: {
     color: '#FFFFFF',
@@ -340,9 +340,10 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   cardItem: {
-    backgroundColor: '#2C2C2C',
+    // backgroundColor: '#2C2C2C',
     borderRadius: 8,
     marginVertical: 8,
+    marginHorizontal: 20,
     padding: 12,
     flexDirection: 'row',
     alignItems: 'center',
@@ -366,7 +367,11 @@ const styles = StyleSheet.create({
     marginRight: 12,  // Espacio entre la imagen y el nombre de la carta
   },
   removeButton: {
-    marginLeft: 10,  // Espacio para separar la "X" del contenido de la carta
+    width: 30, // Ancho fijo para la "X"
+    height: 30, // Altura fija para la "X"
+    justifyContent: 'center',
+    alignItems: 'center',
+    // marginLeft: 10,  // Espacio para separar la "X" del contenido de la carta
     padding: 5,
   },
   emptyContainer: {
@@ -378,7 +383,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#FFFFFF',
     marginRight: 5,
-    width: '70%',
+    width: '40%',
   },
   titleContainer: {
     flexDirection: 'row',
@@ -401,7 +406,6 @@ const styles = StyleSheet.create({
   saveButton: {
     backgroundColor: '#D3C298',
     padding: 15,
-    borderRadius: 10,
     alignItems: 'center',
   },
   saveButtonText: {

@@ -174,11 +174,11 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
       let colorCode;
       let colorName;  // Variable para el nombre completo del color
       switch(color) {
-        case 'W': colorCode = '#FFFFFF'; colorName = 'Blanco'; break;
-        case 'U': colorCode = '#0000FF'; colorName = 'Azul'; break;
-        case 'B': colorCode = '#000000'; colorName = 'Negro'; break;
-        case 'R': colorCode = '#FF0000'; colorName = 'Rojo'; break;
-        case 'G': colorCode = '#00FF00'; colorName = 'Verde'; break;
+        case 'W': colorCode = '#fcffdc'; colorName = 'Blanco'; break;
+        case 'U': colorCode = '#37b5dd'; colorName = 'Azul'; break;
+        case 'B': colorCode = '#403a3a'; colorName = 'Negro'; break;
+        case 'R': colorCode = '#FF6F61'; colorName = 'Rojo'; break;
+        case 'G': colorCode = '#77e373'; colorName = 'Verde'; break;
         default: colorCode = '#A9A9A9'; colorName = 'Otro'; break; // Gris para colores no reconocidos
       }
   

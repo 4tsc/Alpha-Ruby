@@ -337,8 +337,8 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
                 renderItem={({ item }) => {
                   const isDoubleFaced = ['transform', 'modal_dfc', 'double_faced_token'].includes(item.layout || '');
                   const imageUri = isDoubleFaced
-                    ? item.card_faces?.[0]?.image_uris?.small || item.image_uris?.small // Imagen de la primera cara
-                    : item.image_uris?.small;
+                  ? item.card_faces?.[0]?.image_uris?.small || item.image_uris?.small || 'default_image_url'
+                  : item.image_uris?.small || 'default_image_url';
   
                   const cardName = isDoubleFaced ? item.card_faces?.[0]?.name || item.name : item.name;
   

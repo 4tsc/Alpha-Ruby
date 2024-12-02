@@ -12,86 +12,87 @@ export default function HomeScreen() {
   const [lastSearchedCards, setLastSearchedCards] = useState([]); // Estado para almacenar las últimas cartas buscadas
   const [news, setNews] = useState([]); // Estado para almacenar las noticias
   const navigation = useNavigation(); // Obtén el objeto de navegación
-  useEffect(
-    useCallback(() => {
-      // console.log('ID de usuario recibido desde el contexto:', userId);
+  const [isDataFetched, setIsDataFetched] = useState(false); // Control para evitar múltiples ejecuciones
 
-      const fetchUserData = async () => {
-        try {
-          const response = await fetch(`https://magicarduct.online:3000/obtener-usuario?userId=${userId}`, {
-            method: 'GET',
-            credentials: 'include',
-          });
+  const fetchUserData = async () => {
+    try {
+      const response = await fetch(`https://magicarduct.online:3000/obtener-usuario?userId=${userId}`, {
+        method: 'GET',
+        credentials: 'include',
+      });
 
-          const data = await response.json();
-
-          if (response.ok) {
-            setUserName(data.userName); // Almacena el nombre del usuario en el estado
-            // console.log('Nombre de usuario:', data.userName);
-          } else {
-            console.log('Error obteniendo los datos del usuario:', data.message);
-          }
-        } catch (error) {
-          console.log('Error en la solicitud:', error);
-        }
-      };
-
-      const fetchLastSearchedCards = async () => {
-        try {
-          const response = await fetch(`https://magicarduct.online:3000/api/ultimascartasvistas/${userId}`, {
-            method: 'GET',
-            credentials: 'include',
-          });
-
-          const data = await response.json();
-
-          if (response.ok) {
-            // Ordenar las cartas por ID en orden ascendente
-            const sortedData = data.sort((a, b) => a.IDnumero - b.IDnumero);
-
-            const cardDetailsPromises = sortedData.slice(0, 5).map(async (card) => {
-              const cardResponse = await fetch(`https://api.scryfall.com/cards/${card.IDcarta}`);
-              return cardResponse.json();
-            });
-
-            const cardDetails = await Promise.all(cardDetailsPromises);
-            setLastSearchedCards(cardDetails); // Almacena los detalles de las cartas en el estado
-            // console.log('Últimas cartas buscadas:', cardDetails);
-          } else {
-            console.log('Error obteniendo las últimas cartas buscadas:', data.message);
-          }
-        } catch (error) {
-          console.log('Error en la solicitud:', error);
-        }
-      };
-
-      const fetchNews = async () => {
-        try {
-          const response = await fetch('https://magicarduct.online:3001/api/noticias2', {
-            method: 'GET',
-            credentials: 'include',
-          });
-
-          const articles = await response.json();
-          // console.log('Respuesta del servidor de noticias:', articles); // Log para verificar la respuesta
-
-          if (response.ok) {
-            setNews(articles.slice(0, 10)); // Limitar las noticias a las primeras 10
-            // console.log('Noticias obtenidas:', articles);
-          } else {
-            console.log('Error obteniendo las noticias:', articles.message);
-          }
-        } catch (error) {
-          console.log('Error en la solicitud:', error);
-        }
-      };
-
-      if (userId) {
-        fetchUserData(); // Solo hacemos la solicitud si el userId está disponible
-        fetchLastSearchedCards(); // Solo hacemos la solicitud si el userId está disponible
-        fetchNews(); // Obtener noticias
+      const data = await response.json();
+      if (response.ok) {
+        setUserName(data.userName);
+      } else {
+        console.log('Error obteniendo los datos del usuario:', data.message);
       }
-    }, [userId])
+    } catch (error) {
+      console.log('Error en la solicitud:', error);
+    }
+  };
+
+  const fetchLastSearchedCards = async () => {
+    try {
+      const response = await fetch(`https://magicarduct.online:3000/api/ultimascartasvistas/${userId}`, {
+        method: 'GET',
+        credentials: 'include',
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        const sortedData = data.sort((a, b) => a.IDnumero - b.IDnumero);
+
+        const cardDetailsPromises = sortedData.slice(0, 5).map(async (card) => {
+          const cardResponse = await fetch(`https://api.scryfall.com/cards/${card.IDcarta}`);
+          return cardResponse.json();
+        });
+
+        const cardDetails = await Promise.all(cardDetailsPromises);
+        setLastSearchedCards(cardDetails);
+      } else {
+        console.log('Error obteniendo las últimas cartas buscadas:', data.message);
+      }
+    } catch (error) {
+      console.log('Error en la solicitud:', error);
+    }
+  };
+
+  const fetchNews = async () => {
+    try {
+      const response = await fetch('https://magicarduct.online:3001/api/noticias2', {
+        method: 'GET',
+        credentials: 'include',
+      });
+
+      const articles = await response.json();
+      if (response.ok) {
+        setNews(articles.slice(0, 10));
+      } else {
+        console.log('Error obteniendo las noticias:', articles.message);
+      }
+    } catch (error) {
+      console.log('Error en la solicitud:', error);
+    }
+  };
+
+  const fetchData = useCallback(() => {
+    if (!isDataFetched && userId) {
+      fetchUserData();
+      fetchLastSearchedCards();
+      fetchNews();
+      setIsDataFetched(true); // Marca como ya obtenido
+    }
+  }, [isDataFetched, userId]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+    }, [fetchData])
   );
 
   const handlePress = (url) => {

@@ -70,12 +70,18 @@ const DeckManagementScreen: React.FC = () => {
       console.log('Cartas recibidas desde la API:', data);
   
       const scryfallRequests = data.map(async (card) => {
-        const scryfallResponse = await fetch(`https://api.scryfall.com/cards/${card.IDcarta}`);
-        return scryfallResponse.ok ? scryfallResponse.json() : null;
+        try {
+          const scryfallResponse = await fetch(`https://api.scryfall.com/cards/${card.IDcarta}`);
+          return scryfallResponse.ok ? await scryfallResponse.json() : null;
+        } catch (error) {
+          console.error(`Error obteniendo datos de Scryfall para la carta ID ${card.IDcarta}:`, error);
+          return null; // Retorna null en caso de error
+        }
       });
   
       const cardsData = await Promise.all(scryfallRequests);
-      const validCards = cardsData.filter((card) => card !== null); // Ignorar cartas inválidas sin error explícito
+  
+      const validCards = cardsData.filter((card) => card && card.image_uris && card.image_uris.normal); // Filtrar cartas válidas
   
       const formattedCards = validCards.map((card) => ({
         id: card.id,
@@ -85,10 +91,13 @@ const DeckManagementScreen: React.FC = () => {
       }));
   
       setCards(formattedCards);
+    } catch (error) {
+      console.error('Error obteniendo las cartas del mazo:', error);
     } finally {
       setLoading(false);
     }
   };
+  
   useEffect(() => {
     fetchDecks();
   }, [refreshTrigger]);
@@ -393,16 +402,65 @@ const DeckManagementScreen: React.FC = () => {
           
         )}
 
-    <AddDeckModal
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-        onAdd={addDeck}
-        newDeckName={newDeckName}
-        setNewDeckName={setNewDeckName}
-        selectedFormat={selectedFormat}
-        setSelectedFormat={setSelectedFormat}
-        options={options}
+<Modal
+  visible={isChangeImageModalVisible}
+  animationType="slide"
+  transparent={true}
+  onRequestClose={() => setIsChangeImageModalVisible(false)}
+>
+  <View style={styles.modalContainer}>
+    {isLoading ? (
+      <ActivityIndicator size="large" color="#D3C298" />
+    ) : error ? (
+      <Text style={styles.errorText}>{error}</Text>
+    ) : cards?.length > 0 ? (
+      <FlatList
+        data={cards}
+        keyExtractor={(item) => item.id?.toString() || Math.random().toString()}
+        renderItem={({ item }) => (
+<TouchableOpacity
+  style={styles.cardItem}
+  onPress={() => {
+    // Obtén el ID del mazo seleccionado (esto depende de cómo estés manejando el mazo actual)
+    const selectedDeckId = selectedDeck.id;  // Asegúrate de que 'selectedDeck' contenga el ID del mazo
+    const selectedImageUuid = item.id;  // Obtén el UUID de la imagen de la carta seleccionada
+
+    console.log("ID del mazo:", selectedDeckId);  // Verificación del ID del mazo
+    console.log("UUID de la imagen:", selectedImageUuid);  // Verificación del UUID de la imagen
+
+    // Llama a handleCardSelection con los valores correctos
+    handleCardSelection(selectedDeckId, selectedImageUuid);
+  }}
+  accessibilityLabel={`Seleccionar carta ${item.name || "desconocida"}`}
+  accessible
+>
+  {item.fullImage ? (
+    <Image
+      source={{ uri: item.fullImage }}
+      style={styles.cardImage}
+    />
+  ) : (
+    <Text style={styles.imageUnavailableText}>Imagen no disponible</Text>
+  )}
+</TouchableOpacity>
+        )}
+        contentContainerStyle={styles.cardsList}
+        numColumns={3}
       />
+    ) : (
+      <Text style={styles.noCardsText}>No hay cartas disponibles para mostrar.</Text>
+    )}
+
+    <TouchableOpacity
+      style={styles.closeButton}
+      onPress={() => setIsChangeImageModalVisible(false)}
+      accessibilityLabel="Cerrar modal de cambio de imagen"
+      accessible
+    >
+      <Text style={styles.closeButtonText}>Cerrar</Text>
+    </TouchableOpacity>
+  </View>
+</Modal>
     
         {/* Botón flotante para agregar un mazo */}
         <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.fab}>

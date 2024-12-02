@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
   },
   // Estilo del texto del título del mazo
   deckItemTitle: {
-    fontSize: 16,
+    fontSize: 13,
     fontWeight: 'bold',
     color: '#FFFFFF', // Blanco para el texto
     textShadowColor: '#000',

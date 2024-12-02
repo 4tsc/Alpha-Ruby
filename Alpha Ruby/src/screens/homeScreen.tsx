@@ -2,6 +2,7 @@ import { StyleSheet, View, Text, SafeAreaView, Dimensions, Image, ScrollView, To
 import React, { useCallback, useState } from 'react';
 import { useUser } from './UserContext';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useEffect } from 'react';
 
 const { width, height } = Dimensions.get('window');
 
@@ -11,7 +12,7 @@ export default function HomeScreen() {
   const [lastSearchedCards, setLastSearchedCards] = useState([]); // Estado para almacenar las últimas cartas buscadas
   const [news, setNews] = useState([]); // Estado para almacenar las noticias
   const navigation = useNavigation(); // Obtén el objeto de navegación
-  useFocusEffect(
+  useEffect(
     useCallback(() => {
       // console.log('ID de usuario recibido desde el contexto:', userId);
 

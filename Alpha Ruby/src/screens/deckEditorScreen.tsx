@@ -333,38 +333,27 @@ const DeckEditorScreen: React.FC<DeckEditorScreenProps> = ({ route, navigation }
             ) : (
 <FlatList
   data={cards}
-  keyExtractor={(item) => item.id.toString()}
+  keyExtractor={(item, index) => `${item.id}-${index}`} // Usar una combinación de item.id y el índice
   renderItem={({ item }) => {
-    // Verificar si la carta tiene dos caras
     const isDoubleFaced = ['transform', 'modal_dfc', 'double_faced_token'].includes(item.layout || '');
+    const imageUri = isDoubleFaced
+      ? item.card_faces?.[0]?.image_uris?.small || item.image_uris?.small || ''
+      : item.image_uris?.small || '';
 
-    // Obtener la URI de la imagen
-    const imageUri =
-      isDoubleFaced
-        ? item.card_faces?.[0]?.image_uris?.small || item.image_uris?.small || ''
-        : item.image_uris?.small || '';
-
-    // Obtener el nombre de la carta
     const cardName = isDoubleFaced
       ? item.card_faces?.[0]?.name || item.name || "Sin nombre"
       : item.name || "Sin nombre";
 
     return (
       <View style={styles.cardContainer}>
-        {/* Botón para visualizar detalles de la carta */}
         <TouchableOpacity onPress={() => handleCardPress(item.id, imageUri)} style={styles.cardItem}>
-          {/* Imagen de la carta */}
           {imageUri ? (
             <Image source={{ uri: imageUri }} style={styles.cardImage} />
           ) : (
             <Text style={styles.cardName}>Sin imagen</Text>
           )}
-
-          {/* Nombre de la carta */}
           <Text style={styles.cardName}>{cardName}</Text>
         </TouchableOpacity>
-
-        {/* Botón para eliminar la carta */}
         <TouchableOpacity onPress={() => removeCard(deck.id, item.id)} style={styles.removeButton}>
           <Icon name="times" size={24} color="red" />
         </TouchableOpacity>

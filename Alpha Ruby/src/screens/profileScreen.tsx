@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, TextInput, Image, TouchableOpacity, StyleSheet, ScrollView, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, Image, TouchableOpacity, StyleSheet, ScrollView, Alert, ActivityIndicator, KeyboardAvoidingView, Platform } from 'react-native';
 import { useUser } from './UserContext';
 import { useFocusEffect } from '@react-navigation/native';
 import CustomAlert from '../extras/CustomAlert'; // Importa el componente de alerta personalizado
@@ -26,6 +26,7 @@ const ProfileScreen = ({ navigation }) => {
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
+  const [emailError, setEmailError] = useState('');
 
   const fetchUserData = async () => {
     try {
@@ -80,6 +81,10 @@ const ProfileScreen = ({ navigation }) => {
 
   const handleSave = async () => {
     if (selectedAvatar && username && email) {
+      if (!validateEmail(email)) {
+        Alert.alert('Error', 'Por favor, ingresa un correo electrónico válido.');
+        return;
+      }
       if (username !== originalUsername || email !== originalEmail) {
         setShowAlert(true);
       } else {
@@ -101,7 +106,7 @@ const ProfileScreen = ({ navigation }) => {
               imageNumber: selectedAvatar.id,
             }),
           });
-
+  
           if (response.ok) {
             navigation.goBack();
           } else {
@@ -116,7 +121,19 @@ const ProfileScreen = ({ navigation }) => {
       Alert.alert('Error', 'Por favor, completa todos los campos.');
     }
   };
+const validateEmail = (email) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
 
+const handleEmailChange = (email) => {
+  setEmail(email);
+  if (!validateEmail(email)) {
+    setEmailError('Por favor, ingresa un correo electrónico válido.');
+  } else {
+    setEmailError('');
+  }
+};
   const handleConfirmSave = async () => {
     setShowAlert(false);
     try {
@@ -238,129 +255,135 @@ const ProfileScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      {loading ? (
-        <ActivityIndicator size="large" color="#FFFFFF" />
-      ) : (
-        <>
-          {showProfileSection && (
-            <>
-              <Text style={styles.title}>Editar Perfil</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Nombre de usuario"
-                placeholderTextColor="#aaa"
-                value={username}
-                onChangeText={setUsername}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Correo electrónico"
-                placeholderTextColor="#aaa"
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
-              />
-              <Text style={styles.subtitle}>Selecciona tu Avatar</Text>
-              <ScrollView contentContainerStyle={styles.avatarList}>
-                {renderAvatars()}
-              </ScrollView>
-              <View style={styles.pagination}>
-                <TouchableOpacity onPress={handlePreviousPage} disabled={currentPage === 0}>
-                  <Text style={[styles.paginationText, currentPage === 0 && styles.disabledText]}>Anterior</Text>
-                </TouchableOpacity>
-                <Text style={styles.paginationText}>{currentPage + 1} / {totalPages}</Text>
-                <TouchableOpacity onPress={handleNextPage} disabled={currentPage === totalPages - 1}>
-                  <Text style={[styles.paginationText, currentPage === totalPages - 1 && styles.disabledText]}>Siguiente</Text>
-                </TouchableOpacity>
-              </View>
-              <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-                <Text style={styles.saveButtonText}>Guardar Perfil</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.changePasswordButton} onPress={() => { setShowProfileSection(false); setShowPasswordSection(true); }}>
-                <Text style={styles.changePasswordButtonText}>Cambiar Contraseña</Text>
-              </TouchableOpacity>
-            </>
-          )}
-          {showPasswordSection && (
-            <>
-              <Text style={styles.title}>Cambiar Contraseña</Text>
-              <View style={styles.passwordContainer}>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <ScrollView contentContainerStyle={styles.container}>
+        {loading ? (
+          <ActivityIndicator size="large" color="#FFFFFF" />
+        ) : (
+          <>
+            {showProfileSection && (
+              <>
+                <Text style={styles.title}>Editar Perfil</Text>
                 <TextInput
                   style={styles.input}
-                  placeholder="Nueva contraseña"
+                  placeholder="Nombre de usuario"
                   placeholderTextColor="#aaa"
-                  value={newPassword}
-                  onChangeText={(text) => {
-                    setNewPassword(text);
-                    if (text.length < 8) {
-                      setPasswordError('La contraseña debe tener al menos 8 caracteres.');
-                    } else {
-                      setPasswordError('');
-                    }
-                  }}
-                  secureTextEntry={!showNewPassword}
+                  value={username}
+                  onChangeText={setUsername}
                 />
-                <TouchableOpacity
-                  style={styles.eyeIcon}
-                  onPress={() => setShowNewPassword(!showNewPassword)}
-                >
-                  <Icon name={showNewPassword ? 'eye-slash' : 'eye'} size={20} color="#aaa" />
+<TextInput
+  style={styles.input}
+  placeholder="Correo electrónico"
+  placeholderTextColor="#aaa"
+  value={email}
+  onChangeText={handleEmailChange}
+  keyboardType="email-address"
+/>
+{emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
+                <Text style={styles.subtitle}>Selecciona tu Avatar</Text>
+                <ScrollView contentContainerStyle={styles.avatarList}>
+                  {renderAvatars()}
+                </ScrollView>
+                <View style={styles.pagination}>
+                  <TouchableOpacity onPress={handlePreviousPage} disabled={currentPage === 0}>
+                    <Text style={[styles.paginationText, currentPage === 0 && styles.disabledText]}>Anterior</Text>
+                  </TouchableOpacity>
+                  <Text style={styles.paginationText}>{currentPage + 1} / {totalPages}</Text>
+                  <TouchableOpacity onPress={handleNextPage} disabled={currentPage === totalPages - 1}>
+                    <Text style={[styles.paginationText, currentPage === totalPages - 1 && styles.disabledText]}>Siguiente</Text>
+                  </TouchableOpacity>
+                </View>
+                <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+                  <Text style={styles.saveButtonText}>Guardar Perfil</Text>
                 </TouchableOpacity>
-              </View>
-              <View style={styles.passwordContainer}>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Confirmar nueva contraseña"
-                  placeholderTextColor="#aaa"
-                  value={confirmNewPassword}
-                  onChangeText={(text) => {
-                    setConfirmNewPassword(text);
-                    if (text !== newPassword) {
-                      setPasswordError('Las nuevas contraseñas no coinciden.');
-                    } else {
-                      setPasswordError('');
-                    }
-                  }}
-                  secureTextEntry={!showConfirmNewPassword}
-                />
-                <TouchableOpacity
-                  style={styles.eyeIcon}
-                  onPress={() => setShowConfirmNewPassword(!showConfirmNewPassword)}
-                >
-                  <Icon name={showConfirmNewPassword ? 'eye-slash' : 'eye'} size={20} color="#aaa" />
+                <TouchableOpacity style={styles.changePasswordButton} onPress={() => { setShowProfileSection(false); setShowPasswordSection(true); }}>
+                  <Text style={styles.changePasswordButtonText}>Cambiar Contraseña</Text>
                 </TouchableOpacity>
-              </View>
-              {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
-              <TouchableOpacity style={styles.saveButton} onPress={() => setShowPasswordModal(true)}>
-                <Text style={styles.saveButtonText}>Cambiar Contraseña</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.changePasswordButton} onPress={() => { setShowPasswordSection(false); setShowProfileSection(true); }}>
-                <Text style={styles.changePasswordButtonText}>Cancelar</Text>
-              </TouchableOpacity>
-            </>
-          )}
-          <CustomAlert
-            visible={showAlert}
-            title="Confirmación"
-            message="Has cambiado tu nombre de usuario y/o correo electrónico. ¿Deseas guardar los cambios?"
-            onCancel={() => setShowAlert(false)}
-            onConfirm={handleConfirmSave}
-          />
-          <CustomPasswordModal
-            visible={showPasswordModal}
-            onCancel={() => setShowPasswordModal(false)}
-            onConfirm={handleChangePassword}
-          />
-        </>
-      )}
-    </View>
+              </>
+            )}
+            {showPasswordSection && (
+              <>
+                <Text style={styles.title}>Cambiar Contraseña</Text>
+                <View style={styles.passwordContainer}>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Nueva contraseña"
+                    placeholderTextColor="#aaa"
+                    value={newPassword}
+                    onChangeText={(text) => {
+                      setNewPassword(text);
+                      if (text.length < 8) {
+                        setPasswordError('La contraseña debe tener al menos 8 caracteres.');
+                      } else {
+                        setPasswordError('');
+                      }
+                    }}
+                    secureTextEntry={!showNewPassword}
+                  />
+                  <TouchableOpacity
+                    style={styles.eyeIcon}
+                    onPress={() => setShowNewPassword(!showNewPassword)}
+                  >
+                    <Icon name={showNewPassword ? 'eye-slash' : 'eye'} size={20} color="#aaa" />
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.passwordContainer}>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Confirmar nueva contraseña"
+                    placeholderTextColor="#aaa"
+                    value={confirmNewPassword}
+                    onChangeText={(text) => {
+                      setConfirmNewPassword(text);
+                      if (text !== newPassword) {
+                        setPasswordError('Las nuevas contraseñas no coinciden.');
+                      } else {
+                        setPasswordError('');
+                      }
+                    }}
+                    secureTextEntry={!showConfirmNewPassword}
+                  />
+                  <TouchableOpacity
+                    style={styles.eyeIcon}
+                    onPress={() => setShowConfirmNewPassword(!showConfirmNewPassword)}
+                  >
+                    <Icon name={showConfirmNewPassword ? 'eye-slash' : 'eye'} size={20} color="#aaa" />
+                  </TouchableOpacity>
+                </View>
+                {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
+                <TouchableOpacity style={styles.saveButton} onPress={() => setShowPasswordModal(true)}>
+                  <Text style={styles.saveButtonText}>Cambiar Contraseña</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.changePasswordButton} onPress={() => { setShowPasswordSection(false); setShowProfileSection(true); }}>
+                  <Text style={styles.changePasswordButtonText}>Cancelar</Text>
+                </TouchableOpacity>
+              </>
+            )}
+            <CustomAlert
+              visible={showAlert}
+              title="Confirmación"
+              message="Has cambiado tu nombre de usuario y/o correo electrónico. ¿Deseas guardar los cambios?"
+              onCancel={() => setShowAlert(false)}
+              onConfirm={handleConfirmSave}
+            />
+            <CustomPasswordModal
+              visible={showPasswordModal}
+              onCancel={() => setShowPasswordModal(false)}
+              onConfirm={handleChangePassword}
+            />
+          </>
+        )}
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     padding: 20,
     backgroundColor: '#121212',
   },

@@ -91,8 +91,10 @@ export default function HomeScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      fetchData();
-    }, [fetchData])
+      fetchUserData();
+      fetchLastSearchedCards();
+      fetchNews();
+    }, [userId])
   );
 
   const handlePress = (url) => {

@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#121212',
+    backgroundColor: '#1E1F28',
   },
   avatar: {
     width: 100,

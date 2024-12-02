@@ -121,14 +121,14 @@ const ColoresSection: React.FC = () => {
     <View style={styles.sectionContainerImg}>
       <Text style={styles.sectionText}>Colores</Text>
 
-      <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.imageContainer}>
+      {/* <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.imageContainer}>
         <Image source={require('../images/G.svg')} style={styles.image} />
         <Image source={require('../images/B.svg')} style={styles.image} />
         <Image source={require('../images/R.svg')} style={styles.image} />
         <Image source={require('../images/U.svg')} style={styles.image} />
         <Image source={require('../images/W.svg')} style={styles.image} />
         <Image source={require('../images/C.svg')} style={styles.image} />
-      </ScrollView>
+      </ScrollView> */}
     </View>
   );
 };
@@ -348,8 +348,8 @@ export default function TabTwoScreen() {
             return <TextoSection key={filter.id} inputValue={inputValue} setInputValue={setInputValue}/>;
           case 'Coste de mana':
             return <CosteDeManaSection key={filter.id} />;
-          case 'Colores':
-            return <ColoresSection key={filter.id} />;
+          // case 'Colores':
+          //   return <ColoresSection key={filter.id} />;
           default:
             return null;
         }

@@ -86,6 +86,31 @@ export default function ImageViewScreen({ route }) {
       setModalVisible(false);
     }
   };
+  const registerLastViewedCard = async () => {
+    try {
+      console.log('Enviando datos al endpoint:', {
+        IDusuario: userId,
+        IDcarta: cardId,
+      });
+      
+      const response = await fetch('https://magicarduct.online:3000/api/ultimascartasvistas', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          IDusuario: userId,
+          IDcarta: cardId,
+        }),
+      });
+  
+      if (!response.ok) {
+        console.error('Error registrando la carta vista:', await response.json());
+      }
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+    }
+  };
 
   const handleAddToDeck = () => {
     setModalVisible(true);
@@ -104,6 +129,7 @@ export default function ImageViewScreen({ route }) {
   useEffect(() => {
     fetchDecks();
     fetchCardDetails();
+    registerLastViewedCard(); // Registrar la carta vista
   }, []);
 
   const renderCardDetails = () => {

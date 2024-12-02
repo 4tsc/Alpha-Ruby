@@ -278,13 +278,14 @@ const styles = StyleSheet.create({
       position: 'absolute',
       bottom: 30,
       right: 30,
-      backgroundColor: '#D3C298', // Naranja suave para el FAB
+      backgroundColor: '#444444', // Gris neutro para el FAB
       width: 60,
       height: 60,
-      borderRadius: 30,
+      borderRadius: 15, // Bordes rectos
       justifyContent: 'center',
       alignItems: 'center',
-      elevation: 5, // Sombra para el botón flotante
+      elevation: 5, // Sombra ligera para Android
+
     },
   });
 

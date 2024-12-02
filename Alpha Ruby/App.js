@@ -53,8 +53,8 @@ const MainTabNavigator = () => {
 
           return <Icon name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: '#D3C298',
-        tabBarInactiveTintColor: '#E0DCC3',
+        tabBarActiveTintColor: '#FFF', 
+        tabBarInactiveTintColor: '#9E9E9E',
         tabBarStyle: {
           backgroundColor: '#0A0B1E',
           borderTopWidth: 0,
@@ -83,8 +83,8 @@ const App = () => {
           <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
           <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
           <Stack.Screen name="Main" component={MainTabNavigator} options={{ headerShown: false }} />
-          <Stack.Screen name="DeckEditor" component={DeckEditorScreen} options={{ headerShown: false }} />
-          <Stack.Screen name="ImageViewScreen" component={ImageViewScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="DeckEditor" component={DeckEditorScreen} options={{ title: 'Mazos', headerStyle: { backgroundColor: '#3D3D3D' }, headerTintColor: '#fff' }} />
+          <Stack.Screen name="ImageViewScreen" component={ImageViewScreen} options={{ title: 'Volver', headerStyle: { backgroundColor: '#3D3D3D' }, headerTintColor: '#fff'  }} />
           <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{ headerShown: false }} />
           <Stack.Screen name="Profile" component={profileScreen} options={{ headerShown: false }} />
           <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} options={{ headerShown: false }} />

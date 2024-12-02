@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
   forgotPasswordText: {
-    color: '#FFF',
+    color: '#007BFF',
     marginTop: 10,
     textAlign: 'center',
     textDecorationLine: 'underline',

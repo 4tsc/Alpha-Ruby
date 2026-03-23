@@ -12,7 +12,7 @@ export default function ImageViewScreen({ route }) {
 
   const fetchDecks = async () => {
     try {
-      const response = await fetch(`https://magicarduct.online:3000/api/barajasdeusuaio2/${userId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/barajasdeusuaio2/${userId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -62,7 +62,7 @@ export default function ImageViewScreen({ route }) {
     const cantidad = 1; // La cantidad es 1 por defecto
 
     try {
-      const response = await fetch('https://magicarduct.online:3000/api/mazocartas', {
+      const response = await fetch('${API_BASE_URL}/api/mazocartas', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -22,7 +22,7 @@ export default function RegisterScreen({ navigation }) {
     };
 
     // Hacemos la solicitud POST al servidor
-    fetch('http://186.64.122.218:3000/register', {
+    fetch('${API_BASE_URL}/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

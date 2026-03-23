@@ -13,7 +13,7 @@ export default function HomeScreen() {
 
     const fetchUserData = async () => {
       try {
-        const response = await fetch(` https://magicarduct.online:3000/obtener-usuario?userId=${userId}`, {
+        const response = await fetch(` ${API_BASE_URL}/obtener-usuario?userId=${userId}`, {
           method: 'GET',
           credentials: 'include',
         });
